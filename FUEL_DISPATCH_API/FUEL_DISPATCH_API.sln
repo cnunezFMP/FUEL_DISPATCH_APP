@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34714.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FUEL_DISPATCH_API", "FUEL_DISPATCH_API\FUEL_DISPATCH_API.csproj", "{C4E7B0F3-BEF5-4992-BA20-24C26469F74F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FUEL_DISPATCH_API.DataAccess", "FUEL_DISPATCH_API.DataAccess\FUEL_DISPATCH_API.DataAccess.csproj", "{DD114C4F-1C4E-4BFF-8EE8-2207CB841C88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMP_MATEINANCE_API.Auth", "FMP_MATEINANCE_API.Auth\FMP_MATEINANCE_API.Auth.csproj", "{E4A3DEC6-B4CB-48C2-9304-CC140017C001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMP_DISPATCH_API.Services", "FMP_DISPATCH_API.Services\FMP_DISPATCH_API.Services.csproj", "{C9FF8D53-48BE-4465-A9AA-D37A2FF3EC77}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FUEL_DISPATCH_API.Utils", "FUEL_DISPATCH_API.Utils\FUEL_DISPATCH_API.Utils.csproj", "{E4B60BBC-CCF9-4B15-84D9-2DCAF7A7C2BC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C4E7B0F3-BEF5-4992-BA20-24C26469F74F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4E7B0F3-BEF5-4992-BA20-24C26469F74F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4E7B0F3-BEF5-4992-BA20-24C26469F74F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4E7B0F3-BEF5-4992-BA20-24C26469F74F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD114C4F-1C4E-4BFF-8EE8-2207CB841C88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD114C4F-1C4E-4BFF-8EE8-2207CB841C88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD114C4F-1C4E-4BFF-8EE8-2207CB841C88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD114C4F-1C4E-4BFF-8EE8-2207CB841C88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4A3DEC6-B4CB-48C2-9304-CC140017C001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4A3DEC6-B4CB-48C2-9304-CC140017C001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4A3DEC6-B4CB-48C2-9304-CC140017C001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4A3DEC6-B4CB-48C2-9304-CC140017C001}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9FF8D53-48BE-4465-A9AA-D37A2FF3EC77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9FF8D53-48BE-4465-A9AA-D37A2FF3EC77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9FF8D53-48BE-4465-A9AA-D37A2FF3EC77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9FF8D53-48BE-4465-A9AA-D37A2FF3EC77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4B60BBC-CCF9-4B15-84D9-2DCAF7A7C2BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4B60BBC-CCF9-4B15-84D9-2DCAF7A7C2BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4B60BBC-CCF9-4B15-84D9-2DCAF7A7C2BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4B60BBC-CCF9-4B15-84D9-2DCAF7A7C2BC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C6E4F7DA-62E2-4744-9E92-DF461AADB90F}
+	EndGlobalSection
+EndGlobal
