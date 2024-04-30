@@ -1,5 +1,5 @@
-import React from 'react'
-import { DispatchForm } from './components/component/dispatch-form'
+
+import DispatchForm  from './components/component/DispatchForm'
 
 const App = () => {
   return (

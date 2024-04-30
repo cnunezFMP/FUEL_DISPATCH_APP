@@ -20,7 +20,7 @@ public partial class Dispatch
     public int DispenserId { get; set; }
 
     public decimal Odometer { get; set; }
-
+    public bool? IsForVehicle { get; set; }
     public string Notes { get; set; }
 
     public string CreatedBy { get; set; }
