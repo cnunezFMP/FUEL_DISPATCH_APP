@@ -2,6 +2,7 @@
 using FMP_DISPATCH_API.Services.Emails;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,14 +20,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IEmailSender _emailSender;
-
+        private const int ZeroGallons = 0;
+        private const string InactiveStatus = "Inactive";
         public DispatchServices(FUEL_DISPATCH_DBContext DBContext, IEmailSender emailSender)
         {
             _DBContext = DBContext;
             _emailSender = emailSender;
         }
 
-        public void CreateDispath(Dispatch newDispatch)
+        public ServiceResults CreateDispath(Dispatch newDispatch)
         {
             try
             {
@@ -39,13 +41,19 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 //var odomentroAnteriorMant = _DBContext.Mantenimientos.Where(x => x.VehiculoId == crearDespacho.VehiculoId).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
 
                 if (newDispatch.Odometer < previousDispatch?.Odometer)
-                    throw new Exception("New Dispatch Odometer can't be lower than the previous Dispatch. ");
+                    return ServiceResults.NewOdometerCantBeLowerThanPreviousDispatch();
 
                 if (newDispatch.Odometer == previousDispatch?.Odometer)
-                    throw new Exception("New Dispatch Odometer can't be equals to the previous Dispatch. ");
+                {
+                    return ServiceResults.NewDispatchOdometerCantBeEqualsToThePreviousDispatch();
+                    throw new Exception();
+                }
 
-                if (newDispatch.Gallons == 0)
-                    throw new Exception("Gallons for Dispatch can't be 0");
+                if (newDispatch.Gallons is ZeroGallons)
+                {
+                    return ServiceResults.GallonsForDispatchCantBeZero();
+                    throw new Exception();
+                }
 
                 /***************************
                  * 
@@ -53,28 +61,31 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                  *
                  ***************************/
 
-                if (driverForDispatch == null)
-                    throw new NullReferenceException("No driver found. ");
+                if (driverForDispatch is null)
+                    return ServiceResults.DriverForDispatchNotFound(driverForDispatch!.Id);
 
-                if (driverForDispatch.Status == "Inactive")
-                    throw new Exception("This driver is inactive. ");
+
+                if (driverForDispatch.Status is InactiveStatus)
+                    return ServiceResults.DriverIsInactive(driverForDispatch.Id);
                 /***************************
                  * 
                  * // Vehicle validations.
                  *
                  ***************************/
 
-                if (vehicleForDispatch == null)
-                    throw new NullReferenceException("No vehicle found. ");
-
-                if (vehicleForDispatch.Status == "Inactive")
-                    throw new Exception("This vehicle is inactive. ");
+                if (vehicleForDispatch is null)
+                    return ServiceResults.VehicleForDispatchNotFound(vehicleForDispatch!.Token);
+                if (vehicleForDispatch.Status is InactiveStatus)
+                    return ServiceResults.VehicleIsInactive(vehicleForDispatch!.Token); ;
 
                 /***************************
                  * 
                  * // Road validations.
                  *
                  ***************************/
+                _DBContext.Dispatch.Add(newDispatch);
+                _DBContext.SaveChanges();
+                return ServiceResults.DispatchSuccessfully(newDispatch.Id);
             }
             catch
             {
@@ -89,7 +100,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 var dispatch = _DBContext.Dispatch.Find(id);
                 if (dispatch is null)
                 {
-                    throw new NullReferenceException("No dispatch found");
+                    throw new NullReferenceException();
                 }
                 return dispatch;
             }
@@ -99,7 +110,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             }
         }
 
-        public async Task<IEnumerable<Dispatch>> GetDispatches([FromQuery]DateTime? startDate, [FromQuery]DateTime? endDate, int page, int pageSize)
+        public async Task<List<Dispatch>> GetDispatches
+            (
+                [FromQuery] DateTime? startDate,
+                [FromQuery] DateTime? endDate,
+                int page,
+                int pageSize
+            )
         {
             try
             {
@@ -109,10 +126,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                     PageSize = pageSize,
                 };
 
-                var dispatchQuery = startDate.HasValue && endDate.HasValue 
+                var dispatchQuery = startDate.HasValue && endDate.HasValue
                     ? _DBContext.Dispatch.Where(x => x.CreatedAt >= startDate && x.CreatedAt <= endDate)
                     : _DBContext.Dispatch;
-                
+
                 var dispatchList = await dispatchQuery.ApplyPaging(gq).ToListAsync();
 
                 return dispatchList;
@@ -123,5 +140,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             }
 
         }
+
     }
 }

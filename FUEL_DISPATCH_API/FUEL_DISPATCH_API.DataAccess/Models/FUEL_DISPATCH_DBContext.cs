@@ -459,6 +459,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(d => d.Driver).WithMany(p => p.Users)
                 .HasForeignKey(d => d.DriverId)
                 .HasConstraintName("FK__Users__DriverId__797309D9");
+            entity.HasMany(r => r.Rols).WithMany(d => d.Users).UsingEntity<UsersRols>(x => x.HasOne(x => x.Rol).WithMany().HasForeignKey(x => x.RolId), x => x.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId));
+
         });
 
         modelBuilder.Entity<UsersRols>(entity =>

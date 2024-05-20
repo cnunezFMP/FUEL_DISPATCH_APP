@@ -20,4 +20,5 @@ public partial class Role
     public DateTime? UpdatedAt { get; set; }
 
     public virtual ICollection<UsersRols> UsersRols { get; set; } = new List<UsersRols>();
+    public virtual ICollection<Users> Users{ get; set; } = new List<Users>();
 }

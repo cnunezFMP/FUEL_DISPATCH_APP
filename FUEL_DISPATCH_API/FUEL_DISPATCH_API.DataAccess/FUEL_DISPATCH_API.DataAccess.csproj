@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FMP_DISPATCH_API.Services\FMP_DISPATCH_API.Services.csproj" />
+    <ProjectReference Include="..\FUEL_DISPATCH_API.Utils\FUEL_DISPATCH_API.Utils.csproj" />
   </ItemGroup>
 
 </Project>

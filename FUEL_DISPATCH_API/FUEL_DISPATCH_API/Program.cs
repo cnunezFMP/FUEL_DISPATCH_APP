@@ -1,5 +1,9 @@
+using FMP_DISPATCH_API.Services.Emails;
 using FUEL_DISPATCH_API.DataAccess.Models;
+using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
+using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -7,15 +11,22 @@ using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+const string swaggerTitle = "FUEL_DISPATCH_API";
+const string swaggerVersion = "v1";
 const string corsName = "MyPolicy";
 // Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(info =>
+builder.Services.AddSwaggerGen(
+    info =>
 {
-    info.SwaggerDoc("v1", new OpenApiInfo { Title = "FUEL_DISPATCH_API", Version = "v1" });
+    info.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = swaggerTitle,
+        Version = swaggerVersion
+    });
 });
 builder.Services.AddDbContext<FUEL_DISPATCH_DBContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("cadenaSql")));
@@ -39,6 +50,10 @@ builder.Services.AddAuthentication(config =>
             ValidateAudience = false,
         };
     });
+
+builder.Services.AddScoped<IDispatchServices, DispatchServices>()
+                .AddScoped<FMP_DISPATCH_API.Services.Emails.IEmailSender, EmailSender>();
+
 // Ignorar ciclos en el objeto que se esta serializando
 builder.Services.AddControllers().AddJsonOptions(option =>
 {

@@ -1,17 +1,19 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FUEL_DISPATCH_API.Utils.ResponseObjects;
+using Microsoft.AspNetCore.Http;
 
 namespace FMP_MATEINANCEA_API.Utils
 {
     public class Responses
     {
         public string Message { get; set; }
+        public ServiceResults ObjectResult { get; set; }
         public bool Success { get; set; }
         public int Code { get; set; }
         public object Data { get; set; }
         public object PageInformation { get; set; }
         public Responses() { }
 
-        public Responses(object data, object pageInfo)
+        public Responses(object data)
         {
             Data = data;
         }
@@ -26,6 +28,7 @@ namespace FMP_MATEINANCEA_API.Utils
             };
         }
     }
+
 
     public class Responses<T> where T : class
     {

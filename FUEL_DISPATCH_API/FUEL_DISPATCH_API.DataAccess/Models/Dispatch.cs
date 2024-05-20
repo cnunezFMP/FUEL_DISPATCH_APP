@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 
@@ -34,14 +35,14 @@ public partial class Dispatch
     public decimal Gallons { get; set; }
 
     public int? BranchOfficeId { get; set; }
-
+    [JsonIgnore]
     public virtual BranchOffices BranchOffice { get; set; }
-
+    [JsonIgnore]
     public virtual Dispensers Dispenser { get; set; }
-
+    [JsonIgnore]
     public virtual Drivers Driver { get; set; }
-
+    [JsonIgnore]
     public virtual Roads Road { get; set; }
-
+    [JsonIgnore]
     public virtual Vehicles VehicleTokenNavigation { get; set; }
 }

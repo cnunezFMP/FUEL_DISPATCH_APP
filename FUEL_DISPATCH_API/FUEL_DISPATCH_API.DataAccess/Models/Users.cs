@@ -38,4 +38,5 @@ public partial class Users
     public virtual ICollection<UsersRols> UsersRols { get; set; } = new List<UsersRols>();
 
     public virtual ICollection<BranchOffices> BranchOffice { get; set; } = new List<BranchOffices>();
+    public virtual ICollection<Role>Rols { get; set; } = new List<Role>();
 }
