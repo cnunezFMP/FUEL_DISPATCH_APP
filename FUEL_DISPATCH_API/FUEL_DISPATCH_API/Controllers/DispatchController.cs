@@ -10,11 +10,9 @@ namespace FUEL_DISPATCH_API.Controllers
     [ApiController]
     public class DispatchController : ControllerBase
     {
-        private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IDispatchServices _dispatchServices;
         public DispatchController(FUEL_DISPATCH_DBContext dBContext, IDispatchServices dispatchServices)
         {
-            _DBContext = dBContext;
             _dispatchServices = dispatchServices;
         }
         /// <summary>
