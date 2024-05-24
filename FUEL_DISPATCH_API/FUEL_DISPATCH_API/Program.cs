@@ -3,7 +3,6 @@ using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -30,7 +29,7 @@ builder.Services.AddSwaggerGen(
 });
 builder.Services.AddDbContext<FUEL_DISPATCH_DBContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("cadenaSql")));
-// Llamado a la clave secreta 
+// Llamado a la clave secreta
 var secretkey = builder.Configuration.GetSection("settings:secretkey").Value;//.GetSection("secretkey").ToString();
 var keyBytes = Encoding.UTF8.GetBytes(secretkey!);
 builder.Services.AddAuthentication(config =>

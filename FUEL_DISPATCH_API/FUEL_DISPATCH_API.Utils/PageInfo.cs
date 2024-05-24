@@ -2,12 +2,11 @@
 {
     public static class PageInfo
     {
-        public static object PageI(int totalEntities, int currentPageE, int pageSizeE) 
+        public static object PageI(int totalEntities, int currentPageE, int pageSizeE)
         {
-
-            int totalData = totalEntities; 
+            int totalData = totalEntities;
             int totalPages = (int)Math.Ceiling((double)totalData / pageSizeE); ;
-            int currentPages= currentPageE;
+            int currentPages = currentPageE;
             int remainingPages = totalData - currentPages;
 
             return new

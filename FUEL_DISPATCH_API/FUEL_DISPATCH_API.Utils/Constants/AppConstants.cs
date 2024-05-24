@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FMP_MATEINANCEA_API.Utils
+namespace FUEL_DISPATCH_API.Utils.Constants
 {
     public struct AppConstants
     {
