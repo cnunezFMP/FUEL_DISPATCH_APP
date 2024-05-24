@@ -7,6 +7,7 @@ using Gridify;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
@@ -50,25 +51,25 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 // throw new DriverForDispatchNotFoundException(driverForDispatch!.Id);
 
                 if (driverForDispatch.Status is ValidationConstants.InactiveStatus)
-                    return ServiceResults.DriverIsInactive(driverForDispatch.Id);
-            /***************************
-             *
-             * // Vehicle validations.
-             *
-             ***************************/
-
-            if (vehicleForDispatch is null)
-                //return ServiceResults.VehicleForDispatchNotFound(vehicleForDispatch!.Token);
-
-                if (vehicleForDispatch.Status is ValidationConstants.InactiveStatus)
-                    //return ServiceResults.VehicleIsInactive(vehicleForDispatch!.Token);
-
+                    //return ServiceResults.DriverIsInactive(driverForDispatch.Id);
                     /***************************
                      *
-                     * // Road validations.
+                     * // Vehicle validations.
                      *
                      ***************************/
-                    _DBContext.Dispatch.Add(newDispatch);
+
+                    if (vehicleForDispatch is null)
+                        //return ServiceResults.VehicleForDispatchNotFound(vehicleForDispatch!.Token);
+
+                        if (vehicleForDispatch.Status is ValidationConstants.InactiveStatus)
+                            //return ServiceResults.VehicleIsInactive(vehicleForDispatch!.Token);
+
+                            /***************************
+                             *
+                             * // Road validations.
+                             *
+                             ***************************/
+                            _DBContext.Dispatch.Add(newDispatch);
             _DBContext.SaveChanges();
             return ResultPattern<Dispatch>.Success(newDispatch, StatusCodes.Status200OK, "Despacho creado correctamente. ");
         }
@@ -84,6 +85,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
         public async Task<ResultPattern<List<Dispatch>>> GetDispatches([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate, int page, int pageSize)
         {
+            throw new Exception("Test Exception");
             var gq = new GridifyQuery
             {
                 Page = page,

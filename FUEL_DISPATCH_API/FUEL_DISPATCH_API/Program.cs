@@ -1,4 +1,5 @@
 using FMP_DISPATCH_API.Services.Emails;
+using FUEL_DISPATCH_API;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
@@ -14,7 +15,8 @@ const string swaggerTitle = "FUEL_DISPATCH_API";
 const string swaggerVersion = "v1";
 const string corsName = "MyPolicy";
 // Add services to the container.
-
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -70,7 +72,7 @@ builder.Services.AddCors((options) =>
     });
 });
 var app = builder.Build();
-
+app.UseExceptionHandler();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
