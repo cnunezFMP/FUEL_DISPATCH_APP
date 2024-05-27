@@ -1,0 +1,16 @@
+﻿using FUEL_DISPATCH_API.DataAccess.Models;
+using Gridify;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
+{
+    public interface IGridifyServices<T> where T : class
+    {
+        Paging<T> GetAll([FromQuery] GridifyQuery query);
+    }
+}

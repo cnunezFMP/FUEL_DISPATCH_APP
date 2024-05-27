@@ -2,16 +2,18 @@
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Constants;
+using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System.Linq.Expressions;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
-    public class DispatchServices : IDispatchServices
+    public class DispatchServices : IDispatchServices, IGridifyServices<Dispatch>
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IEmailSender _emailSender;
@@ -82,23 +84,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             return ResultPattern<Dispatch>.Success(dispatch, StatusCodes.Status200OK, "Dispatch obtained. ");
         }
-
-        public async Task<ResultPattern<List<Dispatch>>> GetDispatches([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate, int page, int pageSize)
+        public Paging<Dispatch> GetAll(GridifyQuery query)
         {
-            throw new Exception("Test Exception");
-            var gq = new GridifyQuery
-            {
-                Page = page,
-                PageSize = pageSize,
-            };
-
-            var dispatchQuery = startDate.HasValue && endDate.HasValue
-                ? _DBContext.Dispatch.Where(x => x.CreatedAt >= startDate && x.CreatedAt <= endDate)
-                : _DBContext.Dispatch;
-
-            var dispatchList = await dispatchQuery.ApplyPaging(gq).ToListAsync();
-            var result = ResultPattern<List<Dispatch>>.Success(dispatchList, StatusCodes.Status200OK, "List of dispatches obtained successfully. ");
-            return result;
+            return _DBContext.Set<Dispatch>().Gridify(query);
         }
     }
 }

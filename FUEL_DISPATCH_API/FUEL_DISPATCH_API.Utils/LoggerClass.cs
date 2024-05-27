@@ -1,19 +1,13 @@
 ﻿using Serilog;
-using Serilog.Configuration;
-using Serilog.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace FUEL_DISPATCH_API.Utils
 {
     public static class LoggerClass
     {
-        private static readonly string path = @"C:\LogsDirectory\logg.txt";
+        private static readonly string newId = Guid.NewGuid().ToString();
+        private static readonly string dirPath = "C:\\LogsDirectory";
+        private static readonly string log = Path.Combine(dirPath, "log" + newId + ".txt");
         private static readonly ILogger _logger = new LoggerConfiguration()
-                                                      .WriteTo.File(path)
+                                                      .WriteTo.File(log)
                                                       .CreateLogger();
         public static void LogInfo(string message)
         {

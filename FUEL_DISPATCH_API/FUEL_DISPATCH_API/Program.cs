@@ -14,7 +14,6 @@ var builder = WebApplication.CreateBuilder(args);
 const string swaggerTitle = "FUEL_DISPATCH_API";
 const string swaggerVersion = "v1";
 const string corsName = "MyPolicy";
-// Add services to the container.
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 builder.Services.AddControllers();
@@ -32,7 +31,7 @@ builder.Services.AddSwaggerGen(
 builder.Services.AddDbContext<FUEL_DISPATCH_DBContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("cadenaSql")));
 // Llamado a la clave secreta
-var secretkey = builder.Configuration.GetSection("settings:secretkey").Value;//.GetSection("secretkey").ToString();
+var secretkey = builder.Configuration.GetSection("settings:secretkey").Value; //.GetSection("secretkey").ToString();
 var keyBytes = Encoding.UTF8.GetBytes(secretkey!);
 builder.Services.AddAuthentication(config =>
 {
@@ -73,6 +72,7 @@ builder.Services.AddCors((options) =>
 });
 var app = builder.Build();
 app.UseExceptionHandler();
+// app.AddGlobalErrorHandler();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

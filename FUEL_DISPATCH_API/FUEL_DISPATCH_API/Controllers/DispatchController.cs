@@ -1,6 +1,8 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.Utils;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
+using Gridify;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FUEL_DISPATCH_API.Controllers
@@ -10,8 +12,7 @@ namespace FUEL_DISPATCH_API.Controllers
     public class DispatchController : ControllerBase
     {
         private readonly IDispatchServices _dispatchServices;
-
-        public DispatchController(FUEL_DISPATCH_DBContext dBContext, IDispatchServices dispatchServices)
+        public DispatchController(FUEL_DISPATCH_DBContext dBContext, IDispatchServices dispatchServices, IGridifyServices<Dispatch> gridifyServices)
         {
             _dispatchServices = dispatchServices;
         }
@@ -25,12 +26,12 @@ namespace FUEL_DISPATCH_API.Controllers
         /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<List<Dispatch>>> GetDispatches([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate, int page = 1, int pageSize = 10)
+        public async Task<ActionResult<List<Dispatch>>> GetDispatches([FromQuery] GridifyQuery query)
         {
             try
             {
-                var dispatches = await _dispatchServices.GetDispatches(startDate, endDate, page, pageSize);
-                return Ok(dispatches);
+                var dispatches = _dispatchServices.GetAll(query);
+                return Ok(dispatches.Data);
             }
             catch
             {

@@ -18,8 +18,4 @@
     <ProjectReference Include="..\FUEL_DISPATCH_API.Utils\FUEL_DISPATCH_API.Utils.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Exceptions\" />
-  </ItemGroup>
-
 </Project>
