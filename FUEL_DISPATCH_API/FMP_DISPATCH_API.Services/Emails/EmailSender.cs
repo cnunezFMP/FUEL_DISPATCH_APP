@@ -11,7 +11,6 @@ namespace FMP_DISPATCH_API.Services.Emails
             {
                 string? mail = "enmanuel02bnunez@gmail.com";
                 string? pwd = "cfei bpkq avtr ydhw";
-                //string? pwd = "*-.3nM4Nu310202.-*";
                 using (MailMessage email = new MailMessage())
                 {
                     email.From = new MailAddress(mail);
@@ -27,7 +26,6 @@ namespace FMP_DISPATCH_API.Services.Emails
                         smtp.Send(email);
                     }
                 }
-
             }
             catch
             {

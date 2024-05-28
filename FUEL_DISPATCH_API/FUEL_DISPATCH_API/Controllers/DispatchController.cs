@@ -9,7 +9,7 @@ namespace FUEL_DISPATCH_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DispatchController
+    public class DispatchController : ControllerBase
     {
         private readonly IDispatchServices _dispatchServices;
         public DispatchController(IDispatchServices dispatchServices)
@@ -26,10 +26,10 @@ namespace FUEL_DISPATCH_API.Controllers
         /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<ResultPattern<Paging<Dispatch>>>> GetDispatches([FromQuery] GridifyQuery query)
+        public ActionResult<ResultPattern<Paging<Dispatch>>> GetDispatches([FromQuery] GridifyQuery query)
         {
             var dispatches = _dispatchServices.GetAll(query);
-            return dispatches;
+            return Ok(dispatches);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             Func<Dispatch, bool> findId = x => x.Id == id;
             var dispatch = _dispatchServices.Get(findId);
-            return dispatch;
+            return Ok(dispatch);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace FUEL_DISPATCH_API.Controllers
         public ActionResult<ResultPattern<Dispatch>> PostDispatch([FromBody] Dispatch dispatch)
         {
             _dispatchServices.Post(dispatch);
-            return ResultPattern<Dispatch>.Success(dispatch, StatusCodes.Status200OK, "Despacho Creado");
+            return Ok(ResultPattern<Dispatch>.Success(dispatch, StatusCodes.Status200OK, "Despacho Creado"));
         }
     }
 }

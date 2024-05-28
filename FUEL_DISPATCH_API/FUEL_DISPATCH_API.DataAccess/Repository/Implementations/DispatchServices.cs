@@ -18,10 +18,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IEmailSender _emailSender;
-        public DispatchServices(IGenericInterface<Dispatch> genericInterface, IEmailSender emailSender, FUEL_DISPATCH_DBContext dBContext)
+        public DispatchServices(IEmailSender emailSender, FUEL_DISPATCH_DBContext dBContext)
             : base(dBContext)
         {
-            //_genericInterface = genericInterface;
             _emailSender = emailSender;
             _DBContext = dBContext;
         }
