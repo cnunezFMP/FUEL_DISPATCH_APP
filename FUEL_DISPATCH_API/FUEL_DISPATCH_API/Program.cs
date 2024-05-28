@@ -1,8 +1,8 @@
 using FMP_DISPATCH_API.Services.Emails;
-using FUEL_DISPATCH_API;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -52,7 +52,7 @@ builder.Services.AddAuthentication(config =>
     });
 
 builder.Services.AddScoped<IDispatchServices, DispatchServices>()
-                .AddScoped<FMP_DISPATCH_API.Services.Emails.IEmailSender, EmailSender>();
+                .AddTransient<IEmailSender, EmailSender>();
 
 // Ignorar ciclos en el objeto que se esta serializando
 builder.Services.AddControllers().AddJsonOptions(option =>

@@ -1,18 +1,18 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
-using FUEL_DISPATCH_API.Utils;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FUEL_DISPATCH_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DispatchController : ControllerBase
+    public class DispatchController
     {
         private readonly IDispatchServices _dispatchServices;
-        public DispatchController(FUEL_DISPATCH_DBContext dBContext, IDispatchServices dispatchServices, IGridifyServices<Dispatch> gridifyServices)
+        public DispatchController(IDispatchServices dispatchServices)
         {
             _dispatchServices = dispatchServices;
         }
@@ -26,17 +26,10 @@ namespace FUEL_DISPATCH_API.Controllers
         /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<List<Dispatch>>> GetDispatches([FromQuery] GridifyQuery query)
+        public async Task<ActionResult<ResultPattern<Paging<Dispatch>>>> GetDispatches([FromQuery] GridifyQuery query)
         {
-            try
-            {
-                var dispatches = _dispatchServices.GetAll(query);
-                return Ok(dispatches.Data);
-            }
-            catch
-            {
-                throw;
-            }
+            var dispatches = _dispatchServices.GetAll(query);
+            return dispatches;
         }
 
         /// <summary>
@@ -47,10 +40,9 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}")]
         public ActionResult<ResultPattern<Dispatch>> GetDispatch(int id)
         {
-            var dispatch = _dispatchServices.GetDispatch(id);
-            if (dispatch.IsSuccess is not true)
-                return BadRequest(dispatch);
-            return Ok(dispatch);
+            Func<Dispatch, bool> findId = x => x.Id == id;
+            var dispatch = _dispatchServices.Get(findId);
+            return dispatch;
         }
 
         /// <summary>
@@ -61,12 +53,8 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost]
         public ActionResult<ResultPattern<Dispatch>> PostDispatch([FromBody] Dispatch dispatch)
         {
-            var createdDispatch = _dispatchServices.CreateDispath(dispatch);
-
-            if (createdDispatch.IsSuccess is true)
-                return Ok(createdDispatch);
-
-            return BadRequest(createdDispatch);
+            _dispatchServices.Post(dispatch);
+            return ResultPattern<Dispatch>.Success(dispatch, StatusCodes.Status200OK, "Despacho Creado");
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
+namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
 {
     public interface IGenericInterface<T> where T : class
     {
@@ -14,5 +14,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
         ResultPattern<Paging<T>> GetAll(GridifyQuery query);
         ResultPattern<T> Post(T entity);
         ResultPattern<T> Update(T entity);
+        ResultPattern<string> SaveChanges();
     }
 }
