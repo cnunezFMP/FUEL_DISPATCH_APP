@@ -423,38 +423,39 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         modelBuilder.Entity<Users>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Users__3214EC07B25E00EC");
+            entity.ToTable("Users");
 
-            entity.Property(e => e.BirthDate).HasColumnType("datetime");
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
-            entity.Property(e => e.CreatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.Email)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.FullDirection)
-                .IsRequired()
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.FullName)
-                .IsRequired()
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.Password)
-                .IsRequired()
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.PhoneNumber)
-                .IsRequired()
-                .HasMaxLength(155);
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
-            entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.Username)
-                .IsRequired()
-                .HasMaxLength(100)
-                .IsUnicode(false);
+            //entity.Property(e => e.BirthDate).HasColumnType("datetime");
+            //entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+            //entity.Property(e => e.CreatedBy)
+            //    .HasMaxLength(100)
+            //    .IsUnicode(false);
+            //entity.Property(e => e.Email)
+            //    .HasMaxLength(100)
+            //    .IsUnicode(false);
+            //entity.Property(e => e.FullDirection)
+            //    .IsRequired()
+            //    .HasMaxLength(200)
+            //    .IsUnicode(false);
+            //entity.Property(e => e.FullName)
+            //    .IsRequired()
+            //    .HasMaxLength(100)
+            //    .IsUnicode(false);
+            //entity.Property(e => e.Password)
+            //    .IsRequired()
+            //    .HasMaxLength(100)
+            //    .IsUnicode(false);
+            //entity.Property(e => e.PhoneNumber)
+            //    .IsRequired()
+            //    .HasMaxLength(155);
+            //entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+            //entity.Property(e => e.UpdatedBy)
+            //    .HasMaxLength(100)
+            //    .IsUnicode(false);
+            //entity.Property(e => e.Username)
+            //    .IsRequired()
+            //    .HasMaxLength(100)
+            //    .IsUnicode(false);
 
             entity.HasOne(d => d.Driver).WithMany(p => p.Users)
                 .HasForeignKey(d => d.DriverId)
@@ -466,17 +467,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         modelBuilder.Entity<UsersRols>(entity =>
         {
             entity.HasKey(e => new { e.UserId, e.RolId }).HasName("PK__UsersRol__181AFC635E4D9579");
-
-            entity.Property(e => e.AsignationDate).HasColumnType("datetime");
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
-            entity.Property(e => e.CreatedBy)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
-            entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(200)
-                .IsUnicode(false);
-
+            
             entity.HasOne(d => d.Rol).WithMany(p => p.UsersRols)
                 .HasForeignKey(d => d.RolId)
                 .OnDelete(DeleteBehavior.ClientSetNull)

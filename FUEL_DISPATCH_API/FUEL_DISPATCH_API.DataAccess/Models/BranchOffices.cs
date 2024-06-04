@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 
@@ -14,14 +15,14 @@ public partial class BranchOffices
     public int? LocationId { get; set; }
 
     public string FullLocation { get; set; }
-
+    public string Status {  get; set; }
     public string Phone { get; set; }
 
     public string Email { get; set; }
-
+    [JsonIgnore]
     public virtual ICollection<Dispatch> Dispatch { get; set; } = new List<Dispatch>();
-
+    [JsonIgnore]
     public virtual Locations Location { get; set; }
-
+    [JsonIgnore]
     public virtual ICollection<Users> User { get; set; } = new List<Users>();
 }

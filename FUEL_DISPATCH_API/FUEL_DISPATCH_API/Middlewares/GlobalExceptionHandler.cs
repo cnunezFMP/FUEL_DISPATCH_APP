@@ -18,7 +18,6 @@ namespace FUEL_DISPATCH_API.Middlewares
             var response = JsonSerializer.Serialize(problemDetails);
             LoggerClass.LogError(response);
             httpContext.Response.ContentType = "application/json";
-
             httpContext.Response.StatusCode = (int)httpStatusCode;
             await httpContext.Response.WriteAsync(response, cancellationToken);
 
@@ -68,6 +67,19 @@ namespace FUEL_DISPATCH_API.Middlewares
                 problemDetails = details;
 
             }
+            else if(exType == typeof(SystemNetMailSmtpException))
+            {
+                var details = new ProblemDetails
+                {
+                    Detail = exception.Message,
+                    Instance = httpContext.ToString(),
+                    Status = StatusCodes.Status503ServiceUnavailable,
+                    Title = "Problem ocurred with the SMTP Server.",
+                    Type = exType.ToString()
+                };
+                httpStatusCode = HttpStatusCode.InternalServerError;
+                problemDetails = details;
+            }
             else
             {
                 var details = new ProblemDetails
@@ -75,7 +87,7 @@ namespace FUEL_DISPATCH_API.Middlewares
                     Detail = exception.Message,
                     Instance = httpContext.ToString(),
                     Status = StatusCodes.Status500InternalServerError,
-                    Title = "Server Error",
+                    Title = "Something went wrong. ",
                     Type = exType.ToString()
                 };
                 httpStatusCode = HttpStatusCode.InternalServerError;

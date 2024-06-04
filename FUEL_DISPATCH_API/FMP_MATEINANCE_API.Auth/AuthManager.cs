@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Diagnostics;
+using FUEL_DISPATCH_API.Utils.Exceptions;
 
 namespace FMP_MATEINANCE_API.Auth
 {
@@ -51,7 +52,7 @@ namespace FMP_MATEINANCE_API.Auth
 
                 try
                 {
-                    _dbContext.UsersTokens.Add(new UsersTokens() { Token = tokenCreado, UserId = credencialesCorretas.Id, CreatedAt = DateTime.Now, ExpData = DateTime.Now + TimeSpan.FromDays(5)});
+                    _dbContext.UsersTokens.Add(new UsersTokens() { Token = tokenCreado, UserId = credencialesCorretas.Id, CreatedAt = DateTime.Now, ExpData = tokenDescriptor.Expires});
                     _dbContext.SaveChanges();
 
                     var tokenObj = new
@@ -70,8 +71,9 @@ namespace FMP_MATEINANCE_API.Auth
             else
             {
                 // Devolver algún tipo de indicador de error en lugar de Unauthorized directamente
-                throw new Exception("User Does Not Exist. ");
+                throw new UnauthorizedException("El usuario no tiene acceso. ");
             }
         }
+        
     }
 }

@@ -18,6 +18,7 @@ namespace FUEL_DISPATCH_API.Utils.Constants
         public const string REQUEST_REJECTED_MESSAGE = "Your request was rejected. ";
         public const string REQUEST_APPROVED_MESSAGE = "Your request was approved. ";
         public const string REQUEST_SUCCESFULLY_MESSAGE = "Your request was send. ";
-        public const string ACCOUNT_CREATED_MESSAGE = "Your account in Fuel Dispatch App was created! ";
+        public const string ACCOUNT_CREATED_MESSAGE = "Your account was created successfully! ";
+        public const string ACCOUNT_CREATED_SUBJECT = "Account created! ";
     }
 }

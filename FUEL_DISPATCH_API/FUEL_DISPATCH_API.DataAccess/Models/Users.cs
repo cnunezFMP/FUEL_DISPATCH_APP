@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 
@@ -32,11 +33,12 @@ public partial class Users
     public string UpdatedBy { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
-
+    [JsonIgnore]
     public virtual Drivers Driver { get; set; }
-
+    [JsonIgnore]
     public virtual ICollection<UsersRols> UsersRols { get; set; } = new List<UsersRols>();
-
+    [JsonIgnore]
     public virtual ICollection<BranchOffices> BranchOffice { get; set; } = new List<BranchOffices>();
+    [JsonIgnore]
     public virtual ICollection<Role>Rols { get; set; } = new List<Role>();
 }

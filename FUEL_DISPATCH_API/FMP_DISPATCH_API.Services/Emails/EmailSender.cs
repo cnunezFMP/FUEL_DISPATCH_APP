@@ -10,7 +10,7 @@ namespace FMP_DISPATCH_API.Services.Emails
             try
             {
                 string? mail = "enmanuel02bnunez@gmail.com";
-                string? pwd = "cfei bpkq avtr ydhw";
+                string? pwd = "odad vors enbs nuot";
                 using (MailMessage email = new MailMessage())
                 {
                     email.From = new MailAddress(mail);

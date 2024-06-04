@@ -10,16 +10,13 @@ namespace FUEL_DISPATCH_API.Utils
                                                       .WriteTo.File(log)
                                                       .CreateLogger();
         public static void LogInfo(string message)
-        {
-            _logger.Information(message);
-        }
+            => _logger.Information(message);
+
         public static void LogWarning(string message)
-        {
-            _logger.Warning(message);
-        }
+           => _logger.Warning(message);
+
         public static void LogError(string message)
-        {
-            _logger.Error(message);
-        }
+           => _logger.Error(message);
+
     }
 }

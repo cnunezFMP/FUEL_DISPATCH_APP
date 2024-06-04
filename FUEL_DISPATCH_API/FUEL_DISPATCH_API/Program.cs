@@ -1,6 +1,6 @@
 using FMP_DISPATCH_API.Services.Emails;
+using FMP_MATEINANCE_API.Auth;
 using FUEL_DISPATCH_API.DataAccess.Models;
-using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Middlewares;
@@ -52,7 +52,10 @@ builder.Services.AddAuthentication(config =>
         };
     });
 
-builder.Services.AddScoped<IDispatchServices, DispatchServices>()
+builder.Services.AddScoped<IDriverServices, DriverServices>()
+                .AddScoped<IUsersAuth, UsersAuth>()
+                .AddScoped<IUserServices, UsersServices>()
+                .AddScoped<IDispatchServices, DispatchServices>()
                 .AddTransient<IEmailSender, EmailSender>();
 
 // Ignorar ciclos en el objeto que se esta serializando
@@ -73,8 +76,6 @@ builder.Services.AddCors((options) =>
 });
 var app = builder.Build();
 app.UseExceptionHandler();
-// app.AddGlobalErrorHandler();
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

@@ -2,17 +2,19 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 
 public partial class Drivers
 {
     public int Id { get; set; }
-
+    [EmailAddress]
     public string Email { get; set; }
 
     public string FullName { get; set; }
-
+    [Phone]
     public string PhoneNumber { get; set; }
 
     public DateTime BirthDate { get; set; }
@@ -28,16 +30,17 @@ public partial class Drivers
     public string CreatedBy { get; set; }
 
     public DateTime? CreatedAt { get; set; }
-
+    [MinLength(11), MaxLength(11)]
+    public string Identification { get; set; }
     public string UpdatedBy { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
-
+    [JsonIgnore]
     public virtual ICollection<Dispatch> Dispatch { get; set; } = new List<Dispatch>();
-
+    [JsonIgnore]
     public virtual ICollection<Users> Users { get; set; } = new List<Users>();
-
+    [JsonIgnore]
     public virtual ICollection<Vehicles> Vehicles { get; set; } = new List<Vehicles>();
-
+    [JsonIgnore]
     public virtual ICollection<MethodsOfProvidingFuel> MethodOfProvideFuel { get; set; } = new List<MethodsOfProvidingFuel>();
 }

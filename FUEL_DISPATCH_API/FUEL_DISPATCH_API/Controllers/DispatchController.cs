@@ -1,7 +1,9 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,8 +30,7 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet]
         public ActionResult<ResultPattern<Paging<Dispatch>>> GetDispatches([FromQuery] GridifyQuery query)
         {
-            var dispatches = _dispatchServices.GetAll(query);
-            return Ok(dispatches);
+            return Ok(_dispatchServices.GetAll(query));
         }
 
         /// <summary>
@@ -40,9 +41,7 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}")]
         public ActionResult<ResultPattern<Dispatch>> GetDispatch(int id)
         {
-            Func<Dispatch, bool> findId = x => x.Id == id;
-            var dispatch = _dispatchServices.Get(findId);
-            return Ok(dispatch);
+            return Ok(_dispatchServices.Get(x => x.Id == id));
         }
 
         /// <summary>
@@ -53,8 +52,8 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost]
         public ActionResult<ResultPattern<Dispatch>> PostDispatch([FromBody] Dispatch dispatch)
         {
-            _dispatchServices.Post(dispatch);
-            return Ok(ResultPattern<Dispatch>.Success(dispatch, StatusCodes.Status200OK, "Despacho Creado"));
+            return CreatedAtAction(nameof(GetDispatch), new {id = dispatch.Id}, _dispatchServices.Post(dispatch));
         }
+        
     }
 }

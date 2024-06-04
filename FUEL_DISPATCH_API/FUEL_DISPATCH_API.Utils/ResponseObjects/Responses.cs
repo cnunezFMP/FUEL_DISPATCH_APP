@@ -1,7 +1,7 @@
 ﻿using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 
-namespace FMP_MATEINANCEA_API.Utils
+namespace FUEL_DISPATCH_API.Utils.ResponseObjects
 {
     public class Responses
     {

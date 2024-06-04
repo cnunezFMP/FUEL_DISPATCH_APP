@@ -1,4 +1,4 @@
-﻿namespace FMP_MATEINANCEA_API.Utils
+﻿namespace FUEL_DISPATCH_API.Utils
 {
     public static class PageInfo
     {

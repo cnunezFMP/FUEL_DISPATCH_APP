@@ -14,6 +14,17 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
         {
             _DBContext = DBContext;
         }
+
+        public virtual ResultPattern<T> Delete(Func<T, bool> predicate)
+        {
+            var entityToDelete = _DBContext.Set<T>().FirstOrDefault(predicate)
+                ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
+            _DBContext.Set<T>().Remove(entityToDelete!);
+            _DBContext.SaveChanges();
+            return ResultPattern<T>.Success(entityToDelete!, StatusCodes.Status200OK, AppConstants.DATA_DELETED_MESSAGE);
+        }
+
+
         public virtual ResultPattern<T> Get(Func<T, bool> predicate)
         {
             var entity = _DBContext.Set<T>().FirstOrDefault(predicate)
@@ -32,14 +43,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
             _DBContext.SaveChanges();
             return ResultPattern<T>.Success(entity!, StatusCodes.Status201Created, AppConstants.DATA_SAVED_MESSAGE);
         }
-        public virtual ResultPattern<string> SaveChanges()
+
+        public virtual ResultPattern<T> Update(Func<T, bool> predicate, T entity)
         {
-            _DBContext.SaveChanges();
-            return ResultPattern<string>.Success(AppConstants.DATA_SAVED_MESSAGE, StatusCodes.Status200OK, "Data saved");
-        }
-        public virtual ResultPattern<T> Update(T entity)
-        {
-            _DBContext.Set<T>().Update(entity);
+            var entityToUpdate = _DBContext.Set<T>().FirstOrDefault(predicate)
+                ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
+
+            _DBContext.Set<T>().Update(entityToUpdate!);
             _DBContext.SaveChanges();
             return ResultPattern<T>.Success(entity!, StatusCodes.Status200OK, AppConstants.DATA_UPDATED_MESSAGE);
         }
