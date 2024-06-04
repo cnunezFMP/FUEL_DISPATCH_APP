@@ -6,7 +6,7 @@ public partial class Dispatch
 {
     public int Id { get; set; }
     [Required]
-    public string? VehicleToken { get; set; }
+    public int? VehicleId { get; set; }
     [Required]
     public int? DriverId { get; set; }
     [Required]

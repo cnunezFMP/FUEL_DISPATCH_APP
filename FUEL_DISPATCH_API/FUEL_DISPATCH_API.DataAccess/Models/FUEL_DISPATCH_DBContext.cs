@@ -224,6 +224,9 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false);
 
+            entity.HasOne(d => d.Vehicle).WithMany(p => p.Drivers)
+                                         .HasForeignKey(d => d.VehicleToken);
+
             entity.HasMany(d => d.MethodOfProvideFuel).WithMany(p => p.Driver)
                 .UsingEntity<Dictionary<string, object>>(
                     "DriverMethodOfProvideFuel",
@@ -457,7 +460,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             //    .HasMaxLength(100)
             //    .IsUnicode(false);
 
-            entity.HasOne(d => d.Driver).WithMany(p => p.Users)
+            entity.HasOne(d => d.Driver).WithMany(p => p.User)
                 .HasForeignKey(d => d.DriverId)
                 .HasConstraintName("FK__Users__DriverId__797309D9");
             entity.HasMany(r => r.Rols).WithMany(d => d.Users).UsingEntity<UsersRols>(x => x.HasOne(x => x.Rol).WithMany().HasForeignKey(x => x.RolId), x => x.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId));
@@ -467,7 +470,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         modelBuilder.Entity<UsersRols>(entity =>
         {
             entity.HasKey(e => new { e.UserId, e.RolId }).HasName("PK__UsersRol__181AFC635E4D9579");
-            
+
             entity.HasOne(d => d.Rol).WithMany(p => p.UsersRols)
                 .HasForeignKey(d => d.RolId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -491,46 +494,40 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
         modelBuilder.Entity<Vehicles>(entity =>
         {
-            entity.HasKey(e => e.Token).HasName("PK__Vehicles__1EB4F8168B825F03");
-
+            entity.HasKey(e => e.Id);
             entity.Property(e => e.Token)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.AverageConsumption).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.AverageConsumption);
             entity.Property(e => e.Color)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+            entity.Property(e => e.CreatedAt);
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.Status)
                 .HasMaxLength(15)
                 .IsUnicode(false);
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedAt);
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(100)
                 .IsUnicode(false);
 
             entity.HasOne(d => d.Driver).WithMany(p => p.Vehicles)
-                .HasForeignKey(d => d.DriverId)
-                .HasConstraintName("FK__Vehicles__Driver__0C85DE4D");
+                .HasForeignKey(d => d.DriverId);
 
             entity.HasOne(d => d.Generation).WithMany(p => p.VehiclesGeneration)
-                .HasForeignKey(d => d.GenerationId)
-                .HasConstraintName("FK__Vehicles__Genera__0B91BA14");
+                .HasForeignKey(d => d.GenerationId);
 
             entity.HasOne(d => d.Make).WithMany(p => p.VehiclesMake)
-                .HasForeignKey(d => d.MakeId)
-                .HasConstraintName("FK__Vehicles__MakeId__09A971A2");
+                .HasForeignKey(d => d.MakeId);
 
             entity.HasOne(d => d.ModEngine).WithMany(p => p.Vehicles)
-                .HasForeignKey(d => d.ModEngineId)
-                .HasConstraintName("FK__Vehicles__ModEng__2739D489");
+                .HasForeignKey(d => d.ModEngineId);
 
             entity.HasOne(d => d.Model).WithMany(p => p.Vehicles)
-                .HasForeignKey(d => d.ModelId)
-                .HasConstraintName("FK__Vehicles__ModelI__0A9D95DB");
+                .HasForeignKey(d => d.ModelId);
 
             entity.HasMany(d => d.Fuel).WithMany(p => p.VehicleToken)
                 .UsingEntity<Dictionary<string, object>>(

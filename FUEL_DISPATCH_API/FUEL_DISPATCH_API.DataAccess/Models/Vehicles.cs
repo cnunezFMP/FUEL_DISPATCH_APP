@@ -7,6 +7,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models;
 
 public partial class Vehicles
 {
+    public int Id { get; set; } 
     public string Token { get; set; }
 
     public int? MakeId { get; set; }
@@ -28,7 +29,7 @@ public partial class Vehicles
     public string UpdatedBy { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
-
+    public int? MeasureId { get; set; }
     public decimal? AverageConsumption { get; set; }
 
     public string Color { get; set; }
@@ -36,6 +37,7 @@ public partial class Vehicles
     public virtual ICollection<Dispatch> Dispatch { get; set; } = new List<Dispatch>();
 
     public virtual Drivers Driver { get; set; }
+    public virtual ICollection<Drivers> Drivers { get; set; } = new List<Drivers>();
 
     public virtual Makes Generation { get; set; }
 
@@ -44,6 +46,6 @@ public partial class Vehicles
     public virtual ModEngine ModEngine { get; set; }
 
     public virtual Models Model { get; set; }
-
+    public virtual Measures Measure { get; set; }
     public virtual ICollection<FuelTypes> Fuel { get; set; } = new List<FuelTypes>();
 }
