@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Diagnostics;
 using FUEL_DISPATCH_API.Utils.Exceptions;
-
+#pragma warning disable
 namespace FMP_MATEINANCE_API.Auth
 {
     public class AuthManager
@@ -26,7 +26,7 @@ namespace FMP_MATEINANCE_API.Auth
             var username = usuario.Username;
             var password = usuario.Password;
 
-            var credencialesCorretas = _dbContext.Users.Include(x => x.Rols).SingleOrDefault(x => x.Username == username);
+            var credencialesCorretas = _dbContext.User.Include(x => x.Rols).SingleOrDefault(x => x.Username == username);
 
             if (credencialesCorretas != null && BCrypt.Net.BCrypt.Verify(password, credencialesCorretas.Password))
             {
@@ -34,11 +34,13 @@ namespace FMP_MATEINANCE_API.Auth
                 var claims = new ClaimsIdentity();
 
                 claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, usuario.Username!));
+
                 claims.AddClaim(new Claim(ClaimTypes.Email, credencialesCorretas.Email));
-                
+
+
                 foreach (var role in credencialesCorretas.Rols)
                     claims.AddClaim(new Claim(ClaimTypes.Role, role.RolName));
-                
+
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = claims,
@@ -52,7 +54,7 @@ namespace FMP_MATEINANCE_API.Auth
 
                 try
                 {
-                    _dbContext.UsersTokens.Add(new UsersTokens() { Token = tokenCreado, UserId = credencialesCorretas.Id, CreatedAt = DateTime.Now, ExpData = tokenDescriptor.Expires});
+                    _dbContext.UserToken.Add(new UserToken { Token = tokenCreado, UserId = credencialesCorretas.Id, CreatedAt = DateTime.Now, ExpData = tokenDescriptor.Expires });
                     _dbContext.SaveChanges();
 
                     var tokenObj = new
@@ -74,6 +76,6 @@ namespace FMP_MATEINANCE_API.Auth
                 throw new UnauthorizedException("El usuario no tiene acceso. ");
             }
         }
-        
+
     }
 }

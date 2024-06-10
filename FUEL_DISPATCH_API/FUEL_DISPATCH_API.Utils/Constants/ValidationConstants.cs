@@ -11,5 +11,6 @@ namespace FUEL_DISPATCH_API.Utils.Constants
 
         public const decimal ZeroGallons = 0;
         public const string InactiveStatus = "Inactive";
+        public const string ActiveStatus = "Active";
     }
 }

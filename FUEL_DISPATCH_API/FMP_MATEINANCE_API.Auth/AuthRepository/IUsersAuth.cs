@@ -5,7 +5,7 @@ using FUEL_DISPATCH_API.Utils.ResponseObjects;
 
 namespace FMP_MATEINANCE_API.Auth
 {
-    public interface IUsersAuth : IGenericInterface<Users>
+    public interface IUsersAuth : IGenericInterface<User>
     {
         ResultPattern<object> Login(LoginDto loginDto);
        

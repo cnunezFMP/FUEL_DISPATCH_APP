@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 
-public partial class Role
+public partial class MethodOfProvidingFuel
 {
     public int Id { get; set; }
 
-    public string? RolName { get; set; }
+    public string? MethodName { get; set; }
 
     public string? CreatedBy { get; set; }
 
@@ -19,6 +19,5 @@ public partial class Role
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual ICollection<UsersRols> UsersRols { get; set; } = new List<UsersRols>();
-    public virtual ICollection<User>? Users { get; set; }    
+    public virtual ICollection<Drivers_MethodsOfProvideFuel> Drivers_MethodsOfProvideFuel { get; set; } = new List<Drivers_MethodsOfProvideFuel>();
 }

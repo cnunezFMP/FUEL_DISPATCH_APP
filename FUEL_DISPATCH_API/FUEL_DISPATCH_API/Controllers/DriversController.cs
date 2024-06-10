@@ -12,33 +12,33 @@ namespace FUEL_DISPATCH_API.Controllers
     [Route("api/[controller]")]
     public class DriversController : ControllerBase
     {
-        private readonly IDriverServices _driverServices;
+        private readonly IDriversServices _driverServices;
 
-        public DriversController(IDriverServices driverServices)
+        public DriversController(IDriversServices driverServices)
         {
             _driverServices = driverServices;
         }
 
         [HttpGet]
-        public ActionResult<ResultPattern<Paging<Drivers>>> GetDrivers([FromQuery] GridifyQuery query)
+        public ActionResult<ResultPattern<Paging<Driver>>> GetDrivers([FromQuery] GridifyQuery query)
         {
             return Ok(_driverServices.GetAll(query));
         }
 
         [HttpGet("{id:int}")]
-        public ActionResult<ResultPattern<Drivers>> GetDriver(int id)
+        public ActionResult<ResultPattern<Driver>> GetDriver(int id)
         {
             return Ok(_driverServices.Get(x => x.Id == id));
         }
 
         [HttpPost]
-        public ActionResult<ResultPattern<Drivers>> PostDriver([FromBody] Drivers driver)
+        public ActionResult<ResultPattern<Driver>> PostDriver([FromBody] Driver driver)
         {
             return CreatedAtAction(nameof(GetDriver), new { id = driver.Id }, _driverServices.Post(driver));
         }
 
         [HttpPut("{id:int}")]
-        public ActionResult<ResultPattern<Users>> UpdateUser(int id, [FromBody] Drivers driver)
+        public ActionResult<ResultPattern<User>> UpdateUser(int id, [FromBody] Driver driver)
         {
             return Ok(_driverServices.Update(x => x.Id == id, driver));
         }

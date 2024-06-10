@@ -6,20 +6,21 @@ using FUEL_DISPATCH_API.Utils.Constants;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
-
+using System.Numerics;
+#pragma warning disable
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
-    public class DriverServices : GenericRepository<Drivers>, IDriverServices
+    public class DriversServices : GenericRepository<Driver>, IDriversServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IEmailSender _emailSender;
-        public DriverServices(FUEL_DISPATCH_DBContext dBContext, IEmailSender emailSender)
+        public DriversServices(FUEL_DISPATCH_DBContext dBContext, IEmailSender emailSender)
             : base(dBContext)
         {
             _DBContext = dBContext;
             _emailSender = emailSender;
         }
-        public override ResultPattern<Drivers> Post(Drivers entity)
+        public override ResultPattern<Driver> Post(Driver entity)
         {
             if (!CheckIfIdIsUnique(entity))
                 throw new BadRequestException("This identification exists. ");
@@ -27,14 +28,42 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if (!IsEmailUnique(entity.Email))
                 throw new BadRequestException("Email exists. ");
 
-            _DBContext.Drivers.Add(entity);
+            VehicleIdHasValue(entity);
+
+            _DBContext.Driver.Add(entity);
             _DBContext.SaveChanges();
+
+            CheckAndUpdateDriver(entity);
+
             _emailSender.SendEmailAsync(entity.Email, AppConstants.ACCOUNT_CREATED_MESSAGE, "Your account was created successfully. ");
-            return ResultPattern<Drivers>.Success(entity, StatusCodes.Status200OK, "Driver added successfully. ");
+            return ResultPattern<Driver>.Success(entity, StatusCodes.Status200OK, "Driver added successfully. ");
         }
-        bool CheckIfIdIsUnique(Drivers entity)
-            => !_DBContext.Drivers.Any(x => x.Identification == entity.Identification);
+        bool CheckIfIdIsUnique(Driver entity)
+            => !_DBContext.Driver.Any(x => x.Identification == entity.Identification);
         bool IsEmailUnique(string email)
-            => !_DBContext.Users.Any(x => x.Email == email);
+            => !_DBContext.User.Any(x => x.Email == email);
+        bool CheckIVehicleExists(Driver driver)
+           => _DBContext.Vehicle.Any(x => x.Id == driver.VehicleId);
+        bool VehicleIdHasValue(Driver entity)
+        {
+            if (!CheckIVehicleExists(entity))
+                throw new NotFoundException("This vehicle doesn't exists. ");
+            return true;
+        }
+        bool CheckAndUpdateDriver(Driver entity)
+        {
+            var vehicle = _DBContext.Vehicle.FirstOrDefault(x => x.Id == entity.VehicleId);
+
+            if (vehicle!.DriverId!.HasValue)
+                throw new BadRequestException("This vehicle has driver assigned. ");
+
+            if (vehicle!.Status == ValidationConstants.InactiveStatus)
+                throw new BadRequestException("This vehicle is inactive. ");
+
+            vehicle.DriverId = entity.Id;
+            _DBContext.Vehicle.Update(vehicle);
+            _DBContext.SaveChanges();
+            return true;
+        }
     }
 }

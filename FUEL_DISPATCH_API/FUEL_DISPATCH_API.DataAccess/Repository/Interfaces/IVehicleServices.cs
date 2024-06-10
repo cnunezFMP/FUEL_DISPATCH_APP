@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
-    public interface IVehicleServices : IGenericInterface<Vehicles>
+    public interface IVehiclesServices : IGenericInterface<Vehicle>
     {
     }
 }

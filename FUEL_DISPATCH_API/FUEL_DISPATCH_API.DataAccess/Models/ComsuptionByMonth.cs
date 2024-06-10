@@ -5,13 +5,9 @@ using System.Collections.Generic;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 
-public partial class UsersRols
+public partial class ComsuptionByMonth
 {
-    public int UserId { get; set; }
+    public int? Month { get; set; }
 
-    public int RolId { get; set; }
-
-    public virtual Role Rol { get; set; } = null!;
-
-    public virtual User User { get; set; } = null!;
+    public decimal? TotalFuelConsumed { get; set; }
 }

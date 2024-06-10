@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
-    public class UsersAuth : GenericRepository<Users>, IUsersAuth
+    public class UsersAuth : GenericRepository<User>, IUsersAuth
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IEmailSender _emailSender;
@@ -23,7 +23,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _emailSender = emailSender;
             _secretKey = config.GetSection("settings:secretkey").Value; //Obtener llave y valor
         }
-        public override ResultPattern<Users> Post(Users entity)
+        public override ResultPattern<User> Post(User entity)
         {
             if (DriverIdHasValue(entity) is false)
             {
@@ -36,10 +36,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             var passwordHash = PasswordHashing(entity.Password);
             entity.Password = passwordHash;
-            _DBContext.Users.Add(entity);
+            _DBContext.User.Add(entity);
             _DBContext.SaveChanges();
             _emailSender.SendEmailAsync(entity.Email, AppConstants.ACCOUNT_CREATED_MESSAGE, $"Hello {entity.FullName} your account in the app was created successfully at {DateTime.UtcNow}");
-            return ResultPattern<Users>.Success(entity, StatusCodes.Status200OK, "Usuario registrado correctamente. ");
+            return ResultPattern<User>.Success(entity, StatusCodes.Status200OK, "Usuario registrado correctamente. ");
         }
         public ResultPattern<object> Login(LoginDto loginDto)
         {
@@ -48,16 +48,16 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             return ResultPattern<object>.Success(result, StatusCodes.Status200OK, "Token obtenido correctamente. "); // Devolver token
         }
         bool IsUserNameUnique(string username)
-           => !_DBContext.Users.Any(x => x.Username == username);
+           => !_DBContext.User.Any(x => x.Username == username);
         bool IsEmailUnique(string email)
-            => !_DBContext.Users.Any(x => x.Email == email);
+            => !_DBContext.User.Any(x => x.Email == email);
         string PasswordHashing(string password)
             => BCrypt.Net.BCrypt.HashPassword(password, 13);
-        bool DriverIdHasValue(Users user)
+        bool DriverIdHasValue(User user)
         {
             if (user.DriverId.HasValue)
             {
-                var driver = _DBContext.Drivers.FirstOrDefault(x => x.Id == user.DriverId);
+                var driver = _DBContext.Driver.FirstOrDefault(x => x.Id == user.DriverId);
                 if (driver!.Status is ValidationConstants.InactiveStatus)
                     throw new BadRequestException("This driver is Inactive. ");
 
@@ -70,14 +70,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             };
             return false;
         }
-        //bool CheckIfDriverAlreadyHasUser(Users user)
+        //bool CheckIfDriverAlreadyHasUser(User user)
         //{
         //    var driver = _DBContext.Drivers.FirstOrDefault(x=>x.Id == user.DriverId);
-        //    return driver!.Users.Any();
+        //    return driver!.User.Any();
         //}
 
 
-        //void SetDriverRol(Users user)
+        //void SetDriverRol(User user)
         //{
         //    _DBContext.UsersRols.Add(new UsersRols
         //    {

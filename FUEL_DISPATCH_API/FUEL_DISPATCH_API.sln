@@ -13,6 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FMP_DISPATCH_API.Services",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FUEL_DISPATCH_API.Utils", "FUEL_DISPATCH_API.Utils\FUEL_DISPATCH_API.Utils.csproj", "{E4B60BBC-CCF9-4B15-84D9-2DCAF7A7C2BC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C3DA02F9-B211-4E81-B339-EA88ADD69D0C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

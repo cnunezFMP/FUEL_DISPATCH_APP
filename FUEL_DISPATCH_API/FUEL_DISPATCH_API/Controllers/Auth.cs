@@ -16,12 +16,12 @@ namespace FUEL_DISPATCH_API.Controllers
             _usersAuth = usersAuth;
         }   
         [HttpPost("Register")]
-        public ActionResult<ResultPattern<Users>> Register([FromBody]Users user)
+        public ActionResult<ResultPattern<User>> Register([FromBody]User user)
         {
             return Ok(_usersAuth.Post(user));
         }
         [HttpPost("Login")]
-        public ActionResult<ResultPattern<Users>> Login([FromBody] LoginDto loginDto)
+        public ActionResult<ResultPattern<User>> Login([FromBody] LoginDto loginDto)
         {
             return Ok(_usersAuth.Login(loginDto));
         }
