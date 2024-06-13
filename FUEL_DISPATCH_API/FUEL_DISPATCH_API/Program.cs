@@ -52,7 +52,9 @@ builder.Services.AddAuthentication(config =>
         };
     });
 
-builder.Services.AddScoped<IVehiclesServices, VehiclesServices>()
+builder.Services.AddScoped<IRequestServices, RequestServices>()
+                .AddScoped<IWareHouseServices, WareHouseServices>()
+                .AddScoped<IVehiclesServices, VehiclesServices>()
                 .AddScoped<IDriversServices, DriversServices>()
                 .AddScoped<IUsersAuth, UsersAuth>()
                 .AddScoped<IUserServices, UsersServices>()

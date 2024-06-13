@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using FUEL_DISPATCH_API.Utils.Constants;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models;
-
+#nullable enable
 public partial class Driver
 {
     public int Id { get; set; }
@@ -38,7 +38,7 @@ public partial class Driver
 
     public int? VehicleId { get; set; }
     [JsonIgnore]
-    public virtual ICollection<Dispatch> Dispatch { get; set; } = new List<Dispatch>();
+    public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
     [JsonIgnore]
     public virtual ICollection<Drivers_MethodsOfProvideFuel> Drivers_MethodsOfProvideFuel { get; set; } = new List<Drivers_MethodsOfProvideFuel>();
     [JsonIgnore]
@@ -47,4 +47,7 @@ public partial class Driver
     public virtual Vehicle? Vehicle { get; set; }
     [JsonIgnore]
     public virtual ICollection<Vehicle> VehicleNavigation { get; set; } = new List<Vehicle>();
+    [JsonIgnore]
+    public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
+
 }

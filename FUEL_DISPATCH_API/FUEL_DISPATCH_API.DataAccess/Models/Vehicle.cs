@@ -41,7 +41,7 @@ public partial class Vehicle
 
     public string? Plate { get; set; }
     [JsonIgnore]
-    public virtual ICollection<Dispatch> Dispatch { get; set; } = new List<Dispatch>();
+    public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
     [JsonIgnore]
     public virtual ICollection<Driver> Driver { get; set; } = new List<Driver>();
     [JsonIgnore]
@@ -56,8 +56,8 @@ public partial class Vehicle
     public virtual ModEngine? ModEngine { get; set; }
     [JsonIgnore]
     public virtual Model? Model { get; set; }
+    //[JsonIgnore]
+    //public virtual ICollection<FuelType> Fuels { get; set; } = new List<FuelType>();
     [JsonIgnore]
-    public virtual ICollection<VehiclesFuels> VehiclesFuels { get; set; } = new List<VehiclesFuels>();
-    [JsonIgnore]
-    public virtual ICollection<FuelType> Fuels { get; set; } = new List<FuelType>();
+    public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
 }

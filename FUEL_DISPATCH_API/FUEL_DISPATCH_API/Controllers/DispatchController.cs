@@ -52,8 +52,7 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost]
         public ActionResult<ResultPattern<Dispatch>> PostDispatch([FromBody] Dispatch dispatch)
         {
-            return CreatedAtAction(nameof(GetDispatch), new {id = dispatch.Id}, _dispatchServices.Post(dispatch));
+            return CreatedAtAction(nameof(GetDispatch), new { id = dispatch.Id }, _dispatchServices.Post(dispatch));
         }
-        
     }
 }

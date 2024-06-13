@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Xml;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models
 {
@@ -20,5 +16,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
         public virtual ICollection<Dispenser> Dispensers { get; set; } = new List<Dispenser>();
         public virtual BranchOffices BranchOffice { get; set; }
+
     }
 }

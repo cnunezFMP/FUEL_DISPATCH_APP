@@ -13,16 +13,16 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         : base(options)
     {
     }
-
     public virtual DbSet<AllComsuption> AllComsuption { get; set; }
     public virtual DbSet<ArticleDataMaster> ArticleDataMaster { get; set; }
 
     public virtual DbSet<BranchOffices> BranchOffices { get; set; }
     public virtual DbSet<BranchIsland> BranchIslands { get; set; }
 
-    public virtual DbSet<BranchOfficeInChargeUsers> BranchOfficesInChargeUsers { get; set; }
 
     public virtual DbSet<CalculatedComsuption> CalculatedComsuption { get; set; }
+    public virtual DbSet<vw_ActualStock> Vw_ActualStocks { get; set; }
+    public virtual DbSet<vw_WareHouseHistory> Vw_WareHouseHistories { get; set; }
 
     public virtual DbSet<Companies> Companies { get; set; }
 
@@ -32,12 +32,10 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
     public virtual DbSet<ComsuptionByMonth> ComsuptionByMonth { get; set; }
 
-    public virtual DbSet<Dispatch> Dispatch { get; set; }
+    //public virtual DbSet<Dispatch> Dispatch { get; set; }
 
     public virtual DbSet<Dispenser> Dispenser { get; set; }
-
     public virtual DbSet<Driver> Driver { get; set; }
-
     public virtual DbSet<Drivers_MethodsOfProvideFuel> Drivers_MethodsOfProvideFuel { get; set; }
 
     public virtual DbSet<FuelType> FuelType { get; set; }
@@ -59,22 +57,17 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 #pragma warning restore CS0114 // Member hides inherited member; missing override keyword
 
     public virtual DbSet<Road> Road { get; set; }
-
     public virtual DbSet<Role> Role { get; set; }
-    public virtual DbSet<Store> Store { get; set; }
-    public virtual DbSet<StoreMovement> StoreMovement { get; set; }
+    public virtual DbSet<Stock> Stock { get; set; }
+    public virtual DbSet<WareHouse> WareHouse { get; set; }
+    public virtual DbSet<WareHouseMovement> WareHouseMovement { get; set; }
     public virtual DbSet<TokenPrefix> TokenPrefix { get; set; }
-
+    public virtual DbSet<Request> Request { get; set; }
     public virtual DbSet<User> User { get; set; }
-
     public virtual DbSet<UserToken> UserToken { get; set; }
-
     public virtual DbSet<UsersRols> UsersRols { get; set; }
 
     public virtual DbSet<Vehicle> Vehicle { get; set; }
-
-    public virtual DbSet<VehiclesFuels> VehiclesFuels { get; set; }
-
     public virtual DbSet<Zone> Zone { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -118,21 +111,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(d => d.Location).WithMany(p => p.BranchOffices)
                 .HasForeignKey(d => d.LocationId)
                 .HasConstraintName("FK__BranchOff__Locat__5224328E");
-        });
-
-        modelBuilder.Entity<BranchOfficeInChargeUsers>(entity =>
-        {
-            entity.HasKey(e => new { e.BranchOfficeId, e.UserId }).HasName("PK__BranchOf__F65CF33D19CE88D1");
-
-            entity.HasOne(d => d.BranchOffice).WithMany(p => p.BranchOfficesInChargeUsers)
-                .HasForeignKey(d => d.BranchOfficeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BranchOff__Branc__55F4C372");
-
-            entity.HasOne(d => d.User).WithMany(p => p.BranchOfficesInChargeUsers)
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BranchOff__UserI__55009F39");
         });
 
         modelBuilder.Entity<CalculatedComsuption>(entity =>
@@ -225,62 +203,67 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(e => e.TotalFuelConsumed).HasColumnType("decimal(38, 0)");
         });
 
-        modelBuilder.Entity<Store>(entity =>
+        modelBuilder.Entity<WareHouseMovement>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.ToTable("Store");
+            entity.ToTable("WareHouseMovements");
+            entity.HasOne(e => e.Vehicle).WithMany(e => e.WareHouseMovements).HasForeignKey(e => e.VehicleId);
+            entity.HasOne(e => e.Driver).WithMany(e => e.WareHouseMovements).HasForeignKey(e => e.DriverId);
+            entity.HasOne(e => e.BranchOffice).WithMany(e => e.WareHouseMovements).HasForeignKey(e => e.BranchOfficeId);
+            entity.HasOne(d => d.Dispenser).WithMany(p => p.WareHouseMovements).HasForeignKey(d => d.DispenserId);
+            entity.HasOne(e => e.Road).WithMany(e => e.WareHouseMovements).HasForeignKey(f => f.RoadId);
+            entity.HasOne(e => e.WareHouse).WithMany(e => e.WareHouseMovements).HasForeignKey(f => f.WareHouseId);
+
         });
 
-        modelBuilder.Entity<StoreMovement>(entity =>
+        modelBuilder.Entity<WareHouse>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.ToTable("StoreMovement");
-            entity.HasOne(e => e.Store)
-                  .WithMany(e => e.StoreMovements)
-                  .HasForeignKey(e => e.StoreId);
+            entity.ToTable("WareHouse");
 
+            entity.HasOne(e => e.BranchOffice).WithMany(e => e.WareHouses).HasForeignKey(e => e.BranchOfficeId);
         });
 
-        modelBuilder.Entity<Dispatch>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Dispatch__3214EC07E49C3709");
+        //modelBuilder.Entity<Dispatch>(entity =>
+        //{
+        //    entity.HasKey(e => e.Id).HasName("PK__Dispatch__3214EC07E49C3709");
 
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
-            entity.Property(e => e.CreatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.Gallons).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.Notes)
-                .HasMaxLength(155)
-                .IsUnicode(false);
-            entity.Property(e => e.Odometer).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
-            entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
+        //    entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+        //    entity.Property(e => e.CreatedBy)
+        //        .HasMaxLength(100)
+        //        .IsUnicode(false);
+        //    entity.Property(e => e.Gallons).HasColumnType("decimal(18, 0)");
+        //    entity.Property(e => e.Notes)
+        //        .HasMaxLength(155)
+        //        .IsUnicode(false);
+        //    entity.Property(e => e.Odometer).HasColumnType("decimal(18, 0)");
+        //    entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+        //    entity.Property(e => e.UpdatedBy)
+        //        .HasMaxLength(100)
+        //        .IsUnicode(false);
 
-            entity.HasOne(d => d.BranchOffice).WithMany(p => p.Dispatch)
-                .HasForeignKey(d => d.BranchOfficeId)
-                .HasConstraintName("FK__Dispatch__Branch__56E8E7AB");
+        //    entity.HasOne(d => d.BranchOffice).WithMany(p => p.Dispatch)
+        //        .HasForeignKey(d => d.BranchOfficeId)
+        //        .HasConstraintName("FK__Dispatch__Branch__56E8E7AB");
 
-            entity.HasOne(d => d.Dispenser).WithMany(p => p.Dispatch)
-                .HasForeignKey(d => d.DispenserId)
-                .HasConstraintName("FK__Dispatch__Dispen__114A936A");
+        //    entity.HasOne(d => d.Dispenser).WithMany(p => p.Dispatch)
+        //        .HasForeignKey(d => d.DispenserId)
+        //        .HasConstraintName("FK__Dispatch__Dispen__114A936A");
 
-            entity.HasOne(d => d.Driver).WithMany(p => p.Dispatch)
-                .HasForeignKey(d => d.DriverId)
-                .HasConstraintName("FK__Dispatch__Driver__681373AD");
+        //    entity.HasOne(d => d.Driver).WithMany(p => p.Dispatch)
+        //        .HasForeignKey(d => d.DriverId)
+        //        .HasConstraintName("FK__Dispatch__Driver__681373AD");
 
-            entity.HasOne(d => d.Road).WithMany(p => p.Dispatch)
-                .HasForeignKey(d => d.RoadId)
-                .HasConstraintName("FK__Dispatch__RoadId__123EB7A3");
+        //    entity.HasOne(d => d.Road).WithMany(p => p.Dispatch)
+        //        .HasForeignKey(d => d.RoadId)
+        //        .HasConstraintName("FK__Dispatch__RoadId__123EB7A3");
 
-            entity.HasOne(d => d.Vehicle).WithMany(p => p.Dispatch)
-                .HasForeignKey(d => d.VehicleId)
-                .HasConstraintName("FK__Dispatch__Vehicl__2057CCD0");
+        //    entity.HasOne(d => d.Vehicle).WithMany(p => p.Dispatch)
+        //        .HasForeignKey(d => d.VehicleId)
+        //        .HasConstraintName("FK__Dispatch__Vehicl__2057CCD0");
 
-            entity.HasOne(e => e.Store).WithMany(e => e.Dispatches).HasForeignKey(e => e.StoreId);
-        });
+        //    entity.HasOne(e => e.WareHouse).WithMany(e => e.Dispatches).HasForeignKey(e => e.WareHouseId);
+        //});
         modelBuilder.Entity<BranchIsland>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -293,7 +276,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         });
         modelBuilder.Entity<Dispenser>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Dispense__3214EC07E80C11D8");
+            entity.HasKey(e => e.Id);
 
             entity.ToTable("Dispenser");
 
@@ -332,10 +315,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
                 .IsUnicode(false);
 
             entity.HasOne(d => d.Vehicle).WithMany(p => p.Driver)
-                .HasForeignKey(d => d.VehicleId)
-                .HasConstraintName("FK__Drivers__Vehicle__2610A626");
+                .HasForeignKey(d => d.VehicleId);
         });
-
         modelBuilder.Entity<Drivers_MethodsOfProvideFuel>(entity =>
         {
             entity.HasKey(e => new { e.DriverId, e.MethodOfProvideFuelId }).HasName("PK__Driver_M__5814C81B5534D26C");
@@ -350,7 +331,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Driver_Me__Metho__3A4CA8FD");
         });
-
         modelBuilder.Entity<FuelType>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__FuelType__3214EC0731651F4D");
@@ -486,6 +466,13 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
                 .HasForeignKey(d => d.ZoneId)
                 .HasConstraintName("FK__Roads__ZoneId__403A8C7D");
         });
+        modelBuilder.Entity<Request>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.ToTable("Request");
+            entity.HasOne(e => e.Vehicle).WithMany(e => e.Requests).HasForeignKey(e => e.VehicleId);
+            entity.HasOne(e => e.Driver).WithMany(e => e.Requests).HasForeignKey(e => e.DriverId);
+        });
 
         modelBuilder.Entity<Role>(entity =>
         {
@@ -502,6 +489,14 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Stock>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.ToTable("Stock");
+            entity.HasOne(e => e.WareHouse).WithMany(e => e.Stocks).HasForeignKey(e => e.WareHouseId);
+            entity.HasOne(e => e.ArticleDataMaster).WithMany(e => e.Stocks).HasForeignKey(e => e.ArticleId);
         });
 
         modelBuilder.Entity<TokenPrefix>(entity =>
@@ -592,6 +587,19 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
                 .HasConstraintName("FK__UsersRols__UserI__02FC7413");
         });
 
+        modelBuilder.Entity<vw_ActualStock>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("Vw_ActualStocks");
+        });
+        modelBuilder.Entity<vw_WareHouseHistory>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("Vw_WareHouseHistories");
+        });
+
         modelBuilder.Entity<Vehicle>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Vehicles__3214EC073B5115F7");
@@ -644,29 +652,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(d => d.Model).WithMany(p => p.Vehicle)
                 .HasForeignKey(d => d.ModelId)
                 .HasConstraintName("FK__Vehicles__ModelI__0A9D95DB");
-
-            entity.HasMany(r => r.Fuels)
-            .WithMany(d => d.Vehicles)
-            .UsingEntity<VehiclesFuels>(x => x.HasOne(x => x.Fuel)
-            .WithMany().HasForeignKey(x => x.FuelId),
-            x => x.HasOne(x => x.Vehicle)
-            .WithMany()
-            .HasForeignKey(x => x.VehicleId));
-
         });
 
-        modelBuilder.Entity<VehiclesFuels>(entity =>
-        {
-            entity.HasKey(e => new { e.FuelId, e.VehicleId });
-
-            entity.HasOne(d => d.Fuel).WithMany(p => p.VehiclesFuels)
-                .HasForeignKey(d => d.FuelId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-
-            entity.HasOne(d => d.Vehicle).WithMany(p => p.VehiclesFuels)
-                .HasForeignKey(d => d.VehicleId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-        });
 
         modelBuilder.Entity<Zone>(entity =>
         {

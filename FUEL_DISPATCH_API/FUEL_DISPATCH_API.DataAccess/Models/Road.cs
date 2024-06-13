@@ -27,7 +27,7 @@ public partial class Road
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual ICollection<Dispatch> Dispatch { get; set; } = new List<Dispatch>();
+    public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
 
     public virtual Zone? Zone { get; set; }
 }

@@ -34,8 +34,6 @@ public partial class User
 
     public int? DriverId { get; set; }
     [JsonIgnore]
-    public virtual ICollection<BranchOfficeInChargeUsers> BranchOfficesInChargeUsers { get; set; } = new List<BranchOfficeInChargeUsers>();
-    [JsonIgnore]
     public virtual ICollection<CompanyUser> CompanyUser { get; set; } = new List<CompanyUser>();
     [JsonIgnore]
     public virtual Driver? Driver { get; set; }

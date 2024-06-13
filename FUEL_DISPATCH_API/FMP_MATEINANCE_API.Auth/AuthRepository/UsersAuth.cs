@@ -8,6 +8,7 @@ using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using System.Runtime.CompilerServices;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
@@ -38,7 +39,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             entity.Password = passwordHash;
             _DBContext.User.Add(entity);
             _DBContext.SaveChanges();
-            _emailSender.SendEmailAsync(entity.Email, AppConstants.ACCOUNT_CREATED_MESSAGE, $"Hello {entity.FullName} your account in the app was created successfully at {DateTime.UtcNow}");
+            _emailSender.SendEmailAsync(entity.Email, AppConstants.ACCOUNT_CREATED_MESSAGE, $"Hello {entity.FullName} your account in the app was created successfully at {DateTime.Now}");
             return ResultPattern<User>.Success(entity, StatusCodes.Status200OK, "Usuario registrado correctamente. ");
         }
         public ResultPattern<object> Login(LoginDto loginDto)

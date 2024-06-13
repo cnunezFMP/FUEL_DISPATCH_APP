@@ -19,7 +19,7 @@ public partial class Dispatch
     public int? DispenserId { get; set; }
 
     public decimal? Odometer { get; set; }
-    public int StoreId { get; set; }
+    public int WareHouseId { get; set; }
     public string? Notes { get; set; }
 
     public string? CreatedBy { get; set; }
@@ -33,9 +33,6 @@ public partial class Dispatch
     public decimal Gallons { get; set; }
 
     public int? BranchOfficeId { get; set; }
-
-    public bool? IsForVehicle { get; set; }
-
     public int? VehicleId { get; set; }
     [JsonIgnore]
     public virtual BranchOffices? BranchOffice { get; set; }
@@ -47,5 +44,5 @@ public partial class Dispatch
     public virtual Road? Road { get; set; }
     [JsonIgnore]
     public virtual Vehicle? Vehicle { get; set; } 
-    public virtual Store? Store { get; set; }
+    public virtual WareHouseMovement? WareHouse { get; set; }
 }
