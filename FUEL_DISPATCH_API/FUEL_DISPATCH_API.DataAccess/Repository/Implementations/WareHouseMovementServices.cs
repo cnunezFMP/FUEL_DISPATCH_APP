@@ -70,7 +70,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         bool CheckDispenser(WareHouseMovement dispatch)
         {
-            var dispenser = _DBContext.Dispenser.FirstOrDefault(x => x.Id == dispatch.Id);
+            var dispenser = _DBContext.Dispenser.Find(wareHouseMovement.DispenserId);
             return dispenser is not null &&
                    dispenser.Status is not ValidationConstants.InactiveStatus;
         }
