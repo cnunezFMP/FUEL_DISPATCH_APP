@@ -6,6 +6,7 @@ using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FUEL_DISPATCH_API.Controllers
 {
@@ -18,34 +19,39 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             _usersServices = usersServices;
         }
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<User>>> GetUsers([FromQuery] GridifyQuery query)
         {
             return Ok(_usersServices.GetAll(query));
         }
-        [Authorize(Roles = "Administrator")]
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<User>> GetUser(int id)
         {
             return Ok(_usersServices.Get(x => x.Id == id));
         }
-        [Authorize(Roles = "Administrator")]
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<User>> UpdateUser(int id, [FromBody] User user)
         {
             return Ok(_usersServices.Update(x => x.Id == id, user));
         }
-        [HttpDelete("{id:int}")]
+        [HttpPost, Authorize(Roles = "Administrator")]
+        public ActionResult<ResultPattern<User>> PostUser([FromBody] User user)
+        {
+            user.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            user.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, _usersServices.Post(user));
+        }
+        [HttpDelete("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<User>> DeleteUser(int id)
         {
             return Ok(_usersServices.Delete(x => x.Id == id));
         }
-        [HttpPut("{userId}/Roles/{rolId}")]
+        [HttpPut("{userId}/Roles/{rolId}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<User>> UpdateUserRol(int userId, int rolId)
         {
             return Ok(_usersServices.UpdateUserRol(userId, rolId));
         }
-        [HttpDelete("{userId}/Roles/{driverId}")]
+        [HttpDelete("{userId}/Roles/{driverId}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<User>> DeleteUserRol(int userId, int driverId)
         {
             return Ok(_usersServices.DeleteUserRol(userId, driverId));

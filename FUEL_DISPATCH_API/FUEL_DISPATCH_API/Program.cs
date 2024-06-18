@@ -17,7 +17,7 @@ const string swaggerVersion = "v1";
 const string corsName = "MyPolicy";
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
@@ -52,13 +52,15 @@ builder.Services.AddAuthentication(config =>
         };
     });
 
-builder.Services.AddScoped<IRequestServices, RequestServices>()
+builder.Services.AddScoped<IWareHouseMovementServices, WareHouseMovementServices>()
+                .AddScoped<IStockServices, StockServices>()
+                .AddScoped<IArticleServices, ArticleDataMasterServices>()
+                .AddScoped<IRequestServices, RequestServices>()
                 .AddScoped<IWareHouseServices, WareHouseServices>()
                 .AddScoped<IVehiclesServices, VehiclesServices>()
                 .AddScoped<IDriversServices, DriversServices>()
                 .AddScoped<IUsersAuth, UsersAuth>()
                 .AddScoped<IUserServices, UsersServices>()
-                .AddScoped<IDispatchServices, DispatchServices>()
                 .AddTransient<IEmailSender, EmailSender>();
 
 // Ignorar ciclos en el objeto que se esta serializando

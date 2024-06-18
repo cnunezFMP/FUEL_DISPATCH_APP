@@ -24,28 +24,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         private bool WareHousExists(WareHouse wareHouse)
             => _DBContext.WareHouse.Any(x => x.Code == wareHouse.Code);
-        bool BranchOfficeIdHasValue(WareHouse wareHouse)
-        {
-            if (wareHouse.BranchOfficeId.HasValue)
-            {
-                var branchOffice = _DBContext.BranchOffices.FirstOrDefault(x => x.Id == wareHouse.BranchOfficeId);
-                // DONE: Añadir propiedad Status a WareHouseMovement.
-                if (wareHouse!.Status is ValidationConstants.InactiveStatus)
-                    throw new BadRequestException("This wareHouse is Inactive. ");
-                wareHouse.FullDirection = branchOffice!.FullLocation;
-                return true;
-            };
-            return false;
-        }
+
         public override ResultPattern<WareHouse> Post(WareHouse wareHouse)
         {
             if (WareHousExists(wareHouse))
                 throw new BadRequestException("Warehouse with this code exists. ");
-            BranchOfficeIdHasValue(wareHouse);
 
             _DBContext.WareHouse.Add(wareHouse);
             _DBContext.SaveChanges();
-            return ResultPattern<WareHouse>.Success(wareHouse, StatusCodes.Status200OK, "Warehouse added successfully. ");
+            return ResultPattern<WareHouse>.Success(wareHouse, StatusCodes.Status201Created, "Warehouse added successfully. ");
         }
     }
 }

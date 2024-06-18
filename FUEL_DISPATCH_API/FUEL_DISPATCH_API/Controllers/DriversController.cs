@@ -5,6 +5,7 @@ using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FUEL_DISPATCH_API.Controllers
 {
@@ -34,12 +35,16 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost]
         public ActionResult<ResultPattern<Driver>> PostDriver([FromBody] Driver driver)
         {
+            driver.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            driver.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return CreatedAtAction(nameof(GetDriver), new { id = driver.Id }, _driverServices.Post(driver));
         }
 
         [HttpPut("{id:int}")]
         public ActionResult<ResultPattern<User>> UpdateUser(int id, [FromBody] Driver driver)
         {
+            driver.UpdatedAt = DateTime.Now;
+            driver.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return Ok(_driverServices.Update(x => x.Id == id, driver));
         }
     }

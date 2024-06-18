@@ -24,20 +24,20 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public string? UpdatedBy { get; set; }
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
         [JsonIgnore]
-        public virtual BranchOffices BranchOffice { get; set; }
+        public virtual BranchOffices? BranchOffice { get; set; }
         [JsonIgnore]
-        public Vehicle Vehicle { get; set; }  
+        public virtual Vehicle? Vehicle { get; set; }  
         [JsonIgnore]
-        public Driver Driver { get; set; }  
+        public virtual Driver? Driver { get; set; }  
         [JsonIgnore]
-        public Road Road { get; set; }  
+        public virtual Road? Road { get; set; }  
         [JsonIgnore]
-        public Request Request { get; set; }  
+        public virtual Request? Request { get; set; }  
         [JsonIgnore]
-        public Dispenser Dispenser { get; set; } 
+        public virtual Dispenser? Dispenser { get; set; } 
         [JsonIgnore]
-        public WareHouse WareHouse { get; set; }
+        public virtual WareHouse? WareHouse { get; set; }
         [JsonIgnore]
-        public ArticleDataMaster ArticleDataMaster { get; set; }
+        public virtual ArticleDataMaster? ArticleDataMaster { get; set; }
     }
 }

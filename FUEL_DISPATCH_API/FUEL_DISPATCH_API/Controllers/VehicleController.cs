@@ -3,6 +3,7 @@ using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FUEL_DISPATCH_API.Controllers
 {
@@ -32,6 +33,8 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost]
         public ActionResult<ResultPattern<Vehicle>> PostDriver([FromBody] Vehicle vehicle)
         {
+            vehicle.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            vehicle.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return CreatedAtAction(nameof(GetVehicle), new { id = vehicle.Id }, _vehicleServices.Post(vehicle));
         }
 

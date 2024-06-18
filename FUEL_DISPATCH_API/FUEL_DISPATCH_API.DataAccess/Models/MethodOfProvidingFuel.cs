@@ -19,5 +19,5 @@ public partial class MethodOfProvidingFuel
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual ICollection<Drivers_MethodsOfProvideFuel> Drivers_MethodsOfProvideFuel { get; set; } = new List<Drivers_MethodsOfProvideFuel>();
+    public virtual ICollection<Driver> Drivers { get; set; } = new List<Driver>();
 }

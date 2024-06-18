@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.Text.Json.Serialization;
+using System.Xml;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models
 {
@@ -14,8 +15,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public string? UpdatedBy { get; set; }
 
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
+        [JsonIgnore]
         public virtual ICollection<Dispenser> Dispensers { get; set; } = new List<Dispenser>();
+        [JsonIgnore]
         public virtual BranchOffices BranchOffice { get; set; }
-
     }
 }

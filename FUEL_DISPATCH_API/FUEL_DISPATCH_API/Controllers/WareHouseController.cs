@@ -3,7 +3,10 @@ using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
+using System.Security.Claims;
 
 namespace FUEL_DISPATCH_API.Controllers
 {
@@ -11,30 +14,33 @@ namespace FUEL_DISPATCH_API.Controllers
     [Route("api/[controller]")]
     public class WareHouseController : ControllerBase
     {
-        private readonly IStoreServices _storeServices;
-        public WareHouseController(IStoreServices storeServices)
+        private readonly IWareHouseServices _wareHouseServices;
+
+        public WareHouseController(IWareHouseServices wareHouseServices)
         {
-            _storeServices = storeServices;
+            _wareHouseServices = wareHouseServices;
         }
         [HttpGet]
-        public ActionResult<ResultPattern<Paging<WareHouseMovement>>> GetStores([FromQuery] GridifyQuery query)
+        public ActionResult<ResultPattern<Paging<WareHouse>>> GetWareHouses([FromQuery] GridifyQuery query)
         {
-            return Ok(_storeServices.GetAll(query));
+            return Ok(_wareHouseServices.GetAll(query));
         }
         [HttpGet("{id:int}")]
-        public ActionResult<ResultPattern<WareHouseMovement>> GetStore(int id)
+        public ActionResult<ResultPattern<WareHouse>> GetWareHouse(int id)
         {
-            return Ok(_storeServices.Get(x => x.Id == id));
+            return Ok(_wareHouseServices.Get(x => x.Id == id));
         }
-        [HttpPost]
-        public ActionResult<ResultPattern<WareHouseMovement>> PostStore([FromBody] WareHouseMovement store)
+        [HttpPost, Authorize(Roles = "Administrator")]
+        public ActionResult<ResultPattern<WareHouse>> PostWareHouse([FromBody] WareHouse warehouse)
         {
-            return CreatedAtAction(nameof(GetStore), new { id = store.Id }, _storeServices.Post(store));
+            warehouse.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            warehouse.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            return CreatedAtAction(nameof(GetWareHouse), new { id = warehouse.Id }, _wareHouseServices.Post(warehouse));
         }
-        [HttpPut("{id:int}")]
-        public ActionResult<ResultPattern<WareHouseMovement>> UpdateStore(int id, [FromBody] WareHouseMovement store)
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
+        public ActionResult<ResultPattern<WareHouse>> UpdateStore(int id, [FromBody] WareHouse warehouse)
         {
-            return Ok(_storeServices.Update(x => x.Id == id, store));
+            return Ok(_wareHouseServices.Update(x => x.Id == id, warehouse));
         }
     }
 }
