@@ -22,13 +22,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public override ResultPattern<Driver> Post(Driver entity)
         {
-            if (!CheckIfIdIsUnique(entity))
-                throw new BadRequestException("This identification exists. ");
+            //if (!CheckIfIdIsUnique(entity))
+            //    throw new BadRequestException("This identification exists. ");
 
-            if (!IsEmailUnique(entity.Email))
-                throw new BadRequestException("Email exists. ");
+            //if (!IsEmailUnique(entity))
+            //    throw new BadRequestException("Email exists. ");
 
-            VehicleIdHasValue(entity);
+            //VehicleIdHasValue(entity);
 
             _DBContext.Driver.Add(entity);
             _DBContext.SaveChanges();
@@ -38,19 +38,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _emailSender.SendEmailAsync(entity.Email, AppConstants.ACCOUNT_CREATED_MESSAGE, "Your account was created successfully. ");
             return ResultPattern<Driver>.Success(entity, StatusCodes.Status200OK, "Driver added successfully. ");
         }
-        bool CheckIfIdIsUnique(Driver entity)
+        public bool CheckIfIdIsUnique(Driver entity)
             => !_DBContext.Driver.Any(x => x.Identification == entity.Identification);
-        bool IsEmailUnique(string email)
-            => !_DBContext.User.Any(x => x.Email == email);
-        bool CheckIVehicleExists(Driver driver)
-           => _DBContext.Vehicle.Any(x => x.Id == driver.VehicleId);
-        bool VehicleIdHasValue(Driver entity)
-        {
-            if (!CheckIVehicleExists(entity))
-                throw new NotFoundException("This vehicle doesn't exists. ");
-            return true;
-        }
-        bool CheckAndUpdateDriver(Driver entity)
+        public bool IsEmailUnique(Driver driver)
+            => !_DBContext.User.Any(x => x.Email == driver.Email);
+        public bool VehicleIdHasValue(Driver entity)
+            => _DBContext.Vehicle.Any(x => x.Id == entity.VehicleId);
+        public bool CheckAndUpdateDriver(Driver entity)
         {
             var vehicle = _DBContext.Vehicle.FirstOrDefault(x => x.Id == entity.VehicleId);
 

@@ -1,17 +1,11 @@
 ﻿using FUEL_DISPATCH_API.Utils.Constants;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models
 {
     public class WareHouse
     {
-        public int Id { get; set; } 
+        public int Id { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
         public string FullDirection { get; set; }
@@ -31,8 +25,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         [JsonIgnore]
         public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
         [JsonIgnore]
+        public virtual ICollection<WareHouseMovement> ToWareHouseMovements { get; set; } = new List<WareHouseMovement>();
+        [JsonIgnore]
         public virtual BranchOffices? BranchOffice { get; set; }
         [JsonIgnore]
-        public virtual ICollection<Stock> Stocks {  get; set; } = new List<Stock>();    
+        public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
     }
 }

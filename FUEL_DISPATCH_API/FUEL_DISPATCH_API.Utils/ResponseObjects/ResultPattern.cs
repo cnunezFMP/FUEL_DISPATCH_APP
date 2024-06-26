@@ -16,7 +16,7 @@
         public static ResultPattern<T> Success(object data, int statusCode, string message) =>
             new ResultPattern<T>(data, statusCode, true, message);
 
-        public static ResultPattern<T> Failure(int statuscode, string message) =>
-            new ResultPattern<T>(default!, statuscode, false, message);
+        public static ResultPattern<T> Failure(int statuscode, string message, object data) =>
+            new ResultPattern<T>(data, statuscode, false, message);
     }
 }

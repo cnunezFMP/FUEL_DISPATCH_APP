@@ -27,14 +27,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
         }
         public virtual ResultPattern<T> Get(Func<T, bool> predicate)
         {
-            var entity = _DBContext.Set<T>().FirstOrDefault(predicate)
+            var entity = _DBContext.Set<T>().AsNoTrackingWithIdentityResolution().FirstOrDefault(predicate)
                 ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
 
             return ResultPattern<T>.Success(entity!, StatusCodes.Status200OK, AppConstants.DATA_OBTAINED_MESSAGE);
         }
         public virtual ResultPattern<Paging<T>> GetAll(GridifyQuery query)
         {
-            var entities = _DBContext.Set<T>().Gridify(query);
+            var entities = _DBContext.Set<T>().AsNoTracking().Gridify(query);
             return ResultPattern<Paging<T>>.Success(entities, StatusCodes.Status200OK, AppConstants.DATA_OBTAINED_MESSAGE);
         }
         public virtual ResultPattern<T> Post(T entity)

@@ -18,10 +18,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public override ResultPattern<WareHouseMovement> Post(WareHouseMovement wareHouseMovement)
         {
-            if (wareHouseMovement.Qty is ValidationConstants.ZeroGallons)
-                throw new BadRequestException("La cantidad no puede ser cero. ");
+            SetDriverIdByVehicle(wareHouseMovement);
 
-            if (!CheckVehicle(wareHouseMovement).GetAwaiter().GetResult())
+            if (!CheckVehicle(wareHouseMovement))
                 throw new BadRequestException("Puede que el vehiculo no exista o que este inactivo. ");
 
             if (!CheckDriver(wareHouseMovement))
@@ -42,50 +41,77 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                                                             StatusCodes.Status201Created,
                                                             "Despacho registrado. ");
         }
-        bool CheckPreviousDispatch(WareHouseMovement wareHouseMovement)
+
+        public bool SetDriverIdByVehicle(WareHouseMovement wareHouseMovement)
         {
-            var previousDispatch = _DBContext.WareHouseMovement
-                                   .Where(x => x.VehicleId == wareHouseMovement.VehicleId)
-                                   .OrderByDescending(x => x.CreatedAt)
-                                   .FirstOrDefault();
-
-            if (previousDispatch is not null)
-                return wareHouseMovement.Odometer <= previousDispatch.Odometer;
-
+            var vehicleDriver = _DBContext.Vehicle.Find(wareHouseMovement.VehicleId);
+            if (vehicleDriver is not null && vehicleDriver.DriverId is not null)
+            {
+                wareHouseMovement.DriverId = vehicleDriver!.DriverId;
+                return true;
+            }
             return false;
         }
-        async Task<bool> CheckVehicle(WareHouseMovement wareHouseMovement)
-        {
-            var vehicleForDispatch = await _DBContext.Vehicle
-                                    .AsNoTrackingWithIdentityResolution()
-                                    .FirstOrDefaultAsync(v => v.Id == wareHouseMovement.VehicleId)
-                ?? throw new NotFoundException("No se encontro el vehiculo para el despacho");
 
-            return vehicleForDispatch is not null && vehicleForDispatch.Status is not ValidationConstants.InactiveStatus;
-        }
-        bool CheckDriver(WareHouseMovement wareHouseMovement)
+        public bool QtyCantBeZero(WareHouseMovement wareHouseMovement)
+            => wareHouseMovement.Qty is not ValidationConstants.ZeroGallons;
+        public bool CheckPreviousDispatch(WareHouseMovement wareHouseMovement)
         {
-            var driverForDispatch = _DBContext.Driver
-                                    .FirstOrDefault(d => d.Id == wareHouseMovement.DriverId)
-                ?? throw new NotFoundException("No se encontro el conductor para el despacho");
+            if (wareHouseMovement.VehicleId.HasValue)
+            {
+                var previousDispatch = _DBContext.WareHouseMovement
+                                   .Where(x => x.VehicleId == wareHouseMovement.VehicleId)
+                                   .OrderByDescending(x => x.Id)
+                                   .FirstOrDefault();
+                if (previousDispatch is null)
+                    return false;
 
-            return driverForDispatch is not null &&
-                   driverForDispatch!.Status is not ValidationConstants.InactiveStatus;
+                return wareHouseMovement.Odometer > previousDispatch.Odometer;
+            }
+            return false;
         }
-        bool CheckBranchOffice(WareHouseMovement wareHouseMovement)
+        public bool CheckVehicle(WareHouseMovement wareHouseMovement)
+        {
+            if (wareHouseMovement.VehicleId.HasValue)
+            {
+                var vehicleForDispatch = _DBContext.Vehicle
+                                            .AsNoTrackingWithIdentityResolution()
+                                            .FirstOrDefault(v => v.Id == wareHouseMovement.VehicleId)
+                        ?? throw new NotFoundException("No se encontro el vehiculo para el despacho");
+
+                return vehicleForDispatch is not null && vehicleForDispatch.Status is not ValidationConstants.InactiveStatus;
+            }
+            return true;
+        }
+        public bool CheckDriver(WareHouseMovement wareHouseMovement)
+        {
+            if (wareHouseMovement.DriverId.HasValue)
+            {
+                var driverForDispatch = _DBContext.Driver
+                                            .AsNoTrackingWithIdentityResolution()
+                                            .FirstOrDefault(d => d.Id == wareHouseMovement.DriverId)
+                        ?? throw new NotFoundException("No se encontro el conductor para el despacho");
+
+                return driverForDispatch is not null &&
+                       driverForDispatch!.Status is not ValidationConstants.InactiveStatus;
+            }
+            return false;
+        }
+        public bool CheckBranchOffice(WareHouseMovement wareHouseMovement)
         {
             var branchOffice = _DBContext.BranchOffices
+                               .AsNoTrackingWithIdentityResolution()
                                .FirstOrDefault(b => b.Id == wareHouseMovement.BranchOfficeId)
                 ?? throw new NotFoundException("No se encontro la sucursal para el despacho");
             return branchOffice is not null &&
                    branchOffice.Status is not ValidationConstants.InactiveStatus;
         }
-        bool CheckDispenser(WareHouseMovement wareHouseMovement)
+        public bool CheckDispenser(WareHouseMovement wareHouseMovement)
         {
             var dispenser = _DBContext.Dispenser
+                .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefault(dp => dp.Id == wareHouseMovement.DispenserId)
                 ?? throw new NotFoundException("No se encontro dispensador para el despacho");
-
             return dispenser is not null &&
                    dispenser.Status is not ValidationConstants.InactiveStatus;
         }

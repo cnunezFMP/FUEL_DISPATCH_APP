@@ -10,7 +10,7 @@ public partial class Dispenser
 
     public string Dispenser_Name { get; set; }
     public int? Hoses { get; set; }
-    public string Status { get; set; } = ValidationConstants.ActiveStatus;  
+    public string Status { get; set; } = ValidationConstants.ActiveStatus;
     public int BranchIslandId { get; set; }
     public string? CreatedBy { get; set; }
 

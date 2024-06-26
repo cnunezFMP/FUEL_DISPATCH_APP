@@ -12,5 +12,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
     public interface IArticleServices : IGenericInterface<ArticleDataMaster>
     {
         ResultPattern<ArticleDataMaster> GetByCode(string code);
+        bool IsArticleUnique(ArticleDataMaster articleDataMaster);
     }
 }

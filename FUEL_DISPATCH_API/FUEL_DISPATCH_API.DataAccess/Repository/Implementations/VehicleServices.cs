@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
-    public partial class VehiclesServices : GenericRepository<Vehicle>, IVehiclesServices
+    public class VehiclesServices : GenericRepository<Vehicle>, IVehiclesServices
     {
         public readonly FUEL_DISPATCH_DBContext _DBContext;
         public VehiclesServices(FUEL_DISPATCH_DBContext DBContext)
@@ -47,6 +47,35 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             return ResultPattern<Vehicle>.Success(entity, StatusCodes.Status201Created, "Vehicle created successfully. ");
         }
-        
+
+        public bool DriverIdHasValue(Vehicle entity)
+            => _DBContext.Driver.Any(x => x.Id == entity.DriverId);
+        public bool CheckAndUpdateDriver(Vehicle entity)
+        {
+            var driver = _DBContext.Driver.FirstOrDefault(x => x.Id == entity.DriverId);
+
+            if (driver!.VehicleId!.HasValue)
+                throw new BadRequestException("This driver has vehicle assigned. ");
+
+            if (driver!.Status == ValidationConstants.InactiveStatus)
+                throw new BadRequestException("This driver is inactive. ");
+
+            driver.VehicleId = entity.Id;
+            _DBContext.Driver.Update(driver);
+            _DBContext.SaveChanges();
+            return true;
+        }
+        public bool CheckIfMakeExists(Vehicle vehicle)
+           => !_DBContext.Make.Any(x => x.Id == vehicle.MakeId);
+        public bool CheckIfModelExists(Vehicle vehicle)
+            => !_DBContext.Model.Any(x => x.Id == vehicle.ModelId);
+        public bool CheckIfGenerationExists(Vehicle vehicle)
+            => !_DBContext.Generation.Any(x => x.Id == vehicle.GenerationId);
+        public bool CheckIfModEngineExists(Vehicle vehicle)
+            => !_DBContext.ModEngine.Any(x => x.Id == vehicle.ModEngineId);
+        public bool CheckIfMeasureExists(Vehicle vehicle)
+            => !_DBContext.Measure.Any(x => x.Id == vehicle.MeasureId);
+        public bool TokenMustBeUnique(Vehicle vehicleToken)
+            => !_DBContext.Vehicle.Any(x => x.Token == vehicleToken.Token);
     }
 }

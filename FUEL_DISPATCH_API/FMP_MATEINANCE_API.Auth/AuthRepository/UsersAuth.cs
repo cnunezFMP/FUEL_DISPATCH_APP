@@ -1,14 +1,19 @@
-﻿using FMP_DISPATCH_API.Services.Emails;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using FMP_DISPATCH_API.Services.Emails;
 using FMP_MATEINANCE_API.Auth;
 using FUEL_DISPATCH_API.DataAccess.DTOs;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
+using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.Constants;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Runtime.CompilerServices;
+using System.Web.Http.ModelBinding;
+using Twilio.Rest.Verify.V2;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
@@ -16,6 +21,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IEmailSender _emailSender;
+        
         private readonly string? _secretKey;
         public UsersAuth(IConfiguration config, FUEL_DISPATCH_DBContext DBContext, IEmailSender emailSender)
             : base(DBContext)
@@ -26,15 +32,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public override ResultPattern<User> Post(User entity)
         {
-            if (DriverIdHasValue(entity) is false)
-            {
-                if (!IsEmailUnique(entity.Email))
-                    throw new BadRequestException("Email Exist. ");
-
-                if (!IsUserNameUnique(entity.Username))
-                    throw new BadRequestException("Username Exist. ");
-            }
-
+            
             var passwordHash = PasswordHashing(entity.Password);
             entity.Password = passwordHash;
             _DBContext.User.Add(entity);

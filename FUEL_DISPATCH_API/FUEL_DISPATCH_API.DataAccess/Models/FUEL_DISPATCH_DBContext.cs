@@ -185,13 +185,19 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         modelBuilder.Entity<WareHouseMovement>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.ToTable("WareHouseMovement");
+            entity.ToTable("WareHouseMovement", entity => entity.HasTrigger("trg_UpdateStock"));
             entity.HasOne(e => e.Vehicle).WithMany(e => e.WareHouseMovements).HasForeignKey(e => e.VehicleId);
-            entity.HasOne(e => e.Driver).WithMany(e => e.WareHouseMovements).HasForeignKey(e => e.DriverId);
+            entity.HasOne(d => d.Driver).WithMany(p => p.WareHouseMovements).HasForeignKey(d => d.DriverId);
             entity.HasOne(e => e.BranchOffice).WithMany(e => e.WareHouseMovements).HasForeignKey(e => e.BranchOfficeId);
             entity.HasOne(d => d.Dispenser).WithMany(p => p.WareHouseMovements).HasForeignKey(d => d.DispenserId);
             entity.HasOne(e => e.Road).WithMany(e => e.WareHouseMovements).HasForeignKey(f => f.RoadId);
-            entity.HasOne(e => e.WareHouse).WithMany(e => e.WareHouseMovements).HasForeignKey(f => f.WareHouseId);
+
+            entity.HasOne(e => e.WareHouse)
+            .WithMany(e => e.WareHouseMovements)
+            .HasForeignKey(f => f.WareHouseId);
+            entity.HasOne(e => e.ToWareHouse)
+            .WithMany(e => e.ToWareHouseMovements)
+            .HasForeignKey(f => f.ToWareHouseId);
             entity.HasOne(e => e.ArticleDataMaster).WithMany(e => e.WareHouseMovements).HasForeignKey(f => f.ItemId);
         });
 
@@ -201,6 +207,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.ToTable("WareHouse");
 
             entity.HasOne(e => e.BranchOffice).WithMany(e => e.WareHouses).HasForeignKey(e => e.BranchOfficeId);
+            
         });
 
         //modelBuilder.Entity<Dispatch>(entity =>
@@ -265,32 +272,9 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
         modelBuilder.Entity<Driver>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Drivers__3214EC076633E3D4");
+            entity.HasKey(e => e.Id);
 
-            entity.Property(e => e.BirthDate).HasColumnType("datetime");
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
-            entity.Property(e => e.CreatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.Email)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.FullDirection)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.FullName)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.Identification).HasMaxLength(100);
-            entity.Property(e => e.LicenceExpDate).HasColumnType("datetime");
-            entity.Property(e => e.PhoneNumber).HasMaxLength(255);
-            entity.Property(e => e.Status)
-                .HasMaxLength(15)
-                .IsUnicode(false);
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
-            entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
+            entity.ToTable("Driver");
 
             entity.HasOne(d => d.Vehicle).WithMany(p => p.Driver)
                 .HasForeignKey(d => d.VehicleId);

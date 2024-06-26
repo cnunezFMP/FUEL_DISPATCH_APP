@@ -6,5 +6,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
     public interface IDriversServices : IGenericInterface<Driver>
     {
+        bool CheckAndUpdateDriver(Driver entity);
+        bool CheckIfIdIsUnique(Driver entity);
+        bool IsEmailUnique(Driver driver);
+        bool VehicleIdHasValue(Driver entity);
     }
 }

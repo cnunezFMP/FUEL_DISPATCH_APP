@@ -1,10 +1,13 @@
-﻿using FUEL_DISPATCH_API.DataAccess.Models;
-using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Security.Claims;
 
 namespace FUEL_DISPATCH_API.Controllers
@@ -14,10 +17,11 @@ namespace FUEL_DISPATCH_API.Controllers
     public class WareHouseMovementController : ControllerBase
     {
         private readonly IWareHouseMovementServices _wareHouseMovementServices;
-
-        public WareHouseMovementController(IWareHouseMovementServices wareHouseMovementServices)
+        private readonly IValidator<WareHouseMovement> _wareHouseMovementValidator;
+        public WareHouseMovementController(IWareHouseMovementServices wareHouseMovementServices, IValidator<WareHouseMovement> wareHouseMovementValidator)
         {
             _wareHouseMovementServices = wareHouseMovementServices;
+            _wareHouseMovementValidator = wareHouseMovementValidator;
         }
 
         [HttpGet]
@@ -36,6 +40,11 @@ namespace FUEL_DISPATCH_API.Controllers
         public ActionResult<ResultPattern<WareHouseMovement>> PostMovement
             ([FromBody] WareHouseMovement wareHouseMovement)
         {
+            var validationResult = _wareHouseMovementValidator.Validate(wareHouseMovement);
+            if (!validationResult.IsValid)
+            {
+                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            }
             wareHouseMovement.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             wareHouseMovement.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return CreatedAtAction(nameof(GetMovement), new { id = wareHouseMovement.Id }, _wareHouseMovementServices.Post(wareHouseMovement));
@@ -44,7 +53,7 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<User>> UpdateMovement
             (
-                int id, 
+                int id,
                 [FromBody] WareHouseMovement wareHouseMovement
             )
         {

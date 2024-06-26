@@ -22,17 +22,21 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             _DBContext = dbContext;
         }
-        private bool WareHousExists(WareHouse wareHouse)
-            => _DBContext.WareHouse.Any(x => x.Code == wareHouse.Code);
+        public bool WareHousExists(WareHouse wareHouse)
+            => !_DBContext.WareHouse.Any(x => x.Code == wareHouse.Code);
+
 
         public override ResultPattern<WareHouse> Post(WareHouse wareHouse)
         {
-            if (WareHousExists(wareHouse))
-                throw new BadRequestException("Warehouse with this code exists. ");
+            if (wareHouse.BranchOfficeId.HasValue)
+                BranchOfficeExist(wareHouse);
 
             _DBContext.WareHouse.Add(wareHouse);
             _DBContext.SaveChanges();
             return ResultPattern<WareHouse>.Success(wareHouse, StatusCodes.Status201Created, "Warehouse added successfully. ");
         }
+
+        public bool BranchOfficeExist(WareHouse wareHouse)
+            => _DBContext.BranchOffices.Any(x => x.Id == wareHouse.Id);
     }
 }

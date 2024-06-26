@@ -1,6 +1,8 @@
-﻿using FUEL_DISPATCH_API.DataAccess.Models;
+﻿using FluentValidation;
+using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.Constants;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
@@ -30,18 +32,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 throw new NotFoundException("No article find for this code. ");
             return ResultPattern<ArticleDataMaster>.Success(article, StatusCodes.Status200OK, "Article obtained succesfully. ");
         }
-
         public override ResultPattern<ArticleDataMaster> Post(ArticleDataMaster newArticle)
         {
-            if (!IsArticleUnique(newArticle))
-                throw new BadRequestException("Article with same code exists. ");
-
             _DBContext.ArticleDataMaster.Add(newArticle!);
             _DBContext.SaveChanges();
             return ResultPattern<ArticleDataMaster>.Success(newArticle!, StatusCodes.Status201Created, "Article saved succesfully. ");
         }
 
-        bool IsArticleUnique(ArticleDataMaster newArticle)
-            => !_DBContext.ArticleDataMaster.Any(x => x.ArticleNumber == newArticle.ArticleNumber);
+        public bool IsArticleUnique(ArticleDataMaster articleDataMaster)
+            => !_DBContext.ArticleDataMaster.Any(x => x.ArticleNumber == articleDataMaster.ArticleNumber);
+
     }
 }

@@ -8,6 +8,6 @@ namespace FMP_MATEINANCE_API.Auth
     public interface IUsersAuth : IGenericInterface<User>
     {
         ResultPattern<object> Login(LoginDto loginDto);
-       
+
     }
 }

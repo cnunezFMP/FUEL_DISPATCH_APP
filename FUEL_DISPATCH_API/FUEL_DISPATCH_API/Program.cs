@@ -1,8 +1,10 @@
+using FluentValidation;
 using FMP_DISPATCH_API.Services.Emails;
 using FMP_MATEINANCE_API.Auth;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +19,9 @@ const string swaggerVersion = "v1";
 const string corsName = "MyPolicy";
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
-builder.Services.AddControllers().AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize);
+builder.Services.AddControllers()
+    .AddNewtonsoftJson
+    (opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
@@ -51,8 +55,13 @@ builder.Services.AddAuthentication(config =>
             ValidateAudience = false,
         };
     });
-
-builder.Services.AddScoped<IWareHouseMovementServices, WareHouseMovementServices>()
+#region ServicesContainers
+builder.Services.AddScoped<IValidator<WareHouse>, WareHouseValidator>()
+                .AddScoped<IValidator<Driver>, DriverValidator>()
+                .AddScoped<IValidator<WareHouseMovement>, DispatchValidator>()
+                .AddScoped<IValidator<User>, UsersValidator>()
+                .AddScoped<IValidator<ArticleDataMaster>, ArticlesValidator>()
+                .AddScoped<IWareHouseMovementServices, WareHouseMovementServices>()
                 .AddScoped<IStockServices, StockServices>()
                 .AddScoped<IArticleServices, ArticleDataMasterServices>()
                 .AddScoped<IRequestServices, RequestServices>()
@@ -62,6 +71,7 @@ builder.Services.AddScoped<IWareHouseMovementServices, WareHouseMovementServices
                 .AddScoped<IUsersAuth, UsersAuth>()
                 .AddScoped<IUserServices, UsersServices>()
                 .AddTransient<IEmailSender, EmailSender>();
+#endregion
 
 // Ignorar ciclos en el objeto que se esta serializando
 builder.Services.AddControllers().AddJsonOptions(option =>

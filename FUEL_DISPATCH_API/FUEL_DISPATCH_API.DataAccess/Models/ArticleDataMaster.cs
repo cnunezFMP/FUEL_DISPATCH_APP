@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models
 {
@@ -16,7 +17,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
         [JsonIgnore]
         public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
-        [JsonIgnore]    
+        [JsonIgnore]
         public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
     }
 }

@@ -10,5 +10,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
     public interface IWareHouseMovementServices : IGenericInterface<WareHouseMovement>
     {
+        bool CheckPreviousDispatch(WareHouseMovement wareHouseMovement);
+        bool CheckVehicle(WareHouseMovement wareHouseMovement);
+        bool QtyCantBeZero(WareHouseMovement wareHouseMovement);
+        bool CheckDriver(WareHouseMovement wareHouseMovement);
+        bool CheckBranchOffice(WareHouseMovement wareHouseMovement);
+        bool CheckDispenser(WareHouseMovement wareHouseMovement);
+        bool SetDriverIdByVehicle(WareHouseMovement wareHouseMovement);
     }
 }

@@ -87,7 +87,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             user.Rols.Add(rol);
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
-
             _DBContext.User.Update(user);
             _DBContext.SaveChanges();
 

@@ -1,10 +1,13 @@
-﻿using FUEL_DISPATCH_API.DataAccess.Models;
-using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Security.Claims;
 
 namespace FUEL_DISPATCH_API.Controllers
@@ -14,9 +17,11 @@ namespace FUEL_DISPATCH_API.Controllers
     public class ArticlesController : ControllerBase
     {
         private readonly IArticleServices _articleServices;
-        public ArticlesController(IArticleServices articleServices)
+        private readonly IValidator<ArticleDataMaster> _validator;
+        public ArticlesController(IArticleServices articleServices, IValidator<ArticleDataMaster> validator)
         {
             _articleServices = articleServices;
+            _validator = validator;
         }
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<ArticleDataMaster>>> GetArticles([FromQuery] GridifyQuery query)
@@ -46,6 +51,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Driver>> PostArticle([FromBody] ArticleDataMaster article)
         {
+            var validationResult = _validator.Validate(article);
+            if (!validationResult.IsValid)
+            {
+                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            }
             article.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             article.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return CreatedAtAction(nameof(GetArticle), new { id = article.Id }, _articleServices.Post(article));
