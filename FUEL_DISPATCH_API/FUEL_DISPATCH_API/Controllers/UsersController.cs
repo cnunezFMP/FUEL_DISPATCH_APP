@@ -46,15 +46,8 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             return Ok(_usersServices.Delete(x => x.Id == id));
         }
-        [HttpPut("{userId}/Roles/{rolId}"), Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<User>> UpdateUserRol(int userId, int rolId)
-        {
-            return Ok(_usersServices.UpdateUserRol(userId, rolId));
-        }
-        [HttpDelete("{userId}/Roles/{driverId}"), Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<User>> DeleteUserRol(int userId, int driverId)
-        {
-            return Ok(_usersServices.DeleteUserRol(userId, driverId));
-        }
+       
+
+       
     }
 }

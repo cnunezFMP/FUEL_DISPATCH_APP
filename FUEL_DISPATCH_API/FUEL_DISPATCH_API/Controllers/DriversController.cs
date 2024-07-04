@@ -1,14 +1,10 @@
 ﻿using FluentValidation;
-using FluentValidation.Results;
 using FUEL_DISPATCH_API.DataAccess.Models;
-using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Security.Claims;
 
 namespace FUEL_DISPATCH_API.Controllers
@@ -17,9 +13,8 @@ namespace FUEL_DISPATCH_API.Controllers
     [Route("api/[controller]")]
     public class DriversController : ControllerBase
     {
-        private readonly IDriversServices _driverServices;
         private readonly IValidator<Driver> _driverValidator;
-
+        private readonly IDriversServices _driverServices;
         public DriversController(IDriversServices driverServices, IValidator<Driver> driverValidator)
         {
             _driverServices = driverServices;

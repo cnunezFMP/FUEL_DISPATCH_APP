@@ -11,14 +11,13 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
-    <PackageReference Include="FakeItEasy" Version="8.2.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
     <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FMP_MATEINANCE_API.Auth\FMP_MATEINANCE_API.Auth.csproj" />
+    <ProjectReference Include="..\FUEL_DISPATCH_API.DataAccess\FUEL_DISPATCH_API.DataAccess.csproj" />
   </ItemGroup>
 
   <ItemGroup>

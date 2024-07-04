@@ -34,8 +34,8 @@ builder.Services.AddSwaggerGen(
     });
 });
 builder.Services.AddDbContext<FUEL_DISPATCH_DBContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("cadenaSql")));
-// Llamado a la clave secreta
+options.UseSqlServer(builder.Configuration.GetConnectionString("cadenaSQL")));
+// Call to the secret key.
 var secretkey = builder.Configuration.GetSection("settings:secretkey").Value; //.GetSection("secretkey").ToString();
 var keyBytes = Encoding.UTF8.GetBytes(secretkey!);
 builder.Services.AddAuthentication(config =>
@@ -56,11 +56,15 @@ builder.Services.AddAuthentication(config =>
         };
     });
 #region ServicesContainers
-builder.Services.AddScoped<IValidator<WareHouse>, WareHouseValidator>()
+builder.Services.AddScoped<IValidator<Companies>, CompanyValidator>()
+                .AddScoped<IValidator<WareHouse>, WareHouseValidator>()
                 .AddScoped<IValidator<Driver>, DriverValidator>()
                 .AddScoped<IValidator<WareHouseMovement>, DispatchValidator>()
                 .AddScoped<IValidator<User>, UsersValidator>()
                 .AddScoped<IValidator<ArticleDataMaster>, ArticlesValidator>()
+                .AddScoped<ICompaniesServices, CompaniesServices>()
+                .AddScoped<ICompaniesUsersServices, UsersCompaniesServices>()
+                .AddScoped<IUsersRolesServices, UsersRolesServices>()
                 .AddScoped<IWareHouseMovementServices, WareHouseMovementServices>()
                 .AddScoped<IStockServices, StockServices>()
                 .AddScoped<IArticleServices, ArticleDataMasterServices>()
@@ -73,7 +77,7 @@ builder.Services.AddScoped<IValidator<WareHouse>, WareHouseValidator>()
                 .AddTransient<IEmailSender, EmailSender>();
 #endregion
 
-// Ignorar ciclos en el objeto que se esta serializando
+// Ignore cycles in the object that is actually serializing.
 builder.Services.AddControllers().AddJsonOptions(option =>
 {
     option.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;

@@ -10,7 +10,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
     public interface IWareHouseServices : IGenericInterface<WareHouse>
     {
-        bool WareHousExists(WareHouse wareHouse);
+        bool WareHouseExists(WareHouse wareHouse);
         bool BranchOfficeExist(WareHouse wareHouse);
+        bool SetWareHouseDir(WareHouse wareHouse);
+        bool SetCompanyId(WareHouse wareHouse);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -24,19 +25,24 @@ public partial class Companies
 
     public string? Industry { get; set; }
 
-    public DateOnly? DateEstablished { get; set; }
+    public DateTime? DateEstablished { get; set; }
 
     public string? CEOFounder { get; set; }
 
     public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
-    public DateTime? UpdateAt { get; set; } = DateTime.Now;
+    public DateTime? UpdatedAt { get; set; } = DateTime.Now;
 
     public string? CreatedBy { get; set; }
 
     public string? UpdatedBy { get; set; }
     [JsonIgnore]
-    public virtual ICollection<User>? Users { get; set; }
+    public virtual ICollection<User>? Users { get; set; } = new List<User>();
+    [JsonIgnore]
+    public virtual ICollection<WareHouse>? WareHouses { get; set; } = new List<WareHouse>();
+
     [JsonIgnore]
     public virtual ICollection<UsersCompanies> UsersCompanies { get; set; } = new List<UsersCompanies>();
+    [JsonIgnore]
+    public virtual ICollection<BranchOffices> BranchOffices { get; set; } = new List<BranchOffices>();
 }

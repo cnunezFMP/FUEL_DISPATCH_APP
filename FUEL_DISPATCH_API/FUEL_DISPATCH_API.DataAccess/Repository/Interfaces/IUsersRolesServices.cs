@@ -9,7 +9,11 @@ using System.Threading.Tasks;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
-    public interface IUserServices : IGenericInterface<User>
+    public interface IUsersRolesServices : IGenericInterface<User>
     {
+        ResultPattern<User> UpdateUserRol(int userId, int roleId);
+        bool UserHasTheRole(User user, int rolId);
+
+        ResultPattern<User> DeleteUserRol(int userId, int roleId);
     }
 }

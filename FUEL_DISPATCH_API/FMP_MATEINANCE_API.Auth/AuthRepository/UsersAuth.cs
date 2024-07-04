@@ -21,7 +21,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IEmailSender _emailSender;
-        
+
         private readonly string? _secretKey;
         public UsersAuth(IConfiguration config, FUEL_DISPATCH_DBContext DBContext, IEmailSender emailSender)
             : base(DBContext)
@@ -32,7 +32,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public override ResultPattern<User> Post(User entity)
         {
-            
+
             var passwordHash = PasswordHashing(entity.Password);
             entity.Password = passwordHash;
             _DBContext.User.Add(entity);

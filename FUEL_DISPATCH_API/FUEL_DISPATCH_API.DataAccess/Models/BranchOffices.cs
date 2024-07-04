@@ -5,31 +5,46 @@ namespace FUEL_DISPATCH_API.DataAccess.Models;
 
 public partial class BranchOffices
 {
-    public int Id { get; set; }
+    [JsonIgnore]
+    public virtual ICollection<BranchIsland> BranchIslands { get; set; } = new List<BranchIsland>();
 
-    public string Name { get; set; }
-
-    public int? LocationId { get; set; }
-
-    public string FullLocation { get; set; }
     public string Code { get; set; }
-    public string Representative {  get; set; }
-    public string Phone { get; set; }
-    public string Email { get; set; }
-    public string Status { get; set; }
-    public string CreatedBy { get; set; }
+
+    [JsonIgnore]
+    public virtual Companies Company { get; set; }
+
+    public int? CompanyId { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-    public string UpdatedBy { get; set; }
+    public string CreatedBy { get; set; }
 
-    public DateTime? UpdatedAt { get; set; } = DateTime.Now;
-    [JsonIgnore]
-    public virtual ICollection<WareHouse> WareHouses { get; set; } = new List<WareHouse>();
-    [JsonIgnore]
-    public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
-    [JsonIgnore]
-    public virtual ICollection<BranchIsland> BranchIslands { get; set; } = new List<BranchIsland>();
+    public string Email { get; set; }
+
+    public string FullLocation { get; set; }
+
+    public int? Id { get; set; }
+
     [JsonIgnore]
     public virtual Location Location { get; set; }
+
+    public int? LocationId { get; set; }
+
+    public string Name { get; set; }
+
+    public string Phone { get; set; }
+
+    public string Representative { get; set; }
+
+    public string Status { get; set; }
+
+    public DateTime? UpdatedAt { get; set; } = DateTime.Now;
+
+    public string UpdatedBy { get; set; }
+
+    [JsonIgnore]
+    public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
+
+    [JsonIgnore]
+    public virtual ICollection<WareHouse> WareHouses { get; set; } = new List<WareHouse>();
 }
