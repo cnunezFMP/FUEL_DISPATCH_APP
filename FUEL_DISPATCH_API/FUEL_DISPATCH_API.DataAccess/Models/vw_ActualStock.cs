@@ -14,5 +14,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public int ItemId { get; set; }
         public string ArticleDescription { get; set; }
         public string ArticleCode { get; set; }
+        public decimal StockQty { get; set; }
     }
 }

@@ -9,17 +9,17 @@ public partial class Driver
 
     public string? Email { get; set; }
 
-    public string FullName { get; set; }
+    public string? FullName { get; set; }
 
-    public string PhoneNumber { get; set; }
+    public string? PhoneNumber { get; set; }
 
     public DateTime BirthDate { get; set; }
 
-    public string FullDirection { get; set; }
+    public string? FullDirection { get; set; }
 
-    public DateTime LicenceExpDate { get; set; }
+    public DateTime? LicenceExpDate { get; set; }
 
-    public string Status { get; set; } = ValidationConstants.ActiveStatus;
+    public string? Status { get; set; } = ValidationConstants.ActiveStatus;
     public int? MethodOfProvideFuelId { get; set; }
     public string? CreatedBy { get; set; }
 
@@ -35,14 +35,14 @@ public partial class Driver
     [JsonIgnore]
     public virtual MethodOfProvidingFuel? MethodOfProvidingFuel { get; set; }
     [JsonIgnore]
-    public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
+    public virtual ICollection<WareHouseMovement>? WareHouseMovements { get; set; } = new List<WareHouseMovement>();
     [JsonIgnore]
-    public virtual ICollection<User> User { get; set; } = new List<User>();
+    public virtual ICollection<User>? User { get; set; } = new List<User>();
     [JsonIgnore]
     public virtual Vehicle? Vehicle { get; set; }
     [JsonIgnore]
-    public virtual ICollection<Vehicle> VehicleNavigation { get; set; } = new List<Vehicle>();
+    public virtual ICollection<Vehicle>? VehicleNavigation { get; set; } = new List<Vehicle>();
     [JsonIgnore]
-    public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
+    public virtual ICollection<Request>? Requests { get; set; } = new List<Request>();
 
 }

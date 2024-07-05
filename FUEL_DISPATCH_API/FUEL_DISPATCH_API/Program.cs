@@ -105,7 +105,7 @@ app.UseReDoc(c =>
     c.DocumentTitle = "FUEL_DISPATCH_API Doc";
     c.RoutePrefix = "redoc";
     c.SpecUrl = "/swagger/v1/swagger.json";
-    c.HeadContent = "<a href='https://localhost:44363/swagger/index.html' style= 'font-weight: bold; font-family: sans-serif; text-decoration: none; color: blue; margin-left: 100px;'>Swagger</a>";
+    c.HeadContent = "<a href='/swagger/index.html' style= 'font-weight: bold; font-family: sans-serif; text-decoration: none; color: blue; margin-left: 100px;'>Swagger</a>";
 });
 app.UseHttpsRedirection();
 

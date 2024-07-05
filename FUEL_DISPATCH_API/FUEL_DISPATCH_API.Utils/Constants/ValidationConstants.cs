@@ -15,6 +15,6 @@ namespace FUEL_DISPATCH_API.Utils.Constants
         public const string PendingStatus = "Pending";
         public const string RejectedStatus = "Rejected";
         public const string ApprovedStatus = "Approved";
-
+        public const string NotAvailableStatus = "Not Available";
     }
 }

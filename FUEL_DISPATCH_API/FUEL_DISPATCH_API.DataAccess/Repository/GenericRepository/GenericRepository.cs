@@ -34,7 +34,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
         }
         public virtual ResultPattern<Paging<T>> GetAll(GridifyQuery query)
         {
-            var entities = _DBContext.Set<T>().AsNoTracking().Gridify(query);
+            var entities = _DBContext.Set<T>().AsNoTrackingWithIdentityResolution().Gridify(query);
             return ResultPattern<Paging<T>>.Success(entities, StatusCodes.Status200OK, AppConstants.DATA_OBTAINED_MESSAGE);
         }
         public virtual ResultPattern<T> Post(T entity)
@@ -47,13 +47,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
         {
             var entityToUpdate = _DBContext.Set<T>().FirstOrDefault(predicate)
                 ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
-
-            // Adjunta la entidad existente para rastrear sus cambios.
             _DBContext.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
-
-            // Guardar cambios en la base de datos.
             _DBContext.SaveChanges();
-
             return ResultPattern<T>.Success(entityToUpdate, StatusCodes.Status200OK, AppConstants.DATA_UPDATED_MESSAGE);
         }
     }

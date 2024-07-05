@@ -22,7 +22,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
 
     public virtual DbSet<CalculatedComsuption> CalculatedComsuption { get; set; }
-    public virtual DbSet<vw_ActualStock> Vw_ActualStocks { get; set; }
+    public virtual DbSet<vw_ActualStock> vw_ActualStock { get; set; }
     public virtual DbSet<vw_WareHouseHistory> Vw_WareHouseHistories { get; set; }
 
     public virtual DbSet<Companies> Companies { get; set; }
@@ -118,7 +118,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         {
             entity.HasKey(e => e.Id);
 
-            
+
             entity.Property(e => e.CEOFounder)
                 .HasMaxLength(100)
                 .IsUnicode(false);
@@ -523,7 +523,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         {
             entity
                 .HasNoKey()
-                .ToView("Vw_ActualStocks");
+                .ToView("vw_ActualStock");
         });
         modelBuilder.Entity<vw_WareHouseHistory>(entity =>
         {

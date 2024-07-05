@@ -37,8 +37,7 @@ namespace FUEL_DISPATCH_API.Controllers
         }
 
         [HttpPost, Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<WareHouseMovement>> PostMovement
-            ([FromBody] WareHouseMovement wareHouseMovement)
+        public ActionResult<ResultPattern<WareHouseMovement>> PostMovement([FromBody] WareHouseMovement wareHouseMovement)
         {
             var validationResult = _wareHouseMovementValidator.Validate(wareHouseMovement);
             if (!validationResult.IsValid)

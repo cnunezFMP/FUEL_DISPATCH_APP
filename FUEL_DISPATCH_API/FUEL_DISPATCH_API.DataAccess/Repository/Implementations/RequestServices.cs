@@ -19,10 +19,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public override ResultPattern<Request> Post(Request entity)
         {
-            if (!CheckDispatch(entity))
+            if (CheckDispatch(entity))
                 throw new BadRequestException("Revise que el odometro registrado no sea igual o menor al anterior." +
                                               "Tambien, que la cantidad de combustible digitados no esten en cero. ");
-            if(!CheckVehicle(entity))
+            if (CheckVehicle(entity))
                 throw new BadRequestException("Puede que el vehiculo no exista, o este inactivo. ");
 
             _DBContext.Request.Add(entity);
@@ -30,13 +30,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             return ResultPattern<Request>.Success(entity, StatusCodes.Status201Created, "Solicitud enviada. ");
         }
         bool CheckDispatch(Request newRequest)
-            => newRequest.Qty is not ValidationConstants.ZeroGallons;
+            => newRequest.Qty is ValidationConstants.ZeroGallons;
 
         bool CheckVehicle(Request newRequest)
         {
             var vehicleForDispatch = _DBContext.Vehicle.FirstOrDefault(x => x.Id == newRequest.VehicleId);
-            return vehicleForDispatch is not null &&
-                   vehicleForDispatch!.Status is not ValidationConstants.InactiveStatus;
+            return vehicleForDispatch!.Status is ValidationConstants.InactiveStatus || vehicleForDispatch!.Status is ValidationConstants.NotAvailableStatus;
         }
     }
 }

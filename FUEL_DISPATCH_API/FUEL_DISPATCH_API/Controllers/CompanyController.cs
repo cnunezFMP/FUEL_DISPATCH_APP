@@ -47,8 +47,8 @@ namespace FUEL_DISPATCH_API.Controllers
             {
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             }
-           // company.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-           // company.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            company.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            company.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return CreatedAtAction(nameof(GetCompany), new { id = company.Id }, _companiesServices.Post(company));
         }
 
