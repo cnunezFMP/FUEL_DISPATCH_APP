@@ -8,7 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Diagnostics;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 #pragma warning disable
-namespace FMP_MATEINANCE_API.Auth
+namespace FUEL_DISPATCH_API.Auth
 {
     public class AuthManager
     {

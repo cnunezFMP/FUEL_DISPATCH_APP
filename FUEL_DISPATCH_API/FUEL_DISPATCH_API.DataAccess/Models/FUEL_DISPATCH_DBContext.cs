@@ -19,8 +19,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
     public virtual DbSet<BranchOffices> BranchOffices { get; set; }
     public virtual DbSet<BranchIsland> BranchIslands { get; set; }
-
-
     public virtual DbSet<CalculatedComsuption> CalculatedComsuption { get; set; }
     public virtual DbSet<vw_ActualStock> vw_ActualStock { get; set; }
     public virtual DbSet<vw_WareHouseHistory> Vw_WareHouseHistories { get; set; }
@@ -40,9 +38,9 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
     public virtual DbSet<Make> Make { get; set; }
 
-    public virtual DbSet<Measure> Measure { get; set; }
+    public virtual DbSet<OdometerMeasure> Measure { get; set; }
 
-    public virtual DbSet<MethodOfProvidingFuel> MethodOfProvidingFuel { get; set; }
+    public virtual DbSet<DriverMethodOfComsuption> DriverMethodOfComsuption { get; set; }
 
     public virtual DbSet<ModEngine> ModEngine { get; set; }
     public virtual DbSet<Model> Model { get; set; }
@@ -269,9 +267,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
             entity.HasOne(d => d.Vehicle).WithMany(p => p.Driver)
                 .HasForeignKey(d => d.VehicleId);
-            entity.HasOne(e => e.MethodOfProvidingFuel)
-            .WithMany(e => e.Drivers)
-            .HasForeignKey(e => e.MethodOfProvideFuelId);
         });
         modelBuilder.Entity<Generation>(entity =>
         {
@@ -322,13 +317,13 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false);
         });
-        modelBuilder.Entity<Measure>(entity =>
+        modelBuilder.Entity<OdometerMeasure>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Measures__3214EC078BD6593A");
 
             entity.Property(e => e.Measurename).HasMaxLength(255);
         });
-        modelBuilder.Entity<MethodOfProvidingFuel>(entity =>
+        modelBuilder.Entity<DriverMethodOfComsuption>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__MethodsO__3214EC076CBAB600");
 
@@ -535,10 +530,10 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Vehicles__3214EC073B5115F7");
 
-            entity.HasIndex(e => e.Token, "U_VToken").IsUnique();
+            entity.HasIndex(e => e.Ficha, "U_VToken").IsUnique();
 
             entity.Property(e => e.AverageConsumption).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.Capacity).HasColumnType("decimal(18, 0)");
+            entity.Property(e => e.FuelTankCapacity).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.Color)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -552,7 +547,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(e => e.Status)
                 .HasMaxLength(15)
                 .IsUnicode(false);
-            entity.Property(e => e.Token)
+            entity.Property(e => e.Ficha)
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
@@ -573,7 +568,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
                 .HasConstraintName("FK__Vehicles__MakeId__09A971A2");
 
             entity.HasOne(d => d.Measure).WithMany(p => p.Vehicle)
-                .HasForeignKey(d => d.MeasureId)
+                .HasForeignKey(d => d.OdometerMeasureId)
                 .HasConstraintName("FK__Vehicles__Measur__6166761E");
 
             entity.HasOne(d => d.ModEngine).WithMany(p => p.Vehicle)

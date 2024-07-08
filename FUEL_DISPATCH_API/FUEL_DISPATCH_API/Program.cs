@@ -1,6 +1,7 @@
 using FluentValidation;
 using FMP_DISPATCH_API.Services.Emails;
-using FMP_MATEINANCE_API.Auth;
+using FUEL_DISPATCH_API.Auth;
+using FUEL_DISPATCH_API.Auth.AuthRepository;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
@@ -60,7 +61,7 @@ builder.Services.AddScoped<IValidator<Companies>, CompanyValidator>()
                 .AddScoped<IValidator<WareHouse>, WareHouseValidator>()
                 .AddScoped<IValidator<Driver>, DriverValidator>()
                 .AddScoped<IValidator<WareHouseMovement>, DispatchValidator>()
-                .AddScoped<IValidator<User>, UsersValidator>()
+                .AddScoped<IValidator<User>, RegisterValidator>()
                 .AddScoped<IValidator<ArticleDataMaster>, ArticlesValidator>()
                 .AddScoped<ICompaniesServices, CompaniesServices>()
                 .AddScoped<ICompaniesUsersServices, UsersCompaniesServices>()

@@ -8,17 +8,17 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
     {
         public int Id { get; set; }
         public int? VehicleId { get; set; }
-        public int? RoadId { get; set; }  
-        public int ItemId { get; set; }  
-        public int BranchOfficeId { get; set; }   
-        public int DispenserId { get; set; } 
+        public int? RoadId { get; set; }
+        public int ItemId { get; set; }
+        public int BranchOfficeId { get; set; }
+        public int DispenserId { get; set; }
         public string Type { get; set; }
         public decimal Qty { get; set; }
         public decimal? Odometer { get; set; }
         public int WareHouseId { get; set; }
         public int? ToWareHouseId { get; set; }
         public string? Notes { get; set; }
-        public int? RequestId { get; set; }  
+        public int? RequestId { get; set; }
         public string? CreatedBy { get; set; }
         public int? DriverId { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
@@ -27,15 +27,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         [JsonIgnore]
         public virtual BranchOffices? BranchOffice { get; set; }
         [JsonIgnore]
-        public virtual Vehicle? Vehicle { get; set; }  
+        public virtual Vehicle? Vehicle { get; set; }
         [JsonIgnore]
-        public virtual Driver? Driver { get; set; }  
+        public virtual Driver? Driver { get; set; }
         [JsonIgnore]
-        public virtual Road? Road { get; set; }  
+        public virtual Road? Road { get; set; }
         [JsonIgnore]
-        public virtual Request? Request { get; set; }  
+        public virtual Request? Request { get; set; }
         [JsonIgnore]
-        public virtual Dispenser? Dispenser { get; set; } 
+        public virtual Dispenser? Dispenser { get; set; }
         [JsonIgnore]
         public virtual WareHouse? WareHouse { get; set; }
         [JsonIgnore]

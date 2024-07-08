@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 
-public partial class Measure
+public partial class OdometerMeasure
 {
     public int Id { get; set; }
 

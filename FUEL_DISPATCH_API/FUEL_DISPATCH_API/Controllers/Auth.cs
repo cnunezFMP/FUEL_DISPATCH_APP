@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
-using FMP_MATEINANCE_API.Auth;
+using FUEL_DISPATCH_API.Auth;
 using FUEL_DISPATCH_API.DataAccess.DTOs;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;

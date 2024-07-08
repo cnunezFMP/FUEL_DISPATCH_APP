@@ -20,7 +20,6 @@ public partial class Driver
     public DateTime? LicenceExpDate { get; set; }
 
     public string? Status { get; set; } = ValidationConstants.ActiveStatus;
-    public int? MethodOfProvideFuelId { get; set; }
     public string? CreatedBy { get; set; }
 
     public DateTime? CreatedAt { get; set; } = DateTime.Now;
@@ -32,8 +31,6 @@ public partial class Driver
     public string? Identification { get; set; }
 
     public int? VehicleId { get; set; }
-    [JsonIgnore]
-    public virtual MethodOfProvidingFuel? MethodOfProvidingFuel { get; set; }
     [JsonIgnore]
     public virtual ICollection<WareHouseMovement>? WareHouseMovements { get; set; } = new List<WareHouseMovement>();
     [JsonIgnore]

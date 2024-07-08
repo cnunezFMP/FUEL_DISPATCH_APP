@@ -50,11 +50,7 @@ namespace FUEL_DISPATCH_API.Controllers
         }
 
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<User>> UpdateMovement
-            (
-                int id,
-                [FromBody] WareHouseMovement wareHouseMovement
-            )
+        public ActionResult<ResultPattern<User>> UpdateMovement(int id, [FromBody] WareHouseMovement wareHouseMovement)
         {
             wareHouseMovement.UpdatedAt = DateTime.Now;
             wareHouseMovement.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;

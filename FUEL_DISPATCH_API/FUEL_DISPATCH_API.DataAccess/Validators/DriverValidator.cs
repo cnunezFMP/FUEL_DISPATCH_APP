@@ -18,8 +18,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
 
             RuleFor(x => x.VehicleId).Must((driverVehicleId, _) =>
             {
-                return driversServices.VehicleIdHasValue(driverVehicleId);
-            }).WithMessage("No existe un vehiculo con este Id. Esto ocurrio en {PropertyName}. ");
+                return !driversServices.VehicleIdHasValue(driverVehicleId);
+            }).WithMessage("No existe un vehiculo con este Id. Esto ocurrio en {PropertyName}. ").When(x => x.VehicleId.HasValue);
         }
     }
 }

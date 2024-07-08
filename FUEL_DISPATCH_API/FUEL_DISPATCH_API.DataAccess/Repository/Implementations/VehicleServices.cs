@@ -74,8 +74,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         public bool CheckIfModEngineExists(Vehicle vehicle)
             => !_DBContext.ModEngine.Any(x => x.Id == vehicle.ModEngineId);
         public bool CheckIfMeasureExists(Vehicle vehicle)
-            => !_DBContext.Measure.Any(x => x.Id == vehicle.MeasureId);
+            => !_DBContext.Measure.Any(x => x.Id == vehicle.OdometerMeasureId);
         public bool TokenMustBeUnique(Vehicle vehicleToken)
-            => !_DBContext.Vehicle.Any(x => x.Token == vehicleToken.Token);
+            => !_DBContext.Vehicle.Any(x => x.Ficha == vehicleToken.Ficha);
     }
 }

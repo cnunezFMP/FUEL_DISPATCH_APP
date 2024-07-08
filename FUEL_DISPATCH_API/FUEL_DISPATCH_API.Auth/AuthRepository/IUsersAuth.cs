@@ -3,11 +3,13 @@ using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 
-namespace FMP_MATEINANCE_API.Auth
+namespace FUEL_DISPATCH_API.Auth
 {
     public interface IUsersAuth : IGenericInterface<User>
     {
         ResultPattern<object> Login(LoginDto loginDto);
-
+        bool IsUserNameUnique(User user);
+        bool IsEmailUnique(User user);
+        bool DriverIdHasValue(User user);
     }
 }

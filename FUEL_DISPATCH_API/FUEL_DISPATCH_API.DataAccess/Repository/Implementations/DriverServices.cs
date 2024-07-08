@@ -22,14 +22,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public override ResultPattern<Driver> Post(Driver entity)
         {
-            //if (!CheckIfIdIsUnique(entity))
-            //    throw new BadRequestException("This identification exists. ");
-
-            //if (!IsEmailUnique(entity))
-            //    throw new BadRequestException("Email exists. ");
-
-            //VehicleIdHasValue(entity);
-
             _DBContext.Driver.Add(entity);
             _DBContext.SaveChanges();
 

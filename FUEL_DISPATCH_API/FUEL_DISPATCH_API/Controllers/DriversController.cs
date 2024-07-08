@@ -4,6 +4,7 @@ using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -33,7 +34,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_driverServices.Get(x => x.Id == id));
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Driver>> PostDriver([FromBody] Driver driver)
         {
             var validationResult = _driverValidator.Validate(driver);

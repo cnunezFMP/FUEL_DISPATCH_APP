@@ -7,7 +7,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models;
 
 public partial class Vehicle
 {
-    public string? Token { get; set; }
+    public string? Ficha { get; set; }
 
     public int? MakeId { get; set; }
 
@@ -33,9 +33,9 @@ public partial class Vehicle
 
     public string? Color { get; set; }
 
-    public decimal? Capacity { get; set; }
+    public decimal? FuelTankCapacity { get; set; }
 
-    public int? MeasureId { get; set; }
+    public int? OdometerMeasureId { get; set; }
 
     public int Id { get; set; }
 
@@ -51,7 +51,7 @@ public partial class Vehicle
     [JsonIgnore]
     public virtual Make? Make { get; set; }
     [JsonIgnore]
-    public virtual Measure? Measure { get; set; }
+    public virtual OdometerMeasure? Measure { get; set; }
     [JsonIgnore]
     public virtual ModEngine? ModEngine { get; set; }
     [JsonIgnore]

@@ -2,6 +2,7 @@
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -30,7 +31,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_vehicleServices.Get(x => x.Id == id));
         }
 
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Vehicle>> PostDriver([FromBody] Vehicle vehicle)
         {
             vehicle.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;

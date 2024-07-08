@@ -19,7 +19,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             _DBContext = dbContext;
         }
-
         public override ResultPattern<WareHouseMovement> Post(WareHouseMovement wareHouseMovement)
         {
             if (wareHouseMovement.VehicleId.HasValue)
@@ -173,17 +172,33 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool WillStockFallMaximun(WareHouseMovement wareHouseMovement)
         {
+            if (wareHouseMovement.Type is "Trasnferencia")
+            {
+                var toWareHouseStock = _DBContext.vw_ActualStock
+                    .AsNoTrackingWithIdentityResolution()
+                    .FirstOrDefault(x => x.WareHouseId == wareHouseMovement.ToWareHouseId);
+
+                var toWareHouse = _DBContext.WareHouse
+                .AsNoTrackingWithIdentityResolution()
+                .FirstOrDefault(x => x.Id == wareHouseMovement.ToWareHouseId);
+
+                decimal currentQtyInToWareHouse = toWareHouseStock!.StockQty + wareHouseMovement.Qty;
+
+                return currentQtyInToWareHouse > toWareHouse!.MaxCapacity;
+            }
+
             var wareHouseStock = _DBContext.vw_ActualStock
                 .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefault(x => x.WareHouseId == wareHouseMovement.WareHouseId);
+
 
             var wareHouse = _DBContext.WareHouse
                 .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefault(x => x.Id == wareHouseMovement.WareHouseId);
 
-            decimal currentQtyInWareHouse = wareHouseStock!.StockQty - wareHouseMovement.Qty;
+            decimal currentQtyInWareHouse = wareHouseStock!.StockQty + wareHouseMovement.Qty;
 
-            return currentQtyInWareHouse < wareHouse!.MinCapacity;
+            return currentQtyInWareHouse > wareHouse!.MaxCapacity;
         }
         #endregion
     }

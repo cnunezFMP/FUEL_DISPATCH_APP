@@ -53,7 +53,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             RuleFor(x => x.WareHouse).Must((wareHouseMovement, _) =>
             {
                 return !wareHouseMovementServices.WillStockFallBelowMinimum(wareHouseMovement);
-            }).WithMessage("The stock level will fall below the minimum quantity allowed. ");
+            }).WithMessage("The stock level will fall below the minimum quantity allowed. ").When(x => x.Type is "Salida" || x.Type is "Transferencia");
+            RuleFor(x => x.WareHouse).Must((wareHouseMovement, _) =>
+            {
+                return wareHouseMovementServices.WillStockFallMaximun(wareHouseMovement);
+            }).When(x => x.Type is "Entrada" || x.Type is "Transferencia").WithMessage("The input quantity will exceed the maximum warehouse quantity. ")/*.When(x => x.Type is "Transferencia").WithMessage("The input quantity will exceed the maximum capacity in the destiny warehouse quantity. ")*/;
         }
     }
 }
