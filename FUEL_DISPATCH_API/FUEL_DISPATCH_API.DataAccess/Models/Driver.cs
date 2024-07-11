@@ -41,5 +41,9 @@ public partial class Driver
     public virtual ICollection<Vehicle>? VehicleNavigation { get; set; } = new List<Vehicle>();
     [JsonIgnore]
     public virtual ICollection<Request>? Requests { get; set; } = new List<Request>();
+    [JsonIgnore]
+    public virtual ICollection<EmployeeConsumptionLimits>? EmployeeConsumptionLimits { get; set; } = new List<EmployeeConsumptionLimits>();
+    [JsonIgnore]
+    public virtual ICollection<Booking>? Bookings { get; set; } = new List<Booking>();
 
 }

@@ -1,15 +1,14 @@
 ﻿using FUEL_DISPATCH_API.Utils.Constants;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 
 public partial class Dispenser
 {
     public int Id { get; set; }
-
-    public string Dispenser_Name { get; set; }
-    public int? Hoses { get; set; }
+    public string Code { get; set; }
     public string Status { get; set; } = ValidationConstants.ActiveStatus;
     public int BranchIslandId { get; set; }
     public string? CreatedBy { get; set; }
@@ -19,7 +18,8 @@ public partial class Dispenser
     public string? UpdatedBy { get; set; }
 
     public DateTime? UpdatedAt { get; set; } = DateTime.Now;
-
-    public virtual BranchIsland BranchIsland { get; set; }
+    [JsonIgnore]
+    public virtual BranchIsland? BranchIsland { get; set; }
+    [JsonIgnore]
     public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
 }

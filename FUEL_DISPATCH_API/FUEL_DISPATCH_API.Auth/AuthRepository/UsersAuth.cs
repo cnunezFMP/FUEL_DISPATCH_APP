@@ -33,7 +33,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             entity.Password = passwordHash;
             _DBContext.User.Add(entity);
             _DBContext.SaveChanges();
-            _emailSender.SendEmailAsync(entity.Email!, AppConstants.ACCOUNT_CREATED_MESSAGE, $"Hello {entity.FullName} your account in the app was created successfully at {DateTime.Now}");
+            if (entity.Email is not null)
+                _emailSender.SendEmailAsync(entity.Email!, AppConstants.ACCOUNT_CREATED_MESSAGE, $"Hello {entity.FullName} your account in the app was created successfully at {DateTime.Now}");
+
+
             return ResultPattern<User>.Success(entity, StatusCodes.Status200OK, "Usuario registrado correctamente. ");
         }
         public ResultPattern<object> Login(LoginDto loginDto)

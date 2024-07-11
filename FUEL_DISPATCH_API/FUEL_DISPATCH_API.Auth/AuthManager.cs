@@ -5,77 +5,71 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Diagnostics;
 using FUEL_DISPATCH_API.Utils.Exceptions;
-#pragma warning disable
-namespace FUEL_DISPATCH_API.Auth
+namespace FUEL_DISPATCH_API.Auth;
+public class AuthManager
 {
-    public class AuthManager
+    private readonly FUEL_DISPATCH_DBContext _dbContext;
+    private readonly string _secretKey;
+
+    public AuthManager(FUEL_DISPATCH_DBContext dbContext, string secretKey)
     {
-        private readonly FUEL_DISPATCH_DBContext _dbContext;
-        private readonly string _secretKey;
+        _dbContext = dbContext;
+        _secretKey = secretKey;
+    }
 
-        public AuthManager(FUEL_DISPATCH_DBContext dbContext, string secretKey)
+    public object AuthToken(LoginDto usuario)
+    {
+        var username = usuario.Username;
+        var password = usuario.Password;
+        var credencialesCorretas = _dbContext.User.Include(x => x.Rols).SingleOrDefault(x => x.Username == username);
+        if (credencialesCorretas != null && BCrypt.Net.BCrypt.Verify(password, credencialesCorretas.Password))
         {
-            _dbContext = dbContext;
-            _secretKey = secretKey;
-        }
-
-        public object AuthToken(LoginDto usuario)
-        {
-            var username = usuario.Username;
-            var password = usuario.Password;
-
-            var credencialesCorretas = _dbContext.User.Include(x => x.Rols).SingleOrDefault(x => x.Username == username);
-
-            if (credencialesCorretas != null && BCrypt.Net.BCrypt.Verify(password, credencialesCorretas.Password))
-            {
-                var keyBytes = Encoding.UTF8.GetBytes(_secretKey);
-                var claims = new ClaimsIdentity();
-
-                claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, usuario.Username!));
-
+            var keyBytes = Encoding.UTF8.GetBytes(_secretKey);
+            var claims = new ClaimsIdentity();
+            claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, usuario.Username!));
+            if (credencialesCorretas.Email is not null)
                 claims.AddClaim(new Claim(ClaimTypes.Email, credencialesCorretas.Email));
 
-
-                foreach (var role in credencialesCorretas.Rols)
-                    claims.AddClaim(new Claim(ClaimTypes.Role, role.RolName));
-
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = claims,
-                    Expires = DateTime.UtcNow.AddDays(5),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256Signature)
-                };
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var tokenConfig = tokenHandler.CreateToken(tokenDescriptor);
-                var tokenCreado = tokenHandler.WriteToken(tokenConfig);
-
-                try
-                {
-                    _dbContext.UserToken.Add(new UserToken { Token = tokenCreado, UserId = credencialesCorretas.Id, CreatedAt = DateTime.Now, ExpData = tokenDescriptor.Expires });
-                    _dbContext.SaveChanges();
-
-                    var tokenObj = new
-                    {
-                        Token = tokenCreado,
-                        Success = true,
-                        ExpDate = DateTime.Now + TimeSpan.FromDays(5),
-                    };
-                    return tokenObj;
-                }
-                catch
-                {
-                    throw;
-                }
-            }
-            else
+            foreach (var role in credencialesCorretas.Rols)
+                claims.AddClaim(new Claim(ClaimTypes.Role, role.RolName));
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                // Devolver algún tipo de indicador de error en lugar de Unauthorized directamente
-                throw new UnauthorizedException("El usuario no tiene acceso. ");
+                Subject = claims,
+                Expires = DateTime.UtcNow.AddDays(5),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenConfig = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenCreado = tokenHandler.WriteToken(tokenConfig);
+            try
+            {
+                _dbContext.UserToken.Add(new UserToken
+                {
+                    Token = tokenCreado,
+                    UserId = credencialesCorretas.Id,
+                    CreatedAt = DateTime.Now,
+                    ExpData = tokenDescriptor.Expires
+                });
+                _dbContext.SaveChanges();
+
+                var tokenObj = new
+                {
+                    Token = tokenCreado,
+                    Success = true,
+                    ExpDate = DateTime.Now + TimeSpan.FromDays(5),
+                };
+                return tokenObj;
+            }
+            catch
+            {
+                throw;
             }
         }
-
+        else
+        {
+            throw new UnauthorizedException("El usuario no tiene acceso. ");
+        }
     }
 }
+

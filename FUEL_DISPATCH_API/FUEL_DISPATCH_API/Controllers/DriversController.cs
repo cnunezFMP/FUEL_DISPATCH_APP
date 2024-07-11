@@ -48,7 +48,7 @@ namespace FUEL_DISPATCH_API.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public ActionResult<ResultPattern<User>> UpdateUser(int id, [FromBody] Driver driver)
+        public ActionResult<ResultPattern<Driver>> UpdateDriver(int id, [FromBody] Driver driver)
         {
             driver.UpdatedAt = DateTime.Now;
             driver.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;

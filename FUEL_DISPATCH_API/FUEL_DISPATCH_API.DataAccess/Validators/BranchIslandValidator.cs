@@ -1,0 +1,17 @@
+﻿using FluentValidation;
+using FUEL_DISPATCH_API.DataAccess.Models;
+using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
+
+namespace FUEL_DISPATCH_API.DataAccess.Validators
+{
+    public class BranchIslandValidator : AbstractValidator<BranchIsland>
+    {
+        public BranchIslandValidator(BranchIslandServices branchIslandServices)
+        {
+            RuleFor(x => x.Code).NotEmpty().NotNull().Must((island, _) =>
+            {
+                return branchIslandServices.BranchIslandCodeMustBeUnique(island);
+            });
+        }
+    }
+}

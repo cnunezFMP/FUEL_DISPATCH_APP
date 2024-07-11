@@ -18,6 +18,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
         bool CheckIfGenerationExists(Vehicle vehicle);
         bool CheckIfModEngineExists(Vehicle vehicle);
         bool CheckIfMeasureExists(Vehicle vehicle);
-        bool TokenMustBeUnique(Vehicle vehicleToken);
+        bool FichaMustBeUnique(Vehicle vehicleToken);
     }
 }

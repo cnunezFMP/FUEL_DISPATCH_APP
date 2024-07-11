@@ -14,9 +14,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
         public VehiclesValidator(IVehiclesServices vehiclesServices)
         {
             RuleFor(x => x.Plate).MinimumLength(8).MaximumLength(10);
-            RuleFor(x => x.Token).NotNull().NotNull().Must((vehicleToken, _) =>
+            RuleFor(x => x.Ficha).NotNull().NotNull().Must((vehicleToken, _) =>
             {
-                return vehiclesServices.TokenMustBeUnique(vehicleToken);
+                return vehiclesServices.FichaMustBeUnique(vehicleToken);
             }).WithMessage("Ya existe un vehiculo con {PropertyValue}. Esto ocurrio en {PropertyName}. ");
         }
     }

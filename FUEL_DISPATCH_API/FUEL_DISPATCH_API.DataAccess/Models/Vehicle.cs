@@ -60,4 +60,6 @@ public partial class Vehicle
     //public virtual ICollection<FuelType> Fuels { get; set; } = new List<FuelType>();
     [JsonIgnore]
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
+    [JsonIgnore]
+    public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 }

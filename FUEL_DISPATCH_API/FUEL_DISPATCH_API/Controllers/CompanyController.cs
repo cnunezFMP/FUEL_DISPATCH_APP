@@ -38,7 +38,6 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             return Ok(_companiesServices.GetCompanyByRnc(companyRnc));
         }
-
         [HttpPost]
         public ActionResult<ResultPattern<Companies>> PostCompany([FromBody] Companies company)
         {

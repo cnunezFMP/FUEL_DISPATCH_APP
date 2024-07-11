@@ -16,5 +16,8 @@ namespace FUEL_DISPATCH_API.Utils.Constants
         public const string RejectedStatus = "Rejected";
         public const string ApprovedStatus = "Approved";
         public const string NotAvailableStatus = "Not Available";
+        public const string BookingCanceledStatus = "Canceled";
+        public const int CreditCardMethod = 3;
+        public const int GallonsMethod = 1;
     }
 }

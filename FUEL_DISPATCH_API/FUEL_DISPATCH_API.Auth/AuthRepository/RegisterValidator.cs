@@ -10,15 +10,12 @@ namespace FUEL_DISPATCH_API.Auth.AuthRepository
             RuleFor(x => x.Email).Must((email, _) =>
             {
                 return usersAuthServices.IsEmailUnique(email);
-            });
-
-            RuleFor(x => x.Email).Must((email, _) =>
-            {
-                return usersAuthServices.IsEmailUnique(email);
-            });
-
-            RuleFor(x => x.Username).MinimumLength(8).MaximumLength(15).NotEmpty().NotNull();
-            RuleFor(x => x.Email).EmailAddress().NotEmpty().NotNull();
+            }).When(x => x.Email is not null);
+            RuleFor(x => x.Password).MinimumLength(8).MaximumLength(15).NotEmpty().NotNull();
+            //RuleFor(x => x.Email).Must((email, _) =>
+            //{
+            //    return usersAuthServices.IsEmailUnique(email);
+            //});
         }
     }
 }

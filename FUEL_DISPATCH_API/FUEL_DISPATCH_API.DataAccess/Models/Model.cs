@@ -2,6 +2,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 
@@ -18,6 +19,6 @@ public partial class Model
     public DateTime? UpdatedAt { get; set; }
 
     public string? Modelname { get; set; }
-
+    [JsonIgnore]
     public virtual ICollection<Vehicle> Vehicle { get; set; } = new List<Vehicle>();
 }

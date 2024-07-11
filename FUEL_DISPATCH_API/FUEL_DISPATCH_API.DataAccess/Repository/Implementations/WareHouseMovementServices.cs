@@ -2,10 +2,12 @@
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Constants;
+using FUEL_DISPATCH_API.Utils.ENUMS;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
@@ -27,6 +29,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 VehicleHasMovements(wareHouseMovement);
                 ChangeVehicleStatus(wareHouseMovement);
             }
+            NoEnoughAmount(wareHouseMovement);
             ChangeDriverStatus(wareHouseMovement);
             _DBContext.WareHouseMovement.Add(wareHouseMovement);
             _DBContext.SaveChanges();
@@ -74,25 +77,25 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             return wareHouseMovement.Odometer > previousDispatch!.Odometer;
         }
         // DONE: Corregir las funciones "CheckVehicle", "CheckDriver".
-        public bool CheckVehicle(WareHouseMovement wareHouseMovement)
+        public bool CheckVehicle(int vehicleId)
         {
             var vehicleForDispatch = _DBContext.Vehicle
                 .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault(v => v.Id == wareHouseMovement.VehicleId)
+                .FirstOrDefault(v => v.Id == vehicleId)
                                         ?? throw new NotFoundException("No se encontro el vehiculo. ");
 
             return vehicleForDispatch.Status is ValidationConstants.InactiveStatus || vehicleForDispatch!.Status is ValidationConstants.NotAvailableStatus;
         }
-        public bool CheckDriver(WareHouseMovement wareHouseMovement)
+        public bool CheckDriver(int driverId)
         {
 
             var driverForDispatch = _DBContext.Driver
                 .AsNoTrackingWithIdentityResolution()
-                 .FirstOrDefault(d => d.Id == wareHouseMovement.DriverId)
-                    ?? throw new NotFoundException("No se encontro el conductor para el despacho");
+                 .FirstOrDefault(d => d.Id == driverId)
+                    ?? throw new NotFoundException("No driver found. ");
 
 
-            return driverForDispatch!.Status is ValidationConstants.InactiveStatus || driverForDispatch!.Status is ValidationConstants.NotAvailableStatus;
+            return (driverForDispatch!.Status is ValidationConstants.InactiveStatus || driverForDispatch!.Status is ValidationConstants.NotAvailableStatus);
 
         }
         public bool CheckBranchOffice(WareHouseMovement wareHouseMovement)
@@ -199,6 +202,33 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             decimal currentQtyInWareHouse = wareHouseStock!.StockQty + wareHouseMovement.Qty;
 
             return currentQtyInWareHouse > wareHouse!.MaxCapacity;
+        }
+        public void NoEnoughAmount(WareHouseMovement wareHouseMovement)
+        {
+            var driverCurrentAmount = _DBContext.EmployeeConsumptionLimit
+                .FirstOrDefault(x => x.DriverId == wareHouseMovement.DriverId
+                && x.MethodOfComsuptionId == wareHouseMovement.FuelMethodOfComsuptionId)
+                ?? throw new NotFoundException("This driver does not have this payment method or cannot be found. ");
+
+            if (driverCurrentAmount!.MethodOfComsuptionId is ValidationConstants.CreditCardMethod)
+            {
+                if (wareHouseMovement.Amount > driverCurrentAmount.CurrentAmount)
+                    throw new BadRequestException("Driver have'nt enough amount. ");
+
+                var newDriverAmount = driverCurrentAmount.CurrentAmount - wareHouseMovement.Amount;
+                driverCurrentAmount.CurrentAmount = newDriverAmount;
+                _DBContext.SaveChanges();
+            }
+
+            if (driverCurrentAmount!.MethodOfComsuptionId is ValidationConstants.GallonsMethod)
+            {
+                if (wareHouseMovement.Qty > driverCurrentAmount.CurrentAmount)
+                    throw new BadRequestException("Driver have'nt enough amount. ");
+
+                var newDriverAmount = driverCurrentAmount.CurrentAmount - wareHouseMovement.Amount;
+                driverCurrentAmount.CurrentAmount = newDriverAmount;
+                _DBContext.SaveChanges();
+            }
         }
         #endregion
     }

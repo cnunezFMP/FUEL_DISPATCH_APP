@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 namespace FUEL_DISPATCH_API.DataAccess.Models
 {
     public partial class WareHouseMovement
@@ -12,17 +9,23 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public int ItemId { get; set; }
         public int BranchOfficeId { get; set; }
         public int DispenserId { get; set; }
-        public string Type { get; set; }
+        public string? Type { get; set; }
         public decimal Qty { get; set; }
+        public decimal Amount { get; set; }
         public decimal? Odometer { get; set; }
         public int WareHouseId { get; set; }
         public int? ToWareHouseId { get; set; }
         public string? Notes { get; set; }
         public int? RequestId { get; set; }
+        public int? FuelMethodOfComsuptionId { get; set; }
+        [JsonIgnore]
         public string? CreatedBy { get; set; }
         public int? DriverId { get; set; }
+        [JsonIgnore]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        [JsonIgnore]
         public string? UpdatedBy { get; set; }
+        [JsonIgnore]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
         [JsonIgnore]
         public virtual BranchOffices? BranchOffice { get; set; }

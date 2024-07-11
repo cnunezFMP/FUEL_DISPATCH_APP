@@ -57,12 +57,16 @@ builder.Services.AddAuthentication(config =>
         };
     });
 #region ServicesContainers
-builder.Services.AddScoped<IValidator<Companies>, CompanyValidator>()
+builder.Services.AddScoped<IValidator<Booking>, BookingValidator>()
+                .AddScoped<IValidator<Road>, RoadValidator>()
+                .AddScoped<IValidator<Companies>, CompanyValidator>()
                 .AddScoped<IValidator<WareHouse>, WareHouseValidator>()
                 .AddScoped<IValidator<Driver>, DriverValidator>()
-                .AddScoped<IValidator<WareHouseMovement>, DispatchValidator>()
+                .AddScoped<IValidator<WareHouseMovement>, WareHouseMovementValidator>()
                 .AddScoped<IValidator<User>, RegisterValidator>()
                 .AddScoped<IValidator<ArticleDataMaster>, ArticlesValidator>()
+                .AddScoped<IBookingServices, BookingServices>()
+                .AddScoped<IRoadServices, RoadServices>()
                 .AddScoped<ICompaniesServices, CompaniesServices>()
                 .AddScoped<ICompaniesUsersServices, UsersCompaniesServices>()
                 .AddScoped<IUsersRolesServices, UsersRolesServices>()
