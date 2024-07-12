@@ -18,6 +18,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         [JsonIgnore]
         public virtual ICollection<Dispenser> Dispensers { get; set; } = new List<Dispenser>();
         [JsonIgnore]
-        public virtual BranchOffices BranchOffice { get; set; }
+        public virtual BranchOffices? BranchOffice { get; set; }
     }
 }

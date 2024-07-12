@@ -23,7 +23,6 @@ namespace FUEL_DISPATCH_API.Middlewares
 
             return true;
         }
-
         private static void CheckException(HttpContext httpContext, Exception exception, out ProblemDetails problemDetails, Type exType, out HttpStatusCode httpStatusCode)
         {
             if (exType == typeof(BadRequestException))
@@ -67,7 +66,7 @@ namespace FUEL_DISPATCH_API.Middlewares
                 problemDetails = details;
 
             }
-            else if(exType == typeof(SystemNetMailSmtpException))
+            else if (exType == typeof(SystemNetMailSmtpException))
             {
                 var details = new ProblemDetails
                 {
@@ -84,7 +83,7 @@ namespace FUEL_DISPATCH_API.Middlewares
             {
                 var details = new ProblemDetails
                 {
-                    Detail = exception.Message,
+                    Detail = "An unexpected error has occurred. ",
                     Instance = httpContext.ToString(),
                     Status = StatusCodes.Status500InternalServerError,
                     Title = "Something went wrong. ",

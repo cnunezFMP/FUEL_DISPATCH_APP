@@ -8,6 +8,7 @@ using Gridify;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace FUEL_DISPATCH_API.Controllers
 {
@@ -27,13 +28,11 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             return Ok(_branchOfficeServices.GetAll(query));
         }
-
         [HttpGet("{id:int}")]
         public ActionResult<ResultPattern<BranchOffices>> GetBranchOffice(int id)
         {
             return Ok(_branchOfficeServices.Get(x => x.Id == id));
         }
-
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<BranchOffices>> PostBranchOffice([FromBody] BranchOffices branchOffice)
         {
@@ -44,9 +43,13 @@ namespace FUEL_DISPATCH_API.Controllers
             }
             branchOffice.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             branchOffice.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            return CreatedAtAction(nameof(GetBranchOffice), new { id = branchOffice.Id }, _branchOfficeServices.Post(branchOffice));
+            // DONE: Fix this, currently throws exception 'InvalidOperationException: No route matches the supplied values.'
+            return CreatedAtAction(nameof(GetBranchOffice),
+                new
+                {
+                    id = branchOffice.Id
+                }, _branchOfficeServices.Post(branchOffice));
         }
-
         [HttpPut("{id:int}")]
         public ActionResult<ResultPattern<BranchOffices>> UpdateBranchOffice(int id, [FromBody] BranchOffices branchOffice)
         {

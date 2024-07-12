@@ -16,10 +16,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     public class UsersRolesServices : GenericRepository<User>, IUsersRolesServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
-        public UsersRolesServices(FUEL_DISPATCH_DBContext dbContext) 
-            : base(dbContext) 
-        { 
-            _DBContext = dbContext; 
+        public UsersRolesServices(FUEL_DISPATCH_DBContext dbContext)
+            : base(dbContext)
+        {
+            _DBContext = dbContext;
         }
         public ResultPattern<User> DeleteUserRol(int userId, int roleId)
         {
@@ -46,16 +46,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             if (UserHasTheRole(user, roleId))
                 throw new BadRequestException("This user has this role. ");
-
-
             user.Rols.Add(rol);
             _DBContext.User.Update(user);
             _DBContext.SaveChanges();
-
-            _DBContext.Role.Remove(rol!);
-            _DBContext.SaveChanges();
             return ResultPattern<User>.Success(user, StatusCodes.Status200OK, "User rols updated. ");
         }
-        public bool UserHasTheRole(User user, int rolId) => user.Rols.Any(r => r.Id == rolId);
+        public bool UserHasTheRole(User user, int rolId)
+            => user.Rols.Any(r => r.Id == rolId);
     }
 }

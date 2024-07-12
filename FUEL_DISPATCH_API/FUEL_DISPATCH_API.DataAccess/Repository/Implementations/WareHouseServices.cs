@@ -13,7 +13,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         public WareHouseServices(FUEL_DISPATCH_DBContext dbContext) : base(dbContext) { _DBContext = dbContext; }
         public bool WareHouseExists(WareHouse wareHouse) => !_DBContext.WareHouse.Any(x => x.Code == wareHouse.Code);
-
+        // TODO: Hacer despachos y transferencias con solicitudes.
+        // TODO: Verificar el estado de las solicitudes.
         public override ResultPattern<WareHouse> Post(WareHouse wareHouse)
         {
             if (wareHouse.BranchOfficeId.HasValue)
@@ -28,16 +29,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 StatusCodes.Status201Created,
                 "Warehouse added successfully. ");
         }
-
         public bool SetCompanyId(WareHouse wareHouse)
         {
             var branchOffice = _DBContext.BranchOffices.FirstOrDefault(x => x.Id == wareHouse.BranchOfficeId);
             wareHouse.CompanyId = branchOffice!.CompanyId;
             return true;
         }
-
         public bool BranchOfficeExist(WareHouse wareHouse) => !_DBContext.BranchOffices.Any(x => x.Id == wareHouse.Id);
-
         public bool SetWareHouseDir(WareHouse wareHouse)
         {
             var branchOffice = _DBContext.BranchOffices.FirstOrDefault(x => x.Id == wareHouse.BranchOfficeId);

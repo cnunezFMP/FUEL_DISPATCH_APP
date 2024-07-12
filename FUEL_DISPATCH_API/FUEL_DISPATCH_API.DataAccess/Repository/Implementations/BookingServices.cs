@@ -22,7 +22,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext = dbContext;
             _wareHouseServices = wareHouseServices;
         }
-
         public bool CheckDriver(Booking booking)
         {
             return _wareHouseServices.CheckDriver(booking.DriverId);

@@ -4,6 +4,7 @@ using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -38,7 +39,7 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             return Ok(_companiesServices.GetCompanyByRnc(companyRnc));
         }
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Companies>> PostCompany([FromBody] Companies company)
         {
             var validationResult = _companiesValidator.Validate(company);

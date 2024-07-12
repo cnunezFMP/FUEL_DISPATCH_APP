@@ -2,7 +2,7 @@
 <Root Type="DevExpress.CodeRush.Foundation.Markers.SolutionBookmarksContainer">
   <Options Language="Neutral">
     <Items>
-      <Item Id="{212e445a-a7e0-47f5-acc6-233346a0552c}">
+      <Item Id="{1a8c9b43-aac6-4e54-953f-cc11d24a3b11}">
         <Id>1</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API.DataAccess\Repository\Implementations\UsersServices.cs</File>
         <Line>13</Line>
@@ -11,16 +11,7 @@
         <ViewportTopMax>1337</ViewportTopMax>
         <TopLine>10</TopLine>
       </Item>
-      <Item Id="{1ec0196c-a509-4862-bb55-d557eb284bb2}">
-        <Id>3</Id>
-        <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API.DataAccess\Repository\Implementations\UsersServices.cs</File>
-        <Line>24</Line>
-        <Character>11</Character>
-        <ViewportTop>554</ViewportTop>
-        <ViewportTopMax>1337</ViewportTopMax>
-        <TopLine>15</TopLine>
-      </Item>
-      <Item Id="{28c5d723-cc08-442c-804e-14a9e46279b1}">
+      <Item Id="{b9f7ac9d-af8f-43f7-be55-322aa058b79f}">
         <Id>4</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API\Controllers\ArticlesController.cs</File>
         <Line>66</Line>
@@ -29,7 +20,7 @@
         <ViewportTopMax>1796</ViewportTopMax>
         <TopLine>36</TopLine>
       </Item>
-      <Item Id="{7ac2dcf8-e4fb-431b-9437-6da904de02c4}">
+      <Item Id="{4fa25100-3e44-4c82-9655-7deb4a8d4b08}">
         <Id>5</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API\Controllers\DriversController.cs</File>
         <Line>44</Line>
@@ -37,6 +28,24 @@
         <ViewportTop>1205</ViewportTop>
         <ViewportTopMax>2226</ViewportTopMax>
         <TopLine>36</TopLine>
+      </Item>
+      <Item Id="{f2299a83-e6c7-4235-acb3-13f08db1fa15}">
+        <Id>2</Id>
+        <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API\Controllers\UsersCompaniesController.cs</File>
+        <Line>7</Line>
+        <Character>4</Character>
+        <ViewportTop>148</ViewportTop>
+        <ViewportTopMax>1176</ViewportTopMax>
+        <TopLine>3</TopLine>
+      </Item>
+      <Item Id="{823b1594-9d4d-4c34-8258-34d2a6526d88}">
+        <Id>3</Id>
+        <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API\Controllers\ArticlesController.cs</File>
+        <Line>16</Line>
+        <Character>4</Character>
+        <ViewportTop>478</ViewportTop>
+        <ViewportTopMax>1796</ViewportTopMax>
+        <TopLine>15</TopLine>
       </Item>
     </Items>
   </Options>

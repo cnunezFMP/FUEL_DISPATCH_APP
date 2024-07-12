@@ -24,7 +24,7 @@ public partial class BranchOffices
 
     public string FullLocation { get; set; }
 
-    public int? Id { get; set; }
+    public int Id { get; set; }
     public string Name { get; set; }
     [Phone]
     public string Phone { get; set; }

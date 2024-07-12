@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models
 {
+    // TODO: Poner CompanyId
     public class ArticleDataMaster
     {
         public int Id { get; set; }

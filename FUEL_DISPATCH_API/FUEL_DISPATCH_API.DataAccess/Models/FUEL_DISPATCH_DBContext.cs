@@ -155,7 +155,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         modelBuilder.Entity<BranchIsland>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.ToTable("BranchIslands");
+            entity.ToTable("BranchIsland");
             entity.HasOne(e => e.BranchOffice)
             .WithMany(e =>
             e.BranchIslands)

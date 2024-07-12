@@ -2,16 +2,13 @@
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Constants;
-using FUEL_DISPATCH_API.Utils.ENUMS;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
-
     public class WareHouseMovementServices : GenericRepository<WareHouseMovement>, IWareHouseMovementServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;

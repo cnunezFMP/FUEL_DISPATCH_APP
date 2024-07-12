@@ -33,6 +33,27 @@ builder.Services.AddSwaggerGen(
         Title = swaggerTitle,
         Version = swaggerVersion
     });
+    info.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+    });
+    info.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        {
+            new OpenApiSecurityScheme {
+                Reference = new OpenApiReference {
+                    Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+
 });
 builder.Services.AddDbContext<FUEL_DISPATCH_DBContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("cadenaSQL")));
@@ -58,6 +79,9 @@ builder.Services.AddAuthentication(config =>
     });
 #region ServicesContainers
 builder.Services.AddScoped<IValidator<Booking>, BookingValidator>()
+                .AddScoped<IValidator<BranchOffices>, BranchOfficeValidator>()
+                .AddScoped<IValidator<BranchIsland>, BranchIslandValidator>()
+                .AddScoped<IValidator<Dispenser>, DispenserValidator>()
                 .AddScoped<IValidator<Road>, RoadValidator>()
                 .AddScoped<IValidator<Companies>, CompanyValidator>()
                 .AddScoped<IValidator<WareHouse>, WareHouseValidator>()
@@ -65,12 +89,17 @@ builder.Services.AddScoped<IValidator<Booking>, BookingValidator>()
                 .AddScoped<IValidator<WareHouseMovement>, WareHouseMovementValidator>()
                 .AddScoped<IValidator<User>, RegisterValidator>()
                 .AddScoped<IValidator<ArticleDataMaster>, ArticlesValidator>()
+                .AddScoped<IEmployeeComsuptionLimits, EmployeeComsuptionLimits>()
                 .AddScoped<IBookingServices, BookingServices>()
+                .AddScoped<IBranchOfficeServices, BranchOfficeServices>()
+                .AddScoped<IBranchIslandServices, BranchIslandServices>()
+                .AddScoped<IDispenserServices, DispenserServices>()
                 .AddScoped<IRoadServices, RoadServices>()
                 .AddScoped<ICompaniesServices, CompaniesServices>()
                 .AddScoped<ICompaniesUsersServices, UsersCompaniesServices>()
                 .AddScoped<IUsersRolesServices, UsersRolesServices>()
                 .AddScoped<IWareHouseMovementServices, WareHouseMovementServices>()
+                .AddScoped<IDriverMethodOfComsuptionServices, DriverMethodOfComsuptionServices>()
                 .AddScoped<IStockServices, StockServices>()
                 .AddScoped<IArticleServices, ArticleDataMasterServices>()
                 .AddScoped<IRequestServices, RequestServices>()
