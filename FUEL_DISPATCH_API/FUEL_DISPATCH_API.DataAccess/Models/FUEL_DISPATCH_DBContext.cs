@@ -69,7 +69,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.ToTable("ArticleDataMaster");
-
+            entity.HasOne(x => x.Company).WithMany(x => x.Articles).HasForeignKey(x => x.CompanyId);
         });
         modelBuilder.Entity<BranchOffices>(entity =>
         {
@@ -149,9 +149,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.ToTable("WareHouse");
             entity.HasOne(x => x.Company).WithMany(x => x.WareHouses).HasForeignKey(x => x.CompanyId);
             entity.HasOne(e => e.BranchOffice).WithMany(e => e.WareHouses).HasForeignKey(e => e.BranchOfficeId);
-
         });
-
         modelBuilder.Entity<BranchIsland>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -180,7 +178,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(d => d.Vehicle).WithMany(p => p.Driver)
                 .HasForeignKey(d => d.VehicleId);
         });
-
         modelBuilder.Entity<EmployeeConsumptionLimits>(entity =>
         {
             entity.HasKey(x => new { x.DriverId, x.MethodOfComsuptionId });
@@ -188,7 +185,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(x => x.Driver).WithMany(x => x.EmployeeConsumptionLimits).HasForeignKey(x => x.DriverId).OnDelete(DeleteBehavior.SetNull);
             entity.HasOne(x => x.DriverMethodOfComsuption).WithMany(x => x.EmployeeConsumptionLimits).HasForeignKey(x => x.MethodOfComsuptionId).OnDelete(DeleteBehavior.SetNull);
         });
-
         modelBuilder.Entity<Generation>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Generati__3214EC07F57C4C1D");
@@ -309,7 +305,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(e => e.WareHouse).WithMany(e => e.Stocks).HasForeignKey(e => e.WareHouseId);
             entity.HasOne(e => e.ArticleDataMaster).WithMany(e => e.Stocks).HasForeignKey(e => e.ItemId);
         });
-
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id);

@@ -6,20 +6,23 @@ using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class WareHouseMovementServices : GenericRepository<WareHouseMovement>, IWareHouseMovementServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
-
         public WareHouseMovementServices(FUEL_DISPATCH_DBContext dbContext)
             : base(dbContext)
         {
             _DBContext = dbContext;
         }
+        // DONE: Hacer despachos y transferencias con solicitudes.
         public override ResultPattern<WareHouseMovement> Post(WareHouseMovement wareHouseMovement)
         {
+            if (wareHouseMovement.RequestId.HasValue)
+                SetRequestForMovement(wareHouseMovement);
             if (wareHouseMovement.VehicleId.HasValue)
             {
                 SetDriverIdByVehicle(wareHouseMovement);
@@ -32,7 +35,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext.SaveChanges();
             return ResultPattern<WareHouseMovement>.Success(wareHouseMovement, StatusCodes.Status201Created, "Registered dispatch. ");
         }
-
         #region Logic
         public bool SetDriverIdByVehicle(WareHouseMovement wareHouseMovement)
         {
@@ -226,6 +228,27 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 driverCurrentAmount.CurrentAmount = newDriverAmount;
                 _DBContext.SaveChanges();
             }
+        }
+        // DONE: Verificar el estado de las solicitudes. Agregar a FluentValidation.
+        // TODO: Verificar si la validacion me funcionara en vez de las excepciones.
+        public bool SetRequestForMovement(WareHouseMovement wareHouseMovement)
+        {
+            var requestForMovement = _DBContext.Request.FirstOrDefault(x => x.Id == wareHouseMovement.RequestId)
+                ?? throw new NotFoundException("No request found. ");
+
+            /*if (requestForMovement.Status is ValidationConstants.PendingStatus)
+                throw new BadRequestException($"This request is {ValidationConstants.PendingStatus}");
+
+            if (requestForMovement.Status is ValidationConstants.RejectedStatus)
+                throw new BadRequestException($"This request is {ValidationConstants.RejectedStatus}");
+
+            if (requestForMovement.Status is ValidationConstants.CanceledStatus)
+                throw new BadRequestException($"This request is {ValidationConstants.CanceledStatus}");*/
+
+            wareHouseMovement.Qty = requestForMovement.Qty;
+            wareHouseMovement.DriverId = requestForMovement.DriverId;
+            wareHouseMovement.VehicleId = requestForMovement.VehicleId;
+            return true;
         }
         #endregion
     }

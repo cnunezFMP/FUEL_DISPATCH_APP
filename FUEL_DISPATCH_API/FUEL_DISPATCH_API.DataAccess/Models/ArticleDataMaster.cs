@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models
 {
-    // TODO: Poner CompanyId
+    // DONE: Poner CompanyId
     public class ArticleDataMaster
     {
         public int Id { get; set; }
@@ -13,6 +13,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public string? Manufacturer { get; set; }
         public string? BarCode { get; set; }
         public string? CreatedBy { get; set; }
+        public int CompanyId { get; set; }
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
@@ -20,5 +21,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
         [JsonIgnore]
         public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
+        [JsonIgnore]
+        public virtual Companies? Company { get; set; }
     }
 }

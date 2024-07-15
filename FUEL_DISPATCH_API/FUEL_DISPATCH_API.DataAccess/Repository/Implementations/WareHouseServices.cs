@@ -3,18 +3,19 @@ using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Linq;
-
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class WareHouseServices : GenericRepository<WareHouse>, IWareHouseServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
-        public WareHouseServices(FUEL_DISPATCH_DBContext dbContext) : base(dbContext) { _DBContext = dbContext; }
-        public bool WareHouseExists(WareHouse wareHouse) => !_DBContext.WareHouse.Any(x => x.Code == wareHouse.Code);
-        // TODO: Hacer despachos y transferencias con solicitudes.
-        // TODO: Verificar el estado de las solicitudes.
+        public WareHouseServices(FUEL_DISPATCH_DBContext dbContext)
+            : base(dbContext)
+        {
+            _DBContext = dbContext;
+        }
+        public bool WareHouseExists(WareHouse wareHouse)
+            => !_DBContext.WareHouse.Any(x => x.Code == wareHouse.Code);
+        
         public override ResultPattern<WareHouse> Post(WareHouse wareHouse)
         {
             if (wareHouse.BranchOfficeId.HasValue)
@@ -35,12 +36,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             wareHouse.CompanyId = branchOffice!.CompanyId;
             return true;
         }
-        public bool BranchOfficeExist(WareHouse wareHouse) => !_DBContext.BranchOffices.Any(x => x.Id == wareHouse.Id);
+        public bool BranchOfficeExist(WareHouse wareHouse)
+            => !_DBContext.BranchOffices.Any(x => x.Id == wareHouse.Id);
         public bool SetWareHouseDir(WareHouse wareHouse)
         {
             var branchOffice = _DBContext.BranchOffices.FirstOrDefault(x => x.Id == wareHouse.BranchOfficeId);
             wareHouse.FullDirection = branchOffice!.FullLocation;
             return true;
         }
+        
     }
 }

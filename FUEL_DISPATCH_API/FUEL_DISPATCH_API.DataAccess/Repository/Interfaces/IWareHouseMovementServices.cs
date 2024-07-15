@@ -22,5 +22,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
         bool CheckIfWareHousesHasActiveStatus(WareHouseMovement wareHouseMovement);
         bool WillStockFallBelowMinimum(WareHouseMovement wareHouseMovement);
         bool WillStockFallMaximun(WareHouseMovement wareHouseMovement);
+        bool SetRequestForMovement(WareHouseMovement wareHouseMovement);
     }
 }

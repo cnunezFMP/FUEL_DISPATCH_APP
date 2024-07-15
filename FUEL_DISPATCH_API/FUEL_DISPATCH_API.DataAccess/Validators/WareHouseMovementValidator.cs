@@ -2,25 +2,17 @@
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Constants;
-using FUEL_DISPATCH_API.Utils.Exceptions;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace FUEL_DISPATCH_API.DataAccess.Validators
 {
     public class WareHouseMovementValidator : AbstractValidator<WareHouseMovement>
     {
         public WareHouseMovementValidator(IWareHouseMovementServices wareHouseMovementServices)
         {
-            RuleFor(x => x.Vehicle).Must(x => 
-            { 
-                return wareHouseMovementServices.CheckVehicle(x!.Id); }
+            RuleFor(x => x.Vehicle).Must(x =>
+            {
+                return wareHouseMovementServices.CheckVehicle(x!.Id);
+            }
             ).WithMessage("{PropertyName} is inactive or unavailable. ").When(x => x.VehicleId.HasValue);
-
             RuleFor(x => x.Qty).Must((qty, _) =>
             {
                 return wareHouseMovementServices.QtyCantBeZero(qty);
@@ -38,8 +30,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             {
                 return !wareHouseMovementServices.CheckBranchOffice(branch);
             }).WithMessage("PropertyName} is inactive or unavailable. ");
-
-            RuleFor(x => x).Must(warehouseMovement => wareHouseMovementServices.CheckIfProductIsInTheWareHouse(warehouseMovement)).WithMessage("The product isn't in the specified warehouse. ");
+            RuleFor(x => x).Must(x => wareHouseMovementServices.CheckIfProductIsInTheWareHouse(x)).WithMessage("The product isn't in the specified warehouse. ");
             RuleFor(x => x.WareHouse).Must((wareHouse, _) =>
             {
                 return wareHouseMovementServices.CheckIfWareHousesHasActiveStatus(wareHouse);
@@ -56,6 +47,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             {
                 return wareHouseMovementServices.WillStockFallMaximun(wareHouseMovement);
             }).When(x => x.Type is "Entrada" || x.Type is "Transferencia").WithMessage("The input quantity will exceed the maximum warehouse quantity. ");
+            // TODO: Test this validation.
+            RuleFor(x => x)
+                .Must(x => wareHouseMovementServices.SetRequestForMovement(x))
+                .When(x => x.RequestId.HasValue
+                && x.Request!.Status is not ValidationConstants.PendingStatus
+                && x.Request!.Status is not ValidationConstants.RejectedStatus
+                && x.Request!.Status is not ValidationConstants.CanceledStatus)
+                .WithMessage(x => $"Unfortunately, this request is not ready to be processed/used at this time. Request status is {x.Request!.Status}");
         }
     }
 }

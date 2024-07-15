@@ -12,10 +12,12 @@ namespace FUEL_DISPATCH_API.Controllers
     public class EmployeeConsumptionLimitsController : ControllerBase
     {
         private readonly IEmployeeComsuptionLimits _employeeComsuptionLimitsServices;
+        private readonly EmployeeComsuptionLimitsValidator _validator;
 
-        public EmployeeConsumptionLimitsController(IEmployeeComsuptionLimits employeeComsuptionLimitsServices)
+        public EmployeeConsumptionLimitsController(IEmployeeComsuptionLimits employeeComsuptionLimitsServices, EmployeeComsuptionLimitsValidator validator)
         {
             _employeeComsuptionLimitsServices = employeeComsuptionLimitsServices;
+            _validator = validator;
         }
 
         [HttpDelete("{driverId}/DriverMethodOfComsuption/{companyId}")/*, Authorize(Roles = "Administrator")*/]
@@ -27,20 +29,18 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost/*, Authorize(Roles = "Administrator")*/]
         public ActionResult<ResultPattern<EmployeeConsumptionLimits>> SetEmployeLimitAndMethod([FromBody] EmployeeConsumptionLimits employeeConsumption)
         {
-            /*var validationResult = _validator.Validate(article);
+            var validationResult = _validator.Validate(employeeConsumption);
             if (!validationResult.IsValid)
             {
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            }*/
+            }
             return Created(string.Empty, new { driverId = employeeConsumption.DriverId, methodId = employeeConsumption.MethodOfComsuptionId });
         }
 
-        /*[HttpPut("{userId}/DriverMethodOfComsuption/{companyId}")*//*, Authorize(Roles = "Administrator")*//*]
+        [HttpPut("{userId}/DriverMethodOfComsuption/{companyId}")/*, Authorize(Roles = "Administrator")*/]
         public ActionResult<ResultPattern<DriverMethodOfComsuption>> UpdateUserCompany(int userId, int companyId)
         {
             return Ok(_employeeComsuptionLimitsServices.UpdateDriverMethod(userId, companyId));
-        }*/
-
-
+        }
     }
 }

@@ -2,21 +2,20 @@
 {
     public record ResultPattern<T>
     {
-        public ResultPattern(object data, int statusCode, bool isSuccess, string message)
+        public ResultPattern(T data, int statusCode, bool isSuccess, string message)
         {
             Data = data;
             StatusCode = statusCode;
             IsSuccess = isSuccess;
             Message = message;
         }
-        public object Data { get; init; }
+        public T Data { get; init; }
         public int StatusCode { get; init; }
         public bool IsSuccess { get; init; }
         public string Message { get; init; }
-        public static ResultPattern<T> Success(object data, int statusCode, string message) =>
+        public static ResultPattern<T> Success(T data, int statusCode, string message) =>
             new ResultPattern<T>(data, statusCode, true, message);
-
-        public static ResultPattern<T> Failure(int statuscode, string message, object data) =>
+        public static ResultPattern<T> Failure(int statuscode, string message, T data) =>
             new ResultPattern<T>(data, statuscode, false, message);
     }
 }

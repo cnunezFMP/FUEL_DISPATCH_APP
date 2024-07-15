@@ -5,5 +5,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
     public interface IRequestServices : IGenericInterface<Request>
     {
+        bool CheckVehicle(Request newRequest);
+        bool CheckDispatch(Request newRequest);
     }
 }

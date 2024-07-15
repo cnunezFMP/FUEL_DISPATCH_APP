@@ -33,7 +33,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         public bool VerifyDisponibility(Booking booking)
         {
             return !_DBContext.Booking.Any(r => r.VehicleId == booking.VehicleId
-                       && r.Status != ValidationConstants.BookingCanceledStatus
+                       && r.Status != ValidationConstants.CanceledStatus
                        && (booking.SpecificDate <= r.ToSpecificDate && booking.ToSpecificDate >= r.SpecificDate)
                        && r.SpecificDate != booking.SpecificDate);
         }

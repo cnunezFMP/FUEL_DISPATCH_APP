@@ -10,6 +10,7 @@ public partial class Zone
     public int Id { get; set; }
 
     public string? FullZoneSpecs { get; set; }
+    public string? Code { get; set; }
 
     public string? Status { get; set; }
 

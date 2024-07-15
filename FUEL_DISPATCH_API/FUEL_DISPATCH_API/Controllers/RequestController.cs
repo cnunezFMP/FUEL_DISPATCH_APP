@@ -1,6 +1,8 @@
-﻿using FUEL_DISPATCH_API.DataAccess.Models;
+﻿using FluentValidation;
+using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Mvc;
@@ -10,12 +12,14 @@ namespace FUEL_DISPATCH_API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class RequestController : Controller
+    public class RequestController : ControllerBase
     {
         private readonly IRequestServices _requestServices;
-        public RequestController(IRequestServices requestServices)
+        private readonly IValidator<Request> _validator;
+        public RequestController(IRequestServices requestServices, IValidator<Request> validator)
         {
             _requestServices = requestServices;
+            _validator = validator;
         }
         [HttpGet]
         public ActionResult<ResultPattern<Paging<Request>>> GetRequests([FromQuery] GridifyQuery query)
@@ -27,13 +31,21 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             return Ok(_requestServices.Get(x => x.Id == id));
         }
-
+        // DONE: Agregar el validador aqui.
         [HttpPost]
         public ActionResult<ResultPattern<Request>> PostRequest([FromBody] Request request)
         {
+            var validationResult = _validator.Validate(request);
+            if (!validationResult.IsValid)
+            {
+                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            }
             request.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             request.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            return CreatedAtAction(nameof(GetRequest), new { id = request.Id }, _requestServices.Post(request));
+            return CreatedAtAction(nameof(GetRequest), new
+            {
+                id = request.Id
+            }, _requestServices.Post(request));
         }
 
         [HttpPut("{id:int}")]

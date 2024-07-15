@@ -29,13 +29,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext.SaveChanges();
             return ResultPattern<Request>.Success(entity, StatusCodes.Status201Created, "Solicitud enviada. ");
         }
-        bool CheckDispatch(Request newRequest)
+        public bool CheckDispatch(Request newRequest)
             => newRequest.Qty is ValidationConstants.ZeroGallons;
 
-        bool CheckVehicle(Request newRequest)
+        public bool CheckVehicle(Request newRequest)
         {
             var vehicleForDispatch = _DBContext.Vehicle.FirstOrDefault(x => x.Id == newRequest.VehicleId);
-            return vehicleForDispatch!.Status is ValidationConstants.InactiveStatus || vehicleForDispatch!.Status is ValidationConstants.NotAvailableStatus;
+            return vehicleForDispatch!.Status is not ValidationConstants.InactiveStatus || vehicleForDispatch!.Status is not ValidationConstants.NotAvailableStatus;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
     public interface ICompaniesUsersServices
     {
         bool UserIsInTheCompany(User user, int companieId);
-        ResultPattern<UsersCompanies> UpdateUserCompany(int userId, int companieId);
+        ResultPattern<User> UpdateUserCompany(int userId, int companieId);
         ResultPattern<UsersCompanies> DeleteUserCompany(int userId, int companieId);
     }
 }

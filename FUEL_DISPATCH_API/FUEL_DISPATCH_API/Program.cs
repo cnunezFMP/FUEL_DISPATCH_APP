@@ -78,7 +78,9 @@ builder.Services.AddAuthentication(config =>
         };
     });
 #region ServicesContainers
-builder.Services.AddScoped<IValidator<Booking>, BookingValidator>()
+builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
+                .AddScoped<IValidator<EmployeeConsumptionLimits>, EmployeeComsuptionLimitsValidator>()
+                .AddScoped<IValidator<Booking>, BookingValidator>()
                 .AddScoped<IValidator<BranchOffices>, BranchOfficeValidator>()
                 .AddScoped<IValidator<BranchIsland>, BranchIslandValidator>()
                 .AddScoped<IValidator<Dispenser>, DispenserValidator>()
@@ -89,7 +91,8 @@ builder.Services.AddScoped<IValidator<Booking>, BookingValidator>()
                 .AddScoped<IValidator<WareHouseMovement>, WareHouseMovementValidator>()
                 .AddScoped<IValidator<User>, RegisterValidator>()
                 .AddScoped<IValidator<ArticleDataMaster>, ArticlesValidator>()
-                .AddScoped<IEmployeeComsuptionLimits, EmployeeComsuptionLimits>()
+                .AddScoped<IEmployeeComsuptionLimits, EmployeeComsuptionLimitsServices>()
+                .AddScoped<IZoneServices, ZoneServices>()
                 .AddScoped<IBookingServices, BookingServices>()
                 .AddScoped<IBranchOfficeServices, BranchOfficeServices>()
                 .AddScoped<IBranchIslandServices, BranchIslandServices>()
@@ -129,11 +132,10 @@ builder.Services.AddCors((options) =>
 });
 var app = builder.Build();
 app.UseExceptionHandler();
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 app.UseReDoc(c =>
 {
     c.DocumentTitle = "FUEL_DISPATCH_API Doc";

@@ -8,9 +8,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public int? MethodOfComsuptionId { get; set; }
         public decimal? LimitAmount { get; set; }
         public decimal? CurrentAmount { get; set; }
-        [JsonIgnore]
-        public virtual Driver? Driver { get; set; }
-        [JsonIgnore]
-        public virtual DriverMethodOfComsuption? DriverMethodOfComsuption { get; set; }
+        [JsonIgnore] public virtual Driver? Driver { get; set; }
+        [JsonIgnore] public virtual DriverMethodOfComsuption? DriverMethodOfComsuption { get; set; }
     }
 }

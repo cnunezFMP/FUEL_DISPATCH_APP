@@ -27,7 +27,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext.SaveChanges();
             return ResultPattern<UsersCompanies>.Success(company, StatusCodes.Status200OK, "User-Company Updated Successfully!");
         }
-        public ResultPattern<UsersCompanies> UpdateUserCompany(int userId, int companieId)
+        public ResultPattern<User> UpdateUserCompany(int userId, int companieId)
         {
             var user = _DBContext.User.Include(x => x.Companies).FirstOrDefault(x => x.Id == userId)
                 ?? throw new NotFoundException("This user doesn't exist. ");
@@ -42,8 +42,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             _DBContext.User.Update(user);
             _DBContext.SaveChanges();
-            _DBContext.SaveChanges();
-            return ResultPattern<UsersCompanies>.Success(user, StatusCodes.Status200OK, "User company updated. ");
+            return ResultPattern<User>.Success(user, StatusCodes.Status200OK, "User company updated. ");
         }
         public bool UserIsInTheCompany(User user, int rolId)
             => user.Companies.Any(r => r.Id == rolId);

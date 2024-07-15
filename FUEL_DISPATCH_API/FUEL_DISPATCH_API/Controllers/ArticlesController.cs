@@ -49,7 +49,7 @@ namespace FUEL_DISPATCH_API.Controllers
         /// <param name="article"></param>
         /// <returns></returns>
         [HttpPost, Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<Driver>> PostArticle([FromBody] ArticleDataMaster article)
+        public ActionResult<ResultPattern<ArticleDataMaster>> PostArticle([FromBody] ArticleDataMaster article)
         {
             var validationResult = _validator.Validate(article);
             if (!validationResult.IsValid)
