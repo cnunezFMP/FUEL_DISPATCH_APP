@@ -29,6 +29,16 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_companiesServices.GetAll(query));
         }
 
+        /// <summary>
+        /// Obtener todas las sucursales de una compañia. 
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
+        [HttpGet("{companyId}/BranchOffice")]
+        public ActionResult<ResultPattern<BranchOffices>> GetCompanyBranchOfficess(int companyId)
+        {
+            return Ok(_companiesServices.GetCompanyBranchOfficess(companyId));
+        }
         [HttpGet("{id:int}")]
         public ActionResult<ResultPattern<Companies>> GetCompany(int id)
         {

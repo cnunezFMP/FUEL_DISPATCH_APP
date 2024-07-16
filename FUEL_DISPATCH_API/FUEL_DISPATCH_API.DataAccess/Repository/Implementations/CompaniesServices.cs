@@ -22,6 +22,23 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             _DBContext = dbContext;
         }
+
+        public ResultPattern<List<BranchOffices>> GetCompanyBranchOfficess(int companyId)
+        {
+            var companyBranchOffices = _DBContext.BranchOffices
+                .AsNoTracking()
+                .Where(x => x.CompanyId == companyId)
+                .ToList()
+                ?? throw new NotFoundException("This company has no branch. ");
+
+            return ResultPattern<List<BranchOffices>>
+                .Success
+                (
+                    companyBranchOffices,
+                    StatusCodes.Status200OK,
+                    "All company branch offices obtained. "
+                );
+        }
         public ResultPattern<Companies> GetCompanyByRnc(string companyRNC)
         {
             var companyByRnc = _DBContext.Companies.FirstOrDefault(x => x.CompanyRNC == companyRNC)
