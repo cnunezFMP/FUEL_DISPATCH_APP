@@ -29,6 +29,8 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_companiesServices.GetAll(query));
         }
 
+
+        
         /// <summary>
         /// Obtener todas las sucursales de una compañia. 
         /// </summary>

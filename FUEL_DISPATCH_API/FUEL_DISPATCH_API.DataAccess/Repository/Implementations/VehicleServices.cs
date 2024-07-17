@@ -80,6 +80,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             => !_DBContext.Vehicle.Any(x => x.Ficha == vehicleToken.Ficha);
 
         // DONE: Implementar esto en el controlador de Vehicle
+        // TODO: Ver si implementar la misma forma de devolver los despachos como los "BranchOffices" en las compañias. 
         public ResultPattern<List<WareHouseMovement>> GetVehicleDispatches(int vehicleId)
         {
             var driverDispatches = _DBContext.WareHouseMovement

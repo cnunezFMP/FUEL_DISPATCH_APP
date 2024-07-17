@@ -16,18 +16,24 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             _DBContext = dbContext;
         }
-        public ResultPattern<List<BranchOffices>> GetCompanyBranchOfficess(int companyId)
+        public ResultPattern<ICollection<BranchOffices>> GetCompanyBranchOfficess(int companyId)
         {
-            var companyBranchOffices = _DBContext.BranchOffices
-                .AsNoTracking()
-                .Where(x => x.CompanyId == companyId)
-                .ToList()
-                ?? throw new NotFoundException("This company has no branch. ");
+            // TODO: Buscar cual de las dos formas que e utilizado para devolver las "BranchOffices" es mas eficiente. 
+            var company = _DBContext
+                .Companies
+                .FirstOrDefault(x => x.Id == companyId)
+                ?? throw new NotFoundException("This company doesn't exist. ");
 
-            return ResultPattern<List<BranchOffices>>
+            if (!company.BranchOffices.Any())
+                throw new BadRequestException("This company don't have branch offices. ");
+            //var companyBranchOffices = _DBContext.BranchOffices
+            //    .AsNoTracking()
+            //    .Where(x => x.CompanyId == companyId)
+            //    .ToList();
+            return ResultPattern<ICollection<BranchOffices>>
                 .Success
                 (
-                    companyBranchOffices,
+                    company!.BranchOffices,
                     StatusCodes.Status200OK,
                     "All company branch offices obtained. "
                 );
