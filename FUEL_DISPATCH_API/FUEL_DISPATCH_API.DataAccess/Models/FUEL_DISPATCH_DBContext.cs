@@ -48,7 +48,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<Stock> Stock { get; set; }
     public virtual DbSet<WareHouse> WareHouse { get; set; }
     public virtual DbSet<WareHouseMovement> WareHouseMovement { get; set; }
-    public virtual DbSet<Request> Request { get; set; }
+    public virtual DbSet<WareHouseMovementRequest> WareHouseMovementRequest { get; set; }
     public virtual DbSet<User> User { get; set; }
     public virtual DbSet<UserToken> UserToken { get; set; }
     public virtual DbSet<UsersRols> UsersRols { get; set; }
@@ -275,10 +275,10 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(d => d.Zone).WithMany(p => p.Road)
                 .HasForeignKey(d => d.ZoneId);
         });
-        modelBuilder.Entity<Request>(entity =>
+        modelBuilder.Entity<WareHouseMovementRequest>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.ToTable("Request");
+            entity.ToTable("WareHouseMovementRequest");
             entity.HasOne(e => e.Vehicle).WithMany(e => e.Requests).HasForeignKey(e => e.VehicleId);
             entity.HasOne(e => e.Driver).WithMany(e => e.Requests).HasForeignKey(e => e.DriverId);
         });
@@ -395,7 +395,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         {
             entity
                 .HasNoKey()
-                .ToView("Vw_WareHouseHistories");
+                .ToView("vw_WareHouseHistory");
         });
         modelBuilder.Entity<Vehicle>(entity =>
         {

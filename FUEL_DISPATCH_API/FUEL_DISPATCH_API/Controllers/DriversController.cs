@@ -28,6 +28,12 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_driverServices.GetAll(query));
         }
 
+        [HttpGet("{driverId:int}/WareHouseMovement")]
+        public ActionResult<ResultPattern<Paging<Driver>>> GetDriverWareHouseMovements(int driverId)
+        {
+            return Ok(_driverServices.GetDriverDispatches(driverId));
+        }
+
         [HttpGet("{id:int}")]
         public ActionResult<ResultPattern<Driver>> GetDriver(int id)
         {

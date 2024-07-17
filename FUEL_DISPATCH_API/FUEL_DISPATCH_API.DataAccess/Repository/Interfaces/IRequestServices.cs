@@ -3,9 +3,9 @@ using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
-    public interface IRequestServices : IGenericInterface<Request>
+    public interface IRequestServices : IGenericInterface<WareHouseMovementRequest>
     {
-        bool CheckVehicle(Request newRequest);
-        bool CheckDispatch(Request newRequest);
+        bool CheckVehicle(WareHouseMovementRequest newRequest);
+        bool CheckDispatch(WareHouseMovementRequest newRequest);
     }
 }

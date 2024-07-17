@@ -36,7 +36,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         [JsonIgnore]
         public virtual Road? Road { get; set; }
         [JsonIgnore]
-        public virtual Request? Request { get; set; }
+        public virtual WareHouseMovementRequest? Request { get; set; }
         [JsonIgnore]
         public virtual Dispenser? Dispenser { get; set; }
         [JsonIgnore]

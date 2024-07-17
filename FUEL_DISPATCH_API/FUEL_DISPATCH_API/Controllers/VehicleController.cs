@@ -1,4 +1,5 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Models;
+using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
@@ -23,6 +24,12 @@ namespace FUEL_DISPATCH_API.Controllers
         public ActionResult<ResultPattern<Paging<Vehicle>>> GetVehicles([FromQuery] GridifyQuery query)
         {
             return Ok(_vehicleServices.GetAll(query));
+        }
+
+        [HttpGet("{vehicleId:int}/WareHouseMovement")]
+        public ActionResult<ResultPattern<Paging<Driver>>> GetDriverWareHouseMovements(int vehicleId)
+        {
+            return Ok(_vehicleServices.GetVehicleDispatches(vehicleId));
         }
 
         [HttpGet("{id:int}")]

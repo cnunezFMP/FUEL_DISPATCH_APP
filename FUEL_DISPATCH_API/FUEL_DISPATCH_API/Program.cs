@@ -13,7 +13,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
-
 var builder = WebApplication.CreateBuilder(args);
 const string swaggerTitle = "FUEL_DISPATCH_API";
 const string swaggerVersion = "v1";
@@ -106,6 +105,8 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<ICompaniesUsersServices, UsersCompaniesServices>()
                 .AddScoped<IUsersRolesServices, UsersRolesServices>()
                 .AddScoped<IWareHouseMovementServices, WareHouseMovementServices>()
+                .AddScoped<IActualStockServices, ActualStockServices>()
+                .AddScoped<IWareHouseHistoryServices, WareHouseHistoryServices>()
                 .AddScoped<IDriverMethodOfComsuptionServices, DriverMethodOfComsuptionServices>()
                 .AddScoped<IStockServices, StockServices>()
                 .AddScoped<IArticleServices, ArticleDataMasterServices>()
@@ -116,7 +117,7 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IUsersAuth, UsersAuth>()
                 .AddScoped<IUserServices, UsersServices>()
                 .AddTransient<IEmailSender, EmailSender>();
-#endregion
+#endregion\
 
 // Ignore cycles in the object that is actually serializing.
 builder.Services.AddControllers().AddJsonOptions(option =>
@@ -136,7 +137,7 @@ builder.Services.AddCors((options) =>
 });
 var app = builder.Build();
 app.UseExceptionHandler();
-
+app.UseCors(corsName);
 app.UseSwagger();
 app.UseSwaggerUI();
 

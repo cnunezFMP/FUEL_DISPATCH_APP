@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
-using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
@@ -12,28 +11,28 @@ namespace FUEL_DISPATCH_API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class RequestController : ControllerBase
+    public class WareHouseMovementRequestController : ControllerBase
     {
         private readonly IRequestServices _requestServices;
-        private readonly IValidator<Request> _validator;
-        public RequestController(IRequestServices requestServices, IValidator<Request> validator)
+        private readonly IValidator<WareHouseMovementRequest> _validator;
+        public WareHouseMovementRequestController(IRequestServices requestServices, IValidator<WareHouseMovementRequest> validator)
         {
             _requestServices = requestServices;
             _validator = validator;
         }
         [HttpGet]
-        public ActionResult<ResultPattern<Paging<Request>>> GetRequests([FromQuery] GridifyQuery query)
+        public ActionResult<ResultPattern<Paging<WareHouseMovementRequest>>> GetRequests([FromQuery] GridifyQuery query)
         {
             return Ok(_requestServices.GetAll(query));
         }
         [HttpGet("{id:int}")]
-        public ActionResult<ResultPattern<Request>> GetRequest(int id)
+        public ActionResult<ResultPattern<WareHouseMovementRequest>> GetRequest(int id)
         {
             return Ok(_requestServices.Get(x => x.Id == id));
         }
         // DONE: Agregar el validador aqui.
         [HttpPost]
-        public ActionResult<ResultPattern<Request>> PostRequest([FromBody] Request request)
+        public ActionResult<ResultPattern<WareHouseMovementRequest>> PostRequest([FromBody] WareHouseMovementRequest request)
         {
             var validationResult = _validator.Validate(request);
             if (!validationResult.IsValid)
@@ -49,7 +48,7 @@ namespace FUEL_DISPATCH_API.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public ActionResult<ResultPattern<User>> UpdateRequest(int id, [FromBody] Request request)
+        public ActionResult<ResultPattern<User>> UpdateRequest(int id, [FromBody] WareHouseMovementRequest request)
         {
             request.UpdatedAt = DateTime.Now;
             request.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;

@@ -6,6 +6,7 @@ using FUEL_DISPATCH_API.Utils.Constants;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System.Numerics;
 #pragma warning disable
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
@@ -50,6 +51,24 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext.Vehicle.Update(vehicle);
             _DBContext.SaveChanges();
             return true;
+        }
+
+        // DONE: Implementar esta funcion en el controlador de Driver
+        public ResultPattern<List<WareHouseMovement>> GetDriverDispatches(int driverId)
+        {
+            var driverDispatches = _DBContext.WareHouseMovement
+                .AsNoTracking()
+                .Where(x => x.DriverId == driverId)
+                .ToList()
+                ?? throw new BadRequestException("This driver has no movements or, the vehicle doesn't exist. "); ;
+
+            return ResultPattern<List<WareHouseMovement>>
+                .Success
+                (
+                    driverDispatches,
+                    StatusCodes.Status200OK,
+                    "Driver dispatches obtained."
+                );
         }
     }
 }

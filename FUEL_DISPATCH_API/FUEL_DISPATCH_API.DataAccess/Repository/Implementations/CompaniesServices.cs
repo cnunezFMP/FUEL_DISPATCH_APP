@@ -5,12 +5,6 @@ using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
@@ -22,7 +16,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             _DBContext = dbContext;
         }
-
         public ResultPattern<List<BranchOffices>> GetCompanyBranchOfficess(int companyId)
         {
             var companyBranchOffices = _DBContext.BranchOffices

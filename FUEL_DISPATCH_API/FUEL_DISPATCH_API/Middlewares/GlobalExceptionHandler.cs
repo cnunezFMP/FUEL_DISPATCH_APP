@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text.Json;
-
 namespace FUEL_DISPATCH_API.Middlewares
 {
     public class GlobalExceptionHandler : IExceptionHandler

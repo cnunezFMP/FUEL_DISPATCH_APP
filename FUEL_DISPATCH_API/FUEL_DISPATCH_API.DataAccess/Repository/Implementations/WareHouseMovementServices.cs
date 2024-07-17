@@ -233,7 +233,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         // TODO: Verificar si la validacion me funcionara en vez de las excepciones.
         public bool SetRequestForMovement(WareHouseMovement wareHouseMovement)
         {
-            var requestForMovement = _DBContext.Request.FirstOrDefault(x => x.Id == wareHouseMovement.RequestId)
+            var requestForMovement = _DBContext.WareHouseMovementRequest.FirstOrDefault(x => x.Id == wareHouseMovement.RequestId)
                 ?? throw new NotFoundException("No request found. ");
 
             /*if (requestForMovement.Status is ValidationConstants.PendingStatus)

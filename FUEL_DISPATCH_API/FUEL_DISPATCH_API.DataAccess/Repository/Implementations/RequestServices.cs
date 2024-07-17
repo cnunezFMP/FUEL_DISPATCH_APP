@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
-    public class RequestServices : GenericRepository<Request>, IRequestServices
+    public class RequestServices : GenericRepository<WareHouseMovementRequest>, IRequestServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         public RequestServices(FUEL_DISPATCH_DBContext DBContext)
@@ -17,7 +17,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             _DBContext = DBContext;
         }
-        public override ResultPattern<Request> Post(Request entity)
+        public override ResultPattern<WareHouseMovementRequest> Post(WareHouseMovementRequest entity)
         {
             if (CheckDispatch(entity))
                 throw new BadRequestException("Revise que el odometro registrado no sea igual o menor al anterior." +
@@ -25,14 +25,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if (CheckVehicle(entity))
                 throw new BadRequestException("Puede que el vehiculo no exista, o este inactivo. ");
 
-            _DBContext.Request.Add(entity);
+            _DBContext.WareHouseMovementRequest.Add(entity);
             _DBContext.SaveChanges();
-            return ResultPattern<Request>.Success(entity, StatusCodes.Status201Created, "Solicitud enviada. ");
+            return ResultPattern<WareHouseMovementRequest>.Success(entity, StatusCodes.Status201Created, "Solicitud enviada. ");
         }
-        public bool CheckDispatch(Request newRequest)
+        public bool CheckDispatch(WareHouseMovementRequest newRequest)
             => newRequest.Qty is ValidationConstants.ZeroGallons;
 
-        public bool CheckVehicle(Request newRequest)
+        public bool CheckVehicle(WareHouseMovementRequest newRequest)
         {
             var vehicleForDispatch = _DBContext.Vehicle.FirstOrDefault(x => x.Id == newRequest.VehicleId);
             return vehicleForDispatch!.Status is not ValidationConstants.InactiveStatus || vehicleForDispatch!.Status is not ValidationConstants.NotAvailableStatus;

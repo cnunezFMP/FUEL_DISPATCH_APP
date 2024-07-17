@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 #nullable disable
 namespace FUEL_DISPATCH_API.DataAccess.Models
 {
-    // TODO: Hacer los servicios y controlador
+    // DONE: Hacer los servicios y controlador
     public class vw_ActualStock
     {
         public int WareHouseId { get; set; }

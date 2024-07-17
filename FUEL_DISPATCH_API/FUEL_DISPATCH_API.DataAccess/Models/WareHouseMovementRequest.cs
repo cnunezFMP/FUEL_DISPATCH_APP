@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 namespace FUEL_DISPATCH_API.DataAccess.Models
 {
-    public class Request
+    public class WareHouseMovementRequest
     {
         public int Id { get; set; } // Primary Key with IDENTITY
         public int DriverId { get; set; }

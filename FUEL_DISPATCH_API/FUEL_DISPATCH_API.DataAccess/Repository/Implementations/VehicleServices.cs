@@ -5,6 +5,7 @@ using FUEL_DISPATCH_API.Utils.Constants;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,5 +78,23 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             => !_DBContext.Measure.Any(x => x.Id == vehicle.OdometerMeasureId);
         public bool FichaMustBeUnique(Vehicle vehicleToken)
             => !_DBContext.Vehicle.Any(x => x.Ficha == vehicleToken.Ficha);
+
+        // DONE: Implementar esto en el controlador de Vehicle
+        public ResultPattern<List<WareHouseMovement>> GetVehicleDispatches(int vehicleId)
+        {
+            var driverDispatches = _DBContext.WareHouseMovement
+                .AsNoTracking()
+                .Where(x => x.VehicleId == vehicleId)
+                .ToList()
+                ?? throw new BadRequestException("This vehicle has no movements or, the vehicle doesn't exist. ");
+
+            return ResultPattern<List<WareHouseMovement>>
+                .Success
+                (
+                    driverDispatches,
+                    StatusCodes.Status200OK,
+                    "Vehicle dispatches obtained."
+                );
+        }
     }
 }
