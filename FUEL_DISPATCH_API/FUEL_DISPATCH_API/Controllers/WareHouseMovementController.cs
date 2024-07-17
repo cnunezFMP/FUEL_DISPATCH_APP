@@ -24,13 +24,13 @@ namespace FUEL_DISPATCH_API.Controllers
             _wareHouseMovementValidator = wareHouseMovementValidator;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<WareHouseMovement>>> GetMovements([FromQuery] GridifyQuery query)
         {
             return Ok(_wareHouseMovementServices.GetAll(query));
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<WareHouseMovement>> GetMovement(int id)
         {
             return Ok(_wareHouseMovementServices.Get(x => x.Id == id));

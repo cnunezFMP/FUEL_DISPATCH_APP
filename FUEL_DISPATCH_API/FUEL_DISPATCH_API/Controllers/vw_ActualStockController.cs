@@ -5,6 +5,7 @@ using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FUEL_DISPATCH_API.Controllers
@@ -18,7 +19,7 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             _actualStockServices = actualStockServices;
         }
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<vw_ActualStock>>> GetVwActualStock([FromQuery] GridifyQuery query)
         {
             return Ok(_actualStockServices.GetAll(query));

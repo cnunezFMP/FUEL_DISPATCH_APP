@@ -21,13 +21,13 @@ namespace FUEL_DISPATCH_API.Controllers
             _roadServices = roadServices;
             _roadValidator = roadValidator;
         }
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<Road>>> GetRoads([FromQuery] GridifyQuery query)
         {
             return Ok(_roadServices.GetAll(query));
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Road>> GetRoad(int id)
         {
             return Ok(_roadServices.Get(x => x.Id == id));
@@ -46,7 +46,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return CreatedAtAction(nameof(GetRoad), new { id = road.Id }, _roadServices.Post(road));
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Road>> UpdateRoad(int id, [FromBody] Road road)
         {
             road.UpdatedAt = DateTime.Now;

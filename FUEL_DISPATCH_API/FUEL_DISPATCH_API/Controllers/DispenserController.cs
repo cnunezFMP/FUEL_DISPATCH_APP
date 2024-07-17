@@ -22,13 +22,13 @@ namespace FUEL_DISPATCH_API.Controllers
             _dispenserValidator = dispenserValidator;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<Dispenser>>> GetDispensers([FromQuery] GridifyQuery query)
         {
             return Ok(_dispenserServices.GetAll(query));
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Dispenser>> GetDispenser(int id)
         {
             return Ok(_dispenserServices.Get(x => x.Id == id));
@@ -47,7 +47,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return CreatedAtAction(nameof(GetDispenser), new { id = dispenser.Id }, _dispenserServices.Post(dispenser));
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Dispenser>> UpdateDispenser(int id, [FromBody] Dispenser dispenser)
         {
             dispenser.UpdatedAt = DateTime.Now;

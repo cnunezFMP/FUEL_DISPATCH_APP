@@ -20,19 +20,19 @@ namespace FUEL_DISPATCH_API.Controllers
             _vehicleServices = vehicleServices;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<Vehicle>>> GetVehicles([FromQuery] GridifyQuery query)
         {
             return Ok(_vehicleServices.GetAll(query));
         }
 
-        [HttpGet("{vehicleId:int}/WareHouseMovement")]
+        [HttpGet("{vehicleId:int}/WareHouseMovement"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<Driver>>> GetDriverWareHouseMovements(int vehicleId)
         {
             return Ok(_vehicleServices.GetVehicleDispatches(vehicleId));
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Vehicle>> GetVehicle(int id)
         {
             return Ok(_vehicleServices.Get(x => x.Id == id));
@@ -46,7 +46,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return CreatedAtAction(nameof(GetVehicle), new { id = vehicle.Id }, _vehicleServices.Post(vehicle));
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Vehicle>> UpdateUser(int id, [FromBody] Vehicle driver)
         {
             return Ok(_vehicleServices.Update(x => x.Id == id, driver));

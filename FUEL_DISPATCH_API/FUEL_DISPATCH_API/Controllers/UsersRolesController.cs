@@ -18,7 +18,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _userRolesServices = userRolesServices;
         }
 
-        [HttpPut("{userId}/Roles/{rolId}")]
+        [HttpPut("{userId}/Roles/{rolId}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<User>> UpdateUserRol(int userId, int rolId)
         {
             return Ok(_userRolesServices.UpdateUserRol(userId, rolId));

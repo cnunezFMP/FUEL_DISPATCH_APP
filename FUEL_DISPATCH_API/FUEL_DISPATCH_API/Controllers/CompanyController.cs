@@ -23,7 +23,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _companiesValidator = companiesValidator;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<Companies>>> GetComanies([FromQuery] GridifyQuery query)
         {
             return Ok(_companiesServices.GetAll(query));
@@ -34,17 +34,17 @@ namespace FUEL_DISPATCH_API.Controllers
         /// </summary>
         /// <param name="companyId"></param>
         /// <returns></returns>
-        [HttpGet("{companyId}/BranchOffice")]
+        [HttpGet("{companyId}/BranchOffice"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<BranchOffices>> GetCompanyBranchOfficess(int companyId)
         {
             return Ok(_companiesServices.GetCompanyBranchOfficess(companyId));
         }
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Companies>> GetCompany(int id)
         {
             return Ok(_companiesServices.Get(x => x.Id == id));
         }
-        [HttpGet("{companyRnc}")]
+        [HttpGet("{companyRnc}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Companies>> GetCompany(string companyRnc)
         {
             return Ok(_companiesServices.GetCompanyByRnc(companyRnc));
@@ -62,7 +62,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return CreatedAtAction(nameof(GetCompany), new { id = company.Id }, _companiesServices.Post(company));
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Companies>> UpdateCompanie(int id, [FromBody] Companies company)
         {
             company.UpdatedAt = DateTime.Now;

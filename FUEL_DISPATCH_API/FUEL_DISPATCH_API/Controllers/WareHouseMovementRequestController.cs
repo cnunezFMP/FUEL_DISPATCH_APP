@@ -4,6 +4,7 @@ using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -20,7 +21,8 @@ namespace FUEL_DISPATCH_API.Controllers
             _requestServices = requestServices;
             _validator = validator;
         }
-        [HttpGet]
+
+        [HttpGet, Authorize(Roles = "")]
         public ActionResult<ResultPattern<Paging<WareHouseMovementRequest>>> GetRequests([FromQuery] GridifyQuery query)
         {
             return Ok(_requestServices.GetAll(query));

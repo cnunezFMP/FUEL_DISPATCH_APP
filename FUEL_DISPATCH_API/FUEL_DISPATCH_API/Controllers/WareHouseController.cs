@@ -24,17 +24,17 @@ namespace FUEL_DISPATCH_API.Controllers
             _wareHouseServices = wareHouseServices;
             _wareHouseValidator = wareHouseValidator;
         }
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<WareHouse>>> GetWareHouses([FromQuery] GridifyQuery query)
         {
             return Ok(_wareHouseServices.GetAll(query));
         }
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<WareHouse>> GetWareHouse(int id)
         {
             return Ok(_wareHouseServices.Get(x => x.Id == id));
         }
-        [HttpPost/*, Authorize(Roles = "Administrator")*/]
+        [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<WareHouse>> PostWareHouse([FromBody] WareHouse warehouse)
         {
             var validationResult = _wareHouseValidator.Validate(warehouse);

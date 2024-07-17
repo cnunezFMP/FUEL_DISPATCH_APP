@@ -23,12 +23,12 @@ namespace FUEL_DISPATCH_API.Controllers
             _branchOfficeValidator = branchOfficeValidator;
             _branchOfficeServices = branchOfficeServices;
         }
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<BranchOffices>>> GetBranchOfficess([FromQuery] GridifyQuery query)
         {
             return Ok(_branchOfficeServices.GetAll(query));
         }
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<BranchOffices>> GetBranchOffice(int id)
         {
             return Ok(_branchOfficeServices.Get(x => x.Id == id));
@@ -50,7 +50,7 @@ namespace FUEL_DISPATCH_API.Controllers
                     id = branchOffice.Id
                 }, _branchOfficeServices.Post(branchOffice));
         }
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<BranchOffices>> UpdateBranchOffice(int id, [FromBody] BranchOffices branchOffice)
         {
             branchOffice.UpdatedAt = DateTime.Now;

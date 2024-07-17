@@ -22,19 +22,19 @@ namespace FUEL_DISPATCH_API.Controllers
             _driverValidator = driverValidator;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<Driver>>> GetDrivers([FromQuery] GridifyQuery query)
         {
             return Ok(_driverServices.GetAll(query));
         }
 
-        [HttpGet("{driverId:int}/WareHouseMovement")]
+        [HttpGet("{driverId:int}/WareHouseMovement"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<Driver>>> GetDriverWareHouseMovements(int driverId)
         {
             return Ok(_driverServices.GetDriverDispatches(driverId));
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Driver>> GetDriver(int id)
         {
             return Ok(_driverServices.Get(x => x.Id == id));
@@ -53,7 +53,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return CreatedAtAction(nameof(GetDriver), new { id = driver.Id }, _driverServices.Post(driver));
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Driver>> UpdateDriver(int id, [FromBody] Driver driver)
         {
             driver.UpdatedAt = DateTime.Now;

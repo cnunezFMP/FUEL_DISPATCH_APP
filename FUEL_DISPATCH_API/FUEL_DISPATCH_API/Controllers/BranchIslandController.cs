@@ -23,12 +23,12 @@ namespace FUEL_DISPATCH_API.Controllers
             _branchIslandServices = branchIslandServices;
             _branchIslandValidator = branchIslandValidator;
         }
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<BranchIsland>>> GetBranchIslands([FromQuery] GridifyQuery query)
         {
             return Ok(_branchIslandServices.GetAll(query));
         }
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<BranchIsland>> GetBranchIsland(int id)
         {
             return Ok(_branchIslandServices.Get(x => x.Id == id));
@@ -45,8 +45,8 @@ namespace FUEL_DISPATCH_API.Controllers
             branchIsland.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return CreatedAtAction(nameof(GetBranchIsland), new { id = branchIsland.Id }, _branchIslandServices.Post(branchIsland));
         }
-        [HttpPut("{id:int}")]
-        public ActionResult<ResultPattern<User>> UpdateBranchIsland (int id, [FromBody] BranchIsland branchIsland)
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
+        public ActionResult<ResultPattern<User>> UpdateBranchIsland(int id, [FromBody] BranchIsland branchIsland)
         {
             branchIsland.UpdatedAt = DateTime.Now;
             branchIsland.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;

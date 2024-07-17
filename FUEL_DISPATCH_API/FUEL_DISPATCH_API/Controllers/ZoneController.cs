@@ -23,13 +23,13 @@ namespace FUEL_DISPATCH_API.Controllers
             _validator = validator;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<Zone>>> GetZones([FromQuery] GridifyQuery query)
         {
             return Ok(_zoneServices.GetAll(query));
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Zone>> GetZone(int id)
         {
             return Ok(_zoneServices.Get(x => x.Id == id));
@@ -49,7 +49,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return CreatedAtAction(nameof(GetZone), new { id = zone.Id }, _zoneServices.Post(zone));
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Zone>> UpdateZone(int id, [FromBody] Zone zone)
         {
             zone.UpdatedAt = DateTime.Now;
