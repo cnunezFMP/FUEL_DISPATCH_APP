@@ -19,6 +19,5 @@ public partial class Model
     public DateTime? UpdatedAt { get; set; }
 
     public string? Modelname { get; set; }
-    [JsonIgnore]
-    public virtual ICollection<Vehicle> Vehicle { get; set; } = new List<Vehicle>();
+    [JsonIgnore] public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
 }

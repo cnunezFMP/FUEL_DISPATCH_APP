@@ -43,15 +43,16 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             _DBContext.Vehicle.Add(entity);
             _DBContext.SaveChanges();
-            if (DriverIdHasValue(entity))
-                CheckAndUpdateDriver(entity);
+
+            /*if (DriverIdHasValue(entity))
+                CheckAndUpdateDriver(entity);*/
 
             return ResultPattern<Vehicle>.Success(entity, StatusCodes.Status201Created, "Vehicle created successfully. ");
         }
 
         public bool DriverIdHasValue(Vehicle entity)
             => _DBContext.Driver.Any(x => x.Id == entity.DriverId);
-        public bool CheckAndUpdateDriver(Vehicle entity)
+        /*public bool CheckAndUpdateDriver(Vehicle entity)
         {
             var driver = _DBContext.Driver.FirstOrDefault(x => x.Id == entity.DriverId);
 
@@ -65,7 +66,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext.Driver.Update(driver);
             _DBContext.SaveChanges();
             return true;
-        }
+        }*/
         public bool CheckIfMakeExists(Vehicle vehicle)
            => !_DBContext.Make.Any(x => x.Id == vehicle.MakeId);
         public bool CheckIfModelExists(Vehicle vehicle)
@@ -87,7 +88,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 .AsNoTracking()
                 .Where(x => x.VehicleId == vehicleId)
                 .ToList()
-                ?? throw new BadRequestException("This vehicle has no movements or, the vehicle doesn't exist. ");
+                ?? throw new BadRequestException("This vehqicle has no movements or, the vehicle doesn't exist. ");
 
             return ResultPattern<List<WareHouseMovement>>
                 .Success

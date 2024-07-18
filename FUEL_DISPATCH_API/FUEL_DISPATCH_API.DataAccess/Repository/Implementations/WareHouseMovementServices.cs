@@ -38,7 +38,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         #region Logic
         public bool SetDriverIdByVehicle(WareHouseMovement wareHouseMovement)
         {
-            var vehicleDriver = _DBContext.Vehicle.AsNoTrackingWithIdentityResolution().FirstOrDefault(x => x.Id == wareHouseMovement.VehicleId);
+            var vehicleDriver = _DBContext.Vehicle
+                .AsNoTrackingWithIdentityResolution()
+                .FirstOrDefault(x => x.Id == wareHouseMovement.VehicleId);
 
             if (vehicleDriver!.DriverId is not null)
             {
@@ -142,7 +144,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             var wareHouseStock = _DBContext.vw_ActualStock
                 .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault(x => x.WareHouseId == wareHouseMovement.WareHouseId);
+                .FirstOrDefault(x => x.WareHouseId == wareHouseMovement.WareHouseId && x.ItemId == wareHouseMovement.ItemId);
             return wareHouseStock!.StockQty > 0 || wareHouseStock.StockQty > wareHouseMovement.Qty;
         }
         public bool CheckIfProductIsInTheWareHouse(WareHouseMovement wareHouseMovement)
@@ -233,7 +235,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         // TODO: Verificar si la validacion me funcionara en vez de las excepciones.
         public bool SetRequestForMovement(WareHouseMovement wareHouseMovement)
         {
-            var requestForMovement = _DBContext.WareHouseMovementRequest.FirstOrDefault(x => x.Id == wareHouseMovement.RequestId)
+            var requestForMovement = _DBContext.WareHouseMovementRequest
+                .FirstOrDefault(x => x.Id == wareHouseMovement.RequestId)
                 ?? throw new NotFoundException("No request found. ");
 
             /*if (requestForMovement.Status is ValidationConstants.PendingStatus)

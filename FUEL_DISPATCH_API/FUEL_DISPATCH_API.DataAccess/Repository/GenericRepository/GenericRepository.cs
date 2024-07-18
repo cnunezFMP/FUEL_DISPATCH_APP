@@ -39,8 +39,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
         }
         public virtual ResultPattern<T> Post(T entity)
         {
-            _DBContext.Set<T>().AddAsync(entity);
-            _DBContext.SaveChangesAsync();
+            _DBContext.Set<T>().Add(entity);
+            _DBContext.SaveChanges();
             return ResultPattern<T>.Success(entity!, StatusCodes.Status201Created, AppConstants.DATA_SAVED_MESSAGE);
         }
         public virtual ResultPattern<T> Update(Func<T, bool> predicate, T updatedEntity)

@@ -2,6 +2,8 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 
@@ -9,8 +11,8 @@ public partial class Zone
 {
     public int Id { get; set; }
 
-    public string? FullZoneSpecs { get; set; }
-    public string? Code { get; set; }
+    [Required] public string? FullZoneSpecs { get; set; }
+    [Required] public string? Code { get; set; }
 
     public string? Status { get; set; }
 
@@ -22,5 +24,5 @@ public partial class Zone
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual ICollection<Road> Road { get; set; } = new List<Road>();
+    [JsonIgnore] public virtual ICollection<Road> Road { get; set; } = new List<Road>();
 }

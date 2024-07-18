@@ -19,6 +19,6 @@ public partial class ModEngine
     public string? UpdatedBy { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
-    [JsonIgnore]
-    public virtual ICollection<Vehicle> Vehicle { get; set; } = new List<Vehicle>();
+
+    [JsonIgnore] public virtual ICollection<Vehicle> Vehicle { get; set; } = new List<Vehicle>();
 }

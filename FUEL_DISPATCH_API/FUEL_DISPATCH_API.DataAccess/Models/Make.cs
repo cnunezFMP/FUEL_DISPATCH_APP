@@ -19,8 +19,5 @@ public partial class Make
     public DateTime? UpdatedAt { get; set; }
 
     public string? Makename { get; set; }
-    [JsonIgnore]
-    public virtual ICollection<Vehicle> VehicleGeneration { get; set; } = new List<Vehicle>();
-    [JsonIgnore]
-    public virtual ICollection<Vehicle> VehicleMake { get; set; } = new List<Vehicle>();
+    [JsonIgnore] public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
 }

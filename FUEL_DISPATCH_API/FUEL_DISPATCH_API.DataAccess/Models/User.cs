@@ -28,13 +28,13 @@ public partial class User
 
     public DateTime? UpdatedAt { get; set; }
     public int? DriverId { get; set; }
-    [JsonIgnore]
-    public virtual Driver? Driver { get; set; }
-    [JsonIgnore]
-    public virtual ICollection<UsersRols> UsersRols { get; set; } = new List<UsersRols>();
-    [JsonIgnore]
-    public virtual ICollection<Role>? Rols { get; set; }
-    [JsonIgnore]
-    public virtual ICollection<UsersCompanies> UsersCompanies { get; set; } = new List<UsersCompanies>();
-    public virtual ICollection<Companies> Companies { get; set; } = new List<Companies>();
+
+    [JsonIgnore] public virtual Driver? Driver { get; set; }
+
+    [JsonIgnore] public virtual ICollection<UsersRols> UsersRols { get; set; } = new List<UsersRols>();
+
+    [JsonIgnore] public virtual ICollection<Role>? Rols { get; set; }
+
+    [JsonIgnore] public virtual ICollection<UsersCompanies> UsersCompanies { get; set; } = new List<UsersCompanies>();
+    [JsonIgnore] public virtual ICollection<Companies> Companies { get; set; } = new List<Companies>();
 }

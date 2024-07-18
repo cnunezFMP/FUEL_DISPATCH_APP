@@ -40,26 +40,23 @@ public partial class Vehicle
     public int Id { get; set; }
 
     public string? Plate { get; set; }
-    [JsonIgnore]
-    public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
-    [JsonIgnore]
-    public virtual ICollection<Driver> Driver { get; set; } = new List<Driver>();
-    [JsonIgnore]
-    public virtual Driver? DriverNavigation { get; set; }
-    [JsonIgnore]
-    public virtual Make? Generation { get; set; }
-    [JsonIgnore]
-    public virtual Make? Make { get; set; }
-    [JsonIgnore]
-    public virtual OdometerMeasure? Measure { get; set; }
-    [JsonIgnore]
-    public virtual ModEngine? ModEngine { get; set; }
-    [JsonIgnore]
-    public virtual Model? Model { get; set; }
-    //[JsonIgnore]
-    //public virtual ICollection<FuelType> Fuels { get; set; } = new List<FuelType>();
-    [JsonIgnore]
-    public virtual ICollection<WareHouseMovementRequest> Requests { get; set; } = new List<WareHouseMovementRequest>();
-    [JsonIgnore]
-    public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+
+    [JsonIgnore] public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
+
+    [JsonIgnore] public virtual Driver? Driver { get; set; }
+
+    [JsonIgnore] public virtual Generation? Generation { get; set; }
+
+    [JsonIgnore] public virtual Make? Make { get; set; }
+
+    [JsonIgnore] public virtual OdometerMeasure? Measure { get; set; }
+
+    [JsonIgnore] public virtual ModEngine? ModEngine { get; set; }
+
+    [JsonIgnore] public virtual Model? Model { get; set; }
+
+
+    [JsonIgnore] public virtual ICollection<WareHouseMovementRequest> Requests { get; set; } = new List<WareHouseMovementRequest>();
+
+    [JsonIgnore] public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 }

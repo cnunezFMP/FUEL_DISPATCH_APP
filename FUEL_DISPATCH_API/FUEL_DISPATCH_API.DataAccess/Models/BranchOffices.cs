@@ -6,15 +6,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Models;
 
 public partial class BranchOffices
 {
-    [JsonIgnore]
-    public virtual ICollection<BranchIsland> BranchIslands { get; set; } = new List<BranchIsland>();
 
-    public string Code { get; set; }
+    [JsonIgnore] public virtual ICollection<BranchIsland> BranchIslands { get; set; } = new List<BranchIsland>();
 
-    [JsonIgnore]
-    public virtual Companies Company { get; set; }
+    [Required] public string Code { get; set; }
 
-    public int? CompanyId { get; set; }
+
+    [JsonIgnore] public virtual Companies Company { get; set; }
+
+    [Required] public int CompanyId { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
@@ -22,27 +22,20 @@ public partial class BranchOffices
 
     public string Email { get; set; }
 
-    public string FullLocation { get; set; }
+    [Required] public string FullLocation { get; set; }
 
     public int Id { get; set; }
-    public string Name { get; set; }
-    [Phone]
-    public string Phone { get; set; }
-    [Phone]
-    public string Phone2 { get; set; }
+    [Required] public string Name { get; set; }
+
+    [Phone] public string Phone { get; set; }
+
+    [Phone] public string Phone2 { get; set; }
 
     public string Representative { get; set; }
-
     public string Status { get; set; }
-
     public DateTime? UpdatedAt { get; set; } = DateTime.Now;
-
     public string UpdatedBy { get; set; }
-
-    [JsonIgnore]
-    public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
-
-    [JsonIgnore]
-    public virtual ICollection<WareHouse> WareHouses { get; set; } = new List<WareHouse>();
+    [JsonIgnore] public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
+    [JsonIgnore] public virtual ICollection<WareHouse> WareHouses { get; set; } = new List<WareHouse>();
 
 }

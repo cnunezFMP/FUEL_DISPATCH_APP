@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FUEL_DISPATCH_API</name>
+    </assembly>
+    <members>
+        <member name="M:FUEL_DISPATCH_API.Controllers.ArticlesController.PostArticle(FUEL_DISPATCH_API.DataAccess.Models.ArticleDataMaster)">
+            <summary>
+            Create new article.
+            Example:
+            {
+                "articleNumber": "IT00001",
+                "description": "string",
+                "unitPrice": 0,
+                "maker": "string",
+                "barCode": "string",
+            }
+            </summary>
+            <param name="article"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FUEL_DISPATCH_API.Controllers.CompanyController.GetCompanyBranchOfficess(System.Int32)">
+            <summary>
+            Obtener todas las sucursales de una compañia. 
+            </summary>
+            <param name="companyId"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

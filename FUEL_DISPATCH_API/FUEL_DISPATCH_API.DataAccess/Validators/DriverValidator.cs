@@ -13,13 +13,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             }).WithMessage("Ya existe un registro con {PropertyName}. Se ingreso {PropertyValue}. ");
             RuleFor(x => x.Email).EmailAddress().Must((driverEmail, _) =>
             {
-                return driversServices.IsEmailUnique(driverEmail);
+                return !driversServices.IsEmailUnique(driverEmail);
             }).WithMessage("El {PropertyName} ya esta registrado. Se ingreso {PropertyValue}. ");
 
-            RuleFor(x => x.VehicleId).Must((driverVehicleId, _) =>
+            /*RuleFor(x => x.VehicleId).Must((driverVehicleId, _) =>
             {
                 return !driversServices.VehicleIdHasValue(driverVehicleId);
-            }).WithMessage("No existe un vehiculo con este Id. Esto ocurrio en {PropertyName}. ").When(x => x.VehicleId.HasValue);
+            }).WithMessage("No existe un vehiculo con este Id. Esto ocurrio en {PropertyName}. ").When(x => x.VehicleId.HasValue);*/
         }
     }
 }

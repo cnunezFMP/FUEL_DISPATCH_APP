@@ -8,6 +8,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
     {
         public WareHouseMovementValidator(IWareHouseMovementServices wareHouseMovementServices)
         {
+            RuleFor(x => x.Amount).NotNull().NotEmpty().When(x => x.Amount.HasValue);
             RuleFor(x => x.Vehicle).Must(x =>
             {
                 return wareHouseMovementServices.CheckVehicle(x!.Id);

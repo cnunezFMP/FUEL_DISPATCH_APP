@@ -26,16 +26,17 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext.Driver.Add(entity);
             _DBContext.SaveChanges();
 
-            CheckAndUpdateDriver(entity);
-
-            _emailSender.SendEmailAsync(entity.Email, AppConstants.ACCOUNT_CREATED_MESSAGE, "Your account was created successfully. ");
+            // CheckAndUpdateDriver(entity);
+            if (entity.Email is not null)
+                _emailSender.SendEmailAsync(entity.Email, AppConstants.ACCOUNT_CREATED_MESSAGE, "Your account was created successfully. ");
             return ResultPattern<Driver>.Success(entity, StatusCodes.Status200OK, "Driver added successfully. ");
         }
         public bool CheckIfIdIsUnique(Driver entity)
             => !_DBContext.Driver.Any(x => x.Identification == entity.Identification);
         public bool IsEmailUnique(Driver driver)
             => !_DBContext.User.Any(x => x.Email == driver.Email);
-        public bool VehicleIdHasValue(Driver entity)
+
+        /*public bool VehicleIdHasValue(Driver entity)
             => _DBContext.Vehicle.Any(x => x.Id == entity.VehicleId);
         public bool CheckAndUpdateDriver(Driver entity)
         {
@@ -51,8 +52,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext.Vehicle.Update(vehicle);
             _DBContext.SaveChanges();
             return true;
-        }
-
+        }*/
         // DONE: Implementar esta funcion en el controlador de Driver
         // TODO: Ver si implementar la misma forma de devolver los despachos como los "BranchOffices" en las compañias. 
         public ResultPattern<List<WareHouseMovement>> GetDriverDispatches(int driverId)

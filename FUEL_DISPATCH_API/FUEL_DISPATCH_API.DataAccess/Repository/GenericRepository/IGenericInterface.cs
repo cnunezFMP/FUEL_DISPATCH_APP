@@ -14,7 +14,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
     public interface IGenericInterface<T> where T : class
     {
         ResultPattern<T> Get(Func<T, bool> predicate);
-        ResultPattern<Paging<T>> GetAll(GridifyQuery query);
+        ResultPattern<Paging<T>>? GetAll(GridifyQuery query);
         ResultPattern<T> Post(T entity);
         ResultPattern<T> Update(Func<T, bool> predicate, T entity);
         ResultPattern<T> Delete(Func<T, bool> predicate);

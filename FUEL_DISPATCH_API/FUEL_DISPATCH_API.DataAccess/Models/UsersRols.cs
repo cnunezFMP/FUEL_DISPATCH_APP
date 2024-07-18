@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 
@@ -11,8 +12,8 @@ public partial class UsersRols
 
     public int RolId { get; set; }
 
-    public virtual Role Rol { get; set; }
+    [JsonIgnore] public virtual Role Rol { get; set; }
 
-    public virtual User User { get; set; }
-    
+    [JsonIgnore] public virtual User User { get; set; }
+
 }

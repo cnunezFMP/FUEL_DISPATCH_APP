@@ -7,10 +7,13 @@ using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Middlewares;
+using FUEL_DISPATCH_API.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Formatters.Xml;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
@@ -30,7 +33,8 @@ builder.Services.AddSwaggerGen(
     info.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = swaggerTitle,
-        Version = swaggerVersion
+        Version = swaggerVersion,
+        Description = SwaggerSpecs.GetSwaggerSpecs()
     });
     info.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
@@ -52,6 +56,9 @@ builder.Services.AddSwaggerGen(
             new string[] {}
         }
     });
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    info.IncludeXmlComments(xmlPath);
 
 });
 builder.Services.AddDbContext<FUEL_DISPATCH_DBContext>(options =>
@@ -146,7 +153,7 @@ app.UseReDoc(c =>
     c.DocumentTitle = "FUEL_DISPATCH_API Doc";
     c.RoutePrefix = "redoc";
     c.SpecUrl = "/swagger/v1/swagger.json";
-    c.HeadContent = "<a href='/swagger/index.html' style= 'font-weight: bold; font-family: sans-serif; text-decoration: none; color: blue; margin-left: 100px;'>Swagger</a>";
+    c.HeadContent = "<img src=\"https://www.fmp.com.do/images/logo/Logo3.png\" alt=\"FMP Logo\">";
 });
 app.UseHttpsRedirection();
 

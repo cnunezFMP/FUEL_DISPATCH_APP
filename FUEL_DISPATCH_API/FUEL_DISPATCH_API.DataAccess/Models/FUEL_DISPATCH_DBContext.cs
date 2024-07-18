@@ -174,9 +174,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasKey(e => e.Id);
 
             entity.ToTable("Driver");
-
-            entity.HasOne(d => d.Vehicle).WithMany(p => p.Driver)
-                .HasForeignKey(d => d.VehicleId);
         });
         modelBuilder.Entity<EmployeeConsumptionLimits>(entity =>
         {
@@ -399,10 +396,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         });
         modelBuilder.Entity<Vehicle>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Vehicles__3214EC073B5115F7");
-
+            entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.Ficha, "U_VToken").IsUnique();
-
             entity.Property(e => e.AverageConsumption).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.FuelTankCapacity).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.Color)
@@ -425,30 +420,24 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+            entity.HasOne(d => d.Generation).WithMany(d => d.Vehicles).HasForeignKey(d => d.GenerationId);
 
-            entity.HasOne(d => d.DriverNavigation).WithMany(p => p.VehicleNavigation)
-                .HasForeignKey(d => d.DriverId)
-                .HasConstraintName("FK__Vehicles__Driver__0C85DE4D");
 
-            entity.HasOne(d => d.Generation).WithMany(p => p.VehicleGeneration)
-                .HasForeignKey(d => d.GenerationId)
-                .HasConstraintName("FK__Vehicles__Genera__0B91BA14");
+            entity.HasOne(d => d.Driver).WithMany(p => p.Vehicles)
+                .HasForeignKey(d => d.DriverId);
 
-            entity.HasOne(d => d.Make).WithMany(p => p.VehicleMake)
-                .HasForeignKey(d => d.MakeId)
-                .HasConstraintName("FK__Vehicles__MakeId__09A971A2");
+
+            entity.HasOne(d => d.Make).WithMany(p => p.Vehicles)
+                .HasForeignKey(d => d.MakeId);
 
             entity.HasOne(d => d.Measure).WithMany(p => p.Vehicle)
-                .HasForeignKey(d => d.OdometerMeasureId)
-                .HasConstraintName("FK__Vehicles__Measur__6166761E");
+                .HasForeignKey(d => d.OdometerMeasureId);
 
             entity.HasOne(d => d.ModEngine).WithMany(p => p.Vehicle)
-                .HasForeignKey(d => d.ModEngineId)
-                .HasConstraintName("FK__Vehicles__ModEng__2739D489");
+                .HasForeignKey(d => d.ModEngineId);
 
-            entity.HasOne(d => d.Model).WithMany(p => p.Vehicle)
-                .HasForeignKey(d => d.ModelId)
-                .HasConstraintName("FK__Vehicles__ModelI__0A9D95DB");
+            entity.HasOne(d => d.Model).WithMany(p => p.Vehicles)
+                .HasForeignKey(d => d.ModelId);
         });
         modelBuilder.Entity<Zone>(entity =>
         {
