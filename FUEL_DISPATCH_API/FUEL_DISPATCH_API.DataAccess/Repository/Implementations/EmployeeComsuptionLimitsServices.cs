@@ -5,9 +5,10 @@ using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
-    public class EmployeeComsuptionLimitsServices : GenericRepository<EmployeeConsumptionLimits>, IEmployeeComsuptionLimits
+    public class EmployeeComsuptionLimitsServices : GenericRepository<EmployeeConsumptionLimits>, IEmployeeComsuptionLimitsServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         public EmployeeComsuptionLimitsServices(FUEL_DISPATCH_DBContext dbContext)
@@ -20,31 +21,33 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             var driver = _DBContext.Driver.Include(x => x.DriverMethodsOfComsuption).FirstOrDefault(x => x.Id == driverId)
                 ?? throw new NotFoundException("This user doesn't exist. ");
 
-            var method = _DBContext.EmployeeConsumptionLimit.Find(driverId, methodId)
+            var method = _DBContext.EmployeeConsumptionLimits.Find(driverId, methodId)
                 ?? throw new NotFoundException("This method doesn't exist. ");
-            _DBContext.EmployeeConsumptionLimit.Remove(method!);
+            _DBContext.EmployeeConsumptionLimits.Remove(method!);
             _DBContext.SaveChanges();
             return ResultPattern<Driver>.Success(driver, StatusCodes.Status200OK, "Method updated. ");
         }
-        public ResultPattern<Driver> UpdateDriverMethod(int driverId, int methodId)
+        // TODO: Actualizar.
+        public ResultPattern<Driver> UpdateDriverMethod(int userId, int roleId, EmployeeConsumptionLimits employeeConsumptionLimit)
         {
+            var driver = _DBContext.Driver
+                .Include(x => x.DriverMethodsOfComsuption)
+                .FirstOrDefault(x => x.Id == userId)
+                ?? throw new NotFoundException("This driver doesn't exist. ");
 
-            var driverMethod = _DBContext.EmployeeConsumptionLimit.FirstOrDefault(x => x.DriverId == driverId && x.MethodOfComsuptionId == methodId);
+            var method = _DBContext.DriverMethodOfComsuption.Find(roleId)
+                ?? throw new NotFoundException("This method doesn't exist. ");
 
-            var driver = _DBContext.Driver.Include(x => x.DriverMethodsOfComsuption).FirstOrDefault(x => x.Id == driverId)
-                ?? throw new NotFoundException("This user doesn't exist. ");
-
-            var method = _DBContext.DriverMethodOfComsuption.Find(methodId)
-                ?? throw new NotFoundException("This method doesn't exist. "); ;
-
-            driver.DriverMethodsOfComsuption.Add(method);
+            driver.DriverMethodsOfComsuption!.Add(method);
             _DBContext.Driver.Update(driver);
+            _DBContext.EmployeeConsumptionLimits.Update(employeeConsumptionLimit);
             _DBContext.SaveChanges();
-            return ResultPattern<Driver>.Success(driver, StatusCodes.Status200OK, "Driver method updated. ");
+            return ResultPattern<Driver>.Success(driver, StatusCodes.Status200OK, "User rols updated. ");
         }
-        // TODO: Test this Validation.
+
         // DONE: Poner en FluentValidation
-        public bool DriverHasTheMethod(Driver driver, DriverMethodOfComsuption driverMethodOfComsuption)
-            => !driver.DriverMethodsOfComsuption.Any(r => r.Id == driverMethodOfComsuption.Id);
+        // TODO: Test this Validation.
+        public bool DriverHasTheMethod(int driverId, int methodOfComsuptionId)
+            => !_DBContext.EmployeeConsumptionLimits.Any(x => x.DriverId == driverId && x.DriverMethodOfComsuptionId == methodOfComsuptionId);
     }
 }

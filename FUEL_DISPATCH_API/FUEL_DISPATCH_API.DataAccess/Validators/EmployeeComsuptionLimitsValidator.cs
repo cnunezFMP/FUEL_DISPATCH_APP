@@ -11,13 +11,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
 {
     public class EmployeeComsuptionLimitsValidator : AbstractValidator<EmployeeConsumptionLimits>
     {
-        public EmployeeComsuptionLimitsValidator(IEmployeeComsuptionLimits employeeComsuptionLimitsServices)
+        public EmployeeComsuptionLimitsValidator(IEmployeeComsuptionLimitsServices employeeComsuptionLimitsServices)
         {
-            RuleFor(x => x).Must((x, _) =>
+            RuleFor(x => x.DriverId & x.DriverMethodOfComsuptionId).Must((x, _) =>
             {
-                return employeeComsuptionLimitsServices.DriverHasTheMethod(x.Driver!, x.DriverMethodOfComsuption!);
-            });
+                return employeeComsuptionLimitsServices.DriverHasTheMethod(x.DriverId!, x.DriverMethodOfComsuptionId!);
+            }).WithMessage("This driver has this method. ");
             RuleFor(x => x).Must(x => x.CurrentAmount <= x.LimitAmount).WithMessage("The amount can't be bigger than limit amount. ");
+
+           
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using FUEL_DISPATCH_API.DataAccess.Models;
+﻿using FluentValidation;
+using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
@@ -12,10 +13,10 @@ namespace FUEL_DISPATCH_API.Controllers
     [Route("api/[controller]")]
     public class EmployeeConsumptionLimitsController : ControllerBase
     {
-        private readonly IEmployeeComsuptionLimits _employeeComsuptionLimitsServices;
-        private readonly EmployeeComsuptionLimitsValidator _validator;
+        private readonly IEmployeeComsuptionLimitsServices _employeeComsuptionLimitsServices;
+        private readonly IValidator<EmployeeConsumptionLimits> _validator;
 
-        public EmployeeConsumptionLimitsController(IEmployeeComsuptionLimits employeeComsuptionLimitsServices, EmployeeComsuptionLimitsValidator validator)
+        public EmployeeConsumptionLimitsController(IEmployeeComsuptionLimitsServices employeeComsuptionLimitsServices, IValidator<EmployeeConsumptionLimits> validator)
         {
             _employeeComsuptionLimitsServices = employeeComsuptionLimitsServices;
             _validator = validator;
@@ -26,7 +27,21 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             return Ok(_employeeComsuptionLimitsServices.DeleteDriverMethod(userId, companyId));
         }
-
+        /// <summary>
+        /// Este controlador se utiliza para asignar el metodo que 
+        /// tendran los conductores para el consumo de combustible 
+        /// se le asigna limite y la cantidad actual. 
+        /// </summary>
+        /// <remarks>
+        /// {
+        ///   "driverId": 1,
+        ///   "methodOfComsuptionId": 1,
+        ///   "limitAmount": 5000,
+        ///   "currentAmount": 5000
+        /// }
+        /// </remarks>
+        /// <param name="employeeConsumption"></param>
+        /// <returns></returns>
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<EmployeeConsumptionLimits>> SetEmployeLimitAndMethod([FromBody] EmployeeConsumptionLimits employeeConsumption)
         {
@@ -35,13 +50,13 @@ namespace FUEL_DISPATCH_API.Controllers
             {
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             }
-            return Created(string.Empty, new { driverId = employeeConsumption.DriverId, methodId = employeeConsumption.MethodOfComsuptionId });
+            return Ok(_employeeComsuptionLimitsServices.Post(employeeConsumption));
         }
 
         [HttpPut("{userId}/DriverMethodOfComsuption/{companyId}"), Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<DriverMethodOfComsuption>> UpdateUserCompany(int userId, int companyId)
+        public ActionResult<ResultPattern<DriverMethodOfComsuption>> UpdateUserCompany(int userId, int companyId, EmployeeConsumptionLimits employeeConsumptionLimit)
         {
-            return Ok(_employeeComsuptionLimitsServices.UpdateDriverMethod(userId, companyId));
+            return Ok(_employeeComsuptionLimitsServices.UpdateDriverMethod(userId, companyId, employeeConsumptionLimit));
         }
     }
 }

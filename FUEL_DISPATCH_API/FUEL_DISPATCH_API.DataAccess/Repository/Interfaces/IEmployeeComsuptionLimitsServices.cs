@@ -5,11 +5,11 @@ using FUEL_DISPATCH_API.Utils.ResponseObjects;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
-    public interface IEmployeeComsuptionLimits : IGenericInterface<EmployeeConsumptionLimits>
+    public interface IEmployeeComsuptionLimitsServices : IGenericInterface<EmployeeConsumptionLimits>
     {
         ResultPattern<Driver> DeleteDriverMethod(int driverId, int methodId);
-        ResultPattern<Driver> UpdateDriverMethod(int driverId, int methodId);
-        bool DriverHasTheMethod(Driver driver, DriverMethodOfComsuption driverMethodOfComsuption);
+        ResultPattern<Driver> UpdateDriverMethod(int driverId, int methodId, EmployeeConsumptionLimits employeeConsumptionLimit);
+        bool DriverHasTheMethod(int driverId, int methodOfComsuptionId);
         // ResultPattern<EmployeeConsumptionLimits> UpdateDriverMethod(int driverId, int methodId);
 
     }

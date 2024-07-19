@@ -22,10 +22,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext = dbContext;
             _wareHouseServices = wareHouseServices;
         }
-        public bool CheckDriver(Booking booking)
-        {
-            return _wareHouseServices.CheckDriver(booking.DriverId);
-        }
+        // TODO: Hacer este servicio para Booking. 
+        //public bool CheckDriver(Booking booking)
+        //{
+        //    return _wareHouseServices.CheckDriver(booking.DriverId);
+        //}
         public bool CheckVehicle(Booking booking)
         {
             return _wareHouseServices.CheckVehicle(booking.VehicleId);

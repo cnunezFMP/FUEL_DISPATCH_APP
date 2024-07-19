@@ -13,7 +13,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
         bool CheckPreviousVehicleDispatch(WareHouseMovement wareHouseMovement);
         bool CheckVehicle(int vehicleId);
         bool QtyCantBeZero(WareHouseMovement wareHouseMovement);
-        bool CheckDriver(int driverId);
+        bool CheckDriver(WareHouseMovement wareHouseMovement);
         bool CheckBranchOffice(WareHouseMovement wareHouseMovement);
         bool CheckDispenser(WareHouseMovement wareHouseMovement);
         bool SetDriverIdByVehicle(WareHouseMovement wareHouseMovement);

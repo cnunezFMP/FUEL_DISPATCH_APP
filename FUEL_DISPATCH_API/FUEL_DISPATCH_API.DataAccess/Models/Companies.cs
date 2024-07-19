@@ -37,6 +37,7 @@ public partial class Companies
     public string? CreatedBy { get; set; }
 
     public string? UpdatedBy { get; set; }
+    [JsonIgnore] public virtual ICollection<Vehicle>? Vehicles { get; set; } = new List<Vehicle>();
     [JsonIgnore] public virtual ICollection<ArticleDataMaster>? Articles { get; set; } = new List<ArticleDataMaster>();
     [JsonIgnore] public virtual ICollection<User>? Users { get; set; } = new List<User>();
     [JsonIgnore] public virtual ICollection<WareHouse>? WareHouses { get; set; } = new List<WareHouse>();

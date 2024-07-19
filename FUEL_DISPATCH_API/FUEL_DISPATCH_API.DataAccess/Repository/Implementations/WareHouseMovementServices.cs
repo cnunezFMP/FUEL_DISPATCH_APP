@@ -7,6 +7,7 @@ using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using System.ComponentModel;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
@@ -87,12 +88,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             return vehicleForDispatch.Status is ValidationConstants.InactiveStatus || vehicleForDispatch!.Status is ValidationConstants.NotAvailableStatus;
         }
-        public bool CheckDriver(int driverId)
+        public bool CheckDriver(WareHouseMovement wareHouseMovement)
         {
 
             var driverForDispatch = _DBContext.Driver
                 .AsNoTrackingWithIdentityResolution()
-                 .FirstOrDefault(d => d.Id == driverId)
+                 .FirstOrDefault(d => d.Id == wareHouseMovement.DriverId)
                     ?? throw new NotFoundException("No driver found. ");
 
 
@@ -104,7 +105,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             var branchOffice = _DBContext.BranchOffices
                 .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefault(b => b.Id == wareHouseMovement.BranchOfficeId)
-                ?? throw new NotFoundException("No se encontro la sucursal para el despacho");
+                ?? throw new NotFoundException("No branch office found. ");
 
             return branchOffice.Status is ValidationConstants.InactiveStatus;
         }
@@ -140,6 +141,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             return true;
 
         }
+        // TODO: Corregir la excepcion aqui
         public bool CheckWareHouseStock(WareHouseMovement wareHouseMovement)
         {
             var wareHouseStock = _DBContext.vw_ActualStock
@@ -155,7 +157,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             var wareHouse = _DBContext.WareHouse.AsNoTrackingWithIdentityResolution().FirstOrDefault(x => x.Id == wareHouseMovement.WareHouseId);
             var toWareHouse = _DBContext.WareHouse.AsNoTrackingWithIdentityResolution().FirstOrDefault(x => x.Id == wareHouseMovement.ToWareHouseId);
-            if (wareHouseMovement.Type is "Transferencia")
+            if (wareHouseMovement.Type is MovementsTypesEnum.Transferencia)
                 return wareHouse!.Status is ValidationConstants.ActiveStatus && toWareHouse!.Status is ValidationConstants.ActiveStatus;
 
             return wareHouse!.Status is ValidationConstants.ActiveStatus;
@@ -176,7 +178,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool WillStockFallMaximun(WareHouseMovement wareHouseMovement)
         {
-            if (wareHouseMovement.Type is "Trasnferencia")
+            if (wareHouseMovement.Type is MovementsTypesEnum.Transferencia)
             {
                 var toWareHouseStock = _DBContext.vw_ActualStock
                     .AsNoTrackingWithIdentityResolution()
@@ -206,12 +208,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public void NoEnoughAmount(WareHouseMovement wareHouseMovement)
         {
-            var driverCurrentAmount = _DBContext.EmployeeConsumptionLimit
+            var driverCurrentAmount = _DBContext.EmployeeConsumptionLimits
                 .FirstOrDefault(x => x.DriverId == wareHouseMovement.DriverId
-                && x.MethodOfComsuptionId == wareHouseMovement.FuelMethodOfComsuptionId)
+                && x.DriverMethodOfComsuptionId == wareHouseMovement.FuelMethodOfComsuptionId)
                 ?? throw new NotFoundException("This driver does not have this payment method or cannot be found. ");
 
-            if (driverCurrentAmount!.MethodOfComsuptionId is ValidationConstants.CreditCardMethod)
+            if (driverCurrentAmount!.DriverMethodOfComsuptionId is ValidationConstants.CreditCardMethod)
             {
                 if (wareHouseMovement.Amount > driverCurrentAmount.CurrentAmount)
                     throw new BadRequestException("Driver have'nt enough amount. ");
@@ -221,7 +223,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 _DBContext.SaveChanges();
             }
 
-            if (driverCurrentAmount!.MethodOfComsuptionId is ValidationConstants.GallonsMethod)
+            if (driverCurrentAmount!.DriverMethodOfComsuptionId is ValidationConstants.GallonsMethod)
             {
                 if (wareHouseMovement.Qty > driverCurrentAmount.CurrentAmount)
                     throw new BadRequestException("Driver have'nt enough amount. ");

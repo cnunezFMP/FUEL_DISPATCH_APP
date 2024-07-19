@@ -9,7 +9,6 @@ using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Middlewares;
 using FUEL_DISPATCH_API.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc.Formatters.Xml;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -23,8 +22,11 @@ const string corsName = "MyPolicy";
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 builder.Services.AddControllers()
-    .AddNewtonsoftJson
-    (opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize);
+    .AddJsonOptions
+    (opt =>
+    {
+        opt.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
@@ -97,11 +99,13 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IValidator<WareHouseMovement>, WareHouseMovementValidator>()
                 .AddScoped<IValidator<User>, RegisterValidator>()
                 .AddScoped<IValidator<ArticleDataMaster>, ArticlesValidator>()
-                .AddScoped<IEmployeeComsuptionLimits, EmployeeComsuptionLimitsServices>()
+                .AddScoped<IValidator<EmployeeConsumptionLimits>, EmployeeComsuptionLimitsValidator>()
+                .AddScoped<IEmployeeComsuptionLimitsServices, EmployeeComsuptionLimitsServices>()
                 .AddScoped<IZoneServices, ZoneServices>()
                 .AddScoped<IBookingServices, BookingServices>()
                 .AddScoped<IBranchOfficeServices, BranchOfficeServices>()
                 .AddScoped<IBranchIslandServices, BranchIslandServices>()
+                .AddScoped<IEmployeeComsuptionLimitsServices, EmployeeComsuptionLimitsServices>()
                 .AddScoped<IDispenserServices, DispenserServices>()
                 .AddScoped<IRoadServices, RoadServices>()
                 .AddScoped<ICompaniesServices, CompaniesServices>()

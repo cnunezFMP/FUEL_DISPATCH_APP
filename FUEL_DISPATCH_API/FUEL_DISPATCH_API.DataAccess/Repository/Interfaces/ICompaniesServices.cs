@@ -13,6 +13,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
     {
         bool IsCompanyUnique(Companies companyRNC);
         ResultPattern<Companies> GetCompanyByRnc(string companyRNC);
-        ResultPattern<ICollection<BranchOffices>> GetCompanyBranchOfficess(int companyId);
+        ResultPattern<List<BranchOffices>> GetCompanyBranchOfficess(int companyId);
     }
 }

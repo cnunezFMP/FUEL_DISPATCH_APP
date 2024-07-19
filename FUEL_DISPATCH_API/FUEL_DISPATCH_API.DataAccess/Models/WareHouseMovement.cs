@@ -10,8 +10,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         [Required] public int ItemId { get; set; }
         [Required] public int BranchOfficeId { get; set; }
         [Required] public int DispenserId { get; set; }
-        [Required] public string? Type { get; set; }
-        public decimal Qty { get; set; }
+        [Required] public MovementsTypesEnum Type { get; set; }
+        [Required] public decimal Qty { get; set; }
         public decimal? Amount { get; set; }
         public decimal? Odometer { get; set; }
         [Required] public int WareHouseId { get; set; }
@@ -19,31 +19,19 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public string? Notes { get; set; }
         public int? RequestId { get; set; }
         public int? FuelMethodOfComsuptionId { get; set; }
-
         public string? CreatedBy { get; set; }
         [Required] public int? DriverId { get; set; }
-
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-
         public string? UpdatedBy { get; set; }
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
-
         [JsonIgnore] public virtual BranchOffices? BranchOffice { get; set; }
-
         [JsonIgnore] public virtual Vehicle? Vehicle { get; set; }
-
         [JsonIgnore] public virtual Driver? Driver { get; set; }
-
         [JsonIgnore] public virtual Road? Road { get; set; }
-
         [JsonIgnore] public virtual WareHouseMovementRequest? Request { get; set; }
-
         [JsonIgnore] public virtual Dispenser? Dispenser { get; set; }
-
         [JsonIgnore] public virtual WareHouse? WareHouse { get; set; }
-
         [JsonIgnore] public virtual WareHouse? ToWareHouse { get; set; }
-
         [JsonIgnore] public virtual ArticleDataMaster? ArticleDataMaster { get; set; }
     }
 }

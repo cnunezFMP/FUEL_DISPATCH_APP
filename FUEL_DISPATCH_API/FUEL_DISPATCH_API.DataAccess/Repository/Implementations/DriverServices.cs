@@ -33,6 +33,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool CheckIfIdIsUnique(Driver entity)
             => !_DBContext.Driver.Any(x => x.Identification == entity.Identification);
+        // TODO: Chequear esta validacion. 
         public bool IsEmailUnique(Driver driver)
             => !_DBContext.User.Any(x => x.Email == driver.Email);
 

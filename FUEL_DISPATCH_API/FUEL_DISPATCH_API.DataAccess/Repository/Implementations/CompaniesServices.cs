@@ -5,6 +5,7 @@ using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
@@ -16,27 +17,38 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             _DBContext = dbContext;
         }
-        public ResultPattern<ICollection<BranchOffices>> GetCompanyBranchOfficess(int companyId)
+        public ResultPattern<List<BranchOffices>> GetCompanyBranchOfficess(int companyId)
         {
-            // TODO: Buscar cual de las dos formas que e utilizado para devolver las "BranchOffices" es mas eficiente. 
-            var company = _DBContext
-                .Companies
-                .FirstOrDefault(x => x.Id == companyId)
-                ?? throw new NotFoundException("This company doesn't exist. ");
+            // TODO: Buscar porque esta forma no funciona 
+            //var company = _DBContext
+            //    .Companies
+            //    .FirstOrDefault(x => x.Id == companyId)
+            //    ?? throw new NotFoundException("This company doesn't exist. ");
 
-            if (!company.BranchOffices.Any())
+            //if (!company.BranchOffices!.Any())
+            //    throw new BadRequestException("This company don't have branch offices. ");
+
+            //return ResultPattern<List<BranchOffices>>.Success
+            //(
+            //    company.BranchOfficess,
+            //    StatusCodes.Status200OK,
+            //    "All company branch offices obtained. "
+            //);
+
+            var companyBranchOffices = _DBContext.BranchOffices
+                .AsNoTracking()
+                .Where(x => x.CompanyId == companyId)
+                .ToList();
+
+            if (!companyBranchOffices.Any())
                 throw new BadRequestException("This company don't have branch offices. ");
-            //var companyBranchOffices = _DBContext.BranchOffices
-            //    .AsNoTracking()
-            //    .Where(x => x.CompanyId == companyId)
-            //    .ToList();
-            return ResultPattern<ICollection<BranchOffices>>
-                .Success
-                (
-                    company!.BranchOffices,
-                    StatusCodes.Status200OK,
-                    "All company branch offices obtained. "
-                );
+
+            return ResultPattern<List<BranchOffices>>.Success
+            (
+                companyBranchOffices,
+                StatusCodes.Status200OK,
+                "All company branch offices obtained. "
+            );
         }
         public ResultPattern<Companies> GetCompanyByRnc(string companyRNC)
         {

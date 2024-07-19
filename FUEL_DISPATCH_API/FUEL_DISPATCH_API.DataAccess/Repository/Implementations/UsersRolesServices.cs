@@ -33,25 +33,25 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext.SaveChanges();
             return ResultPattern<User>.Success(user, StatusCodes.Status200OK, "Rol updated. ");
         }
+
+        // TODO: Corregir: Me da un 405(Method not allowed. )
         public ResultPattern<User> UpdateUserRol(int userId, int roleId)
         {
-            var user = _DBContext.User.Include(x => x.Rols).FirstOrDefault(x => x.Id == userId);
-            if (user is null)
-                throw new NotFoundException("This user doesn't exist. ");
-
-            var rol = _DBContext.Role.Find(roleId);
-
-            if (rol is null)
-                throw new NotFoundException("This rol doesn't exist. ");
+            var user = _DBContext.User.Include(x => x.Rols).FirstOrDefault(x => x.Id == userId)
+                ?? throw new NotFoundException("This user doesn't exist. ");
+            
+            var rol = _DBContext.Role.Find(roleId)
+                ?? throw new NotFoundException("This rol doesn't exist. ");                
 
             if (UserHasTheRole(user, roleId))
                 throw new BadRequestException("This user has this role. ");
-            user.Rols.Add(rol);
+
+            user.Rols!.Add(rol);
             _DBContext.User.Update(user);
             _DBContext.SaveChanges();
             return ResultPattern<User>.Success(user, StatusCodes.Status200OK, "User rols updated. ");
         }
         public bool UserHasTheRole(User user, int rolId)
-            => user.Rols.Any(r => r.Id == rolId);
+            => user.Rols!.Any(r => r.Id == rolId);
     }
 }

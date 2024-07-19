@@ -8,7 +8,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
     {
         public WareHouseMovementValidator(IWareHouseMovementServices wareHouseMovementServices)
         {
-            RuleFor(x => x.Amount).NotNull().NotEmpty().When(x => x.Amount.HasValue);
+            RuleFor(x => x.Amount).NotNull().NotEmpty().When(x => x.Type == MovementsTypesEnum.Salida && x.DriverId.HasValue);
             RuleFor(x => x.Vehicle).Must(x =>
             {
                 return wareHouseMovementServices.CheckVehicle(x!.Id);
@@ -22,7 +22,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             {
                 return wareHouseMovementServices.CheckWareHouseStock(movement);
             }).WithMessage("No stock in warehouse, or stock qty is lesser than specified qty. ");
-            RuleFor(x => x.Driver).Must(x => wareHouseMovementServices.CheckDriver(x!.Id)).WithMessage("{PropertyName} is inactive or unavailable.");
+            RuleFor(x => x.DriverId).Must((x, _) =>
+            {
+                return !wareHouseMovementServices.CheckDriver(x);
+            }).WithMessage("Driver is inactive or unavailable.");
             RuleFor(x => x.BranchOffice).Must((branch, _) =>
             {
                 return !wareHouseMovementServices.CheckBranchOffice(branch);
@@ -39,15 +42,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             RuleFor(x => x.ToWareHouse).Must((wareHouse, _) =>
             {
                 return wareHouseMovementServices.CheckIfWareHousesHasActiveStatus(wareHouse);
-            }).When(x => x.Type is "Transferencia").WithMessage("One or both of the warehose are not active. ");
+            }).When(x => x.Type is MovementsTypesEnum.Transferencia).WithMessage("One or both of the warehose are not active. ");
             RuleFor(x => x.WareHouse).Must((wareHouseMovement, _) =>
             {
                 return !wareHouseMovementServices.WillStockFallBelowMinimum(wareHouseMovement);
-            }).WithMessage("The stock level will fall below the minimum quantity allowed. ").When(x => x.Type is "Salida" || x.Type is "Transferencia");
+            }).WithMessage("The stock level will fall below the minimum quantity allowed. ").When(x => x.Type is MovementsTypesEnum.Salida || x.Type is MovementsTypesEnum.Transferencia);
             RuleFor(x => x.WareHouse).Must((wareHouseMovement, _) =>
             {
-                return wareHouseMovementServices.WillStockFallMaximun(wareHouseMovement);
-            }).When(x => x.Type is "Entrada" || x.Type is "Transferencia").WithMessage("The input quantity will exceed the maximum warehouse quantity. ");
+                return !wareHouseMovementServices.WillStockFallMaximun(wareHouseMovement);
+            }).When(x => x.Type is MovementsTypesEnum.Entrada || x.Type is MovementsTypesEnum.Transferencia).WithMessage("The input quantity will exceed the maximum warehouse quantity. ");
             // TODO: Test this validation.
             RuleFor(x => x)
                 .Must(x => wareHouseMovementServices.SetRequestForMovement(x))
