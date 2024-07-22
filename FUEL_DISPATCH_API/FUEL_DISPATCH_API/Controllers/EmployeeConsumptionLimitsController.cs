@@ -3,6 +3,7 @@ using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
+using Gridify;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -21,11 +22,16 @@ namespace FUEL_DISPATCH_API.Controllers
             _employeeComsuptionLimitsServices = employeeComsuptionLimitsServices;
             _validator = validator;
         }
-
-        [HttpDelete("{driverId}/DriverMethodOfComsuption/{companyId}"), Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<DriverMethodOfComsuption>> DeleteUserCompany(int userId, int companyId)
+        [HttpGet, Authorize(Roles = "Administrator")]
+        public ActionResult<ResultPattern<Paging<EmployeeConsumptionLimits>>> GetDrivers([FromQuery] GridifyQuery query)
         {
-            return Ok(_employeeComsuptionLimitsServices.DeleteDriverMethod(userId, companyId));
+            return Ok(_employeeComsuptionLimitsServices.GetAll(query));
+        }
+        [HttpDelete("{driverId:int}, {methodId:int}"), Authorize(Roles = "Administrator")]
+        public ActionResult<ResultPattern<DriverMethodOfComsuption>> DeleteUserCompany(int driverId, int methodId)
+        {
+            Func<EmployeeConsumptionLimits, bool> predicate = x => x.DriverId == driverId && x.DriverMethodOfComsuptionId == methodId;
+            return Ok(_employeeComsuptionLimitsServices.Delete(predicate));
         }
         /// <summary>
         /// Este controlador se utiliza para asignar el metodo que 
@@ -50,13 +56,18 @@ namespace FUEL_DISPATCH_API.Controllers
             {
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             }
+            employeeConsumption.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            employeeConsumption.CreatedAt = DateTime.Now;
             return Ok(_employeeComsuptionLimitsServices.Post(employeeConsumption));
         }
 
-        [HttpPut("{userId}/DriverMethodOfComsuption/{companyId}"), Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<DriverMethodOfComsuption>> UpdateUserCompany(int userId, int companyId, EmployeeConsumptionLimits employeeConsumptionLimit)
+        [HttpPut("{driverId:int}, {methodId:int}"), Authorize(Roles = "Administrator")]
+        public ActionResult<ResultPattern<EmployeeConsumptionLimits>> UpdateUserMethod(int driverId, int methodId, EmployeeConsumptionLimits employeeConsumptionLimit)
         {
-            return Ok(_employeeComsuptionLimitsServices.UpdateDriverMethod(userId, companyId, employeeConsumptionLimit));
+            Func<EmployeeConsumptionLimits, bool> predicate = x => x.DriverId == driverId && x.DriverMethodOfComsuptionId == methodId;
+            employeeConsumptionLimit.UpdatedAt = DateTime.Now;
+            employeeConsumptionLimit.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            return Created(string.Empty, _employeeComsuptionLimitsServices.Update(predicate, employeeConsumptionLimit));
         }
     }
 }

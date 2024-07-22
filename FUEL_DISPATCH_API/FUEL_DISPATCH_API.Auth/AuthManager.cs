@@ -22,17 +22,25 @@ public class AuthManager
     {
         var username = usuario.Username;
         var password = usuario.Password;
-        var credencialesCorretas = _dbContext.User.Include(x => x.Rols).SingleOrDefault(x => x.Username == username);
-        if (credencialesCorretas != null && BCrypt.Net.BCrypt.Verify(password, credencialesCorretas.Password))
+        var credenciales = _dbContext.User.Include(x => x.Rols).SingleOrDefault(x => x.Username == username);
+        if (credenciales != null && BCrypt.Net.BCrypt.Verify(password, credenciales.Password))
         {
+
+            var companyId = _dbContext.UsersCompanies
+                            .Where(uc => uc.UserId == credenciales.Id)
+                            .Select(uc => uc.CompanyId)
+                            .FirstOrDefault();
+
             var keyBytes = Encoding.UTF8.GetBytes(_secretKey);
             var claims = new ClaimsIdentity();
             claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, usuario.Username!));
-            if (credencialesCorretas.Email is not null)
-                claims.AddClaim(new Claim(ClaimTypes.Email, credencialesCorretas.Email));
+            if (companyId is not 0)
+                claims.AddClaim(new Claim("CompanyId", companyId.ToString()));
+            if (credenciales.Email is not null)
+                claims.AddClaim(new Claim(ClaimTypes.Email, credenciales.Email));
 
-            foreach (var role in credencialesCorretas.Rols)
-                claims.AddClaim(new Claim(ClaimTypes.Role, role.RolName));
+            foreach (var role in credenciales.Rols!)
+                claims.AddClaim(new Claim(ClaimTypes.Role, role.RolName!));
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = claims,
@@ -47,7 +55,7 @@ public class AuthManager
                 _dbContext.UserToken.Add(new UserToken
                 {
                     Token = tokenCreado,
-                    UserId = credencialesCorretas.Id,
+                    UserId = credenciales.Id,
                     CreatedAt = DateTime.Now,
                     ExpData = tokenDescriptor.Expires
                 });

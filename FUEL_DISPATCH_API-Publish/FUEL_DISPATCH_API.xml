@@ -26,5 +26,22 @@
             <param name="companyId"></param>
             <returns></returns>
         </member>
+        <member name="M:FUEL_DISPATCH_API.Controllers.EmployeeConsumptionLimitsController.SetEmployeLimitAndMethod(FUEL_DISPATCH_API.DataAccess.Models.EmployeeConsumptionLimits)">
+            <summary>
+            Este controlador se utiliza para asignar el metodo que 
+            tendran los conductores para el consumo de combustible 
+            se le asigna limite y la cantidad actual. 
+            </summary>
+            <remarks>
+            {
+              "driverId": 1,
+              "methodOfComsuptionId": 1,
+              "limitAmount": 5000,
+              "currentAmount": 5000
+            }
+            </remarks>
+            <param name="employeeConsumption"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>

@@ -37,5 +37,6 @@ public partial class BranchOffices
     [JsonIgnore] public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
     [JsonIgnore] public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
     [JsonIgnore] public virtual ICollection<WareHouse> WareHouses { get; set; } = new List<WareHouse>();
+    [JsonIgnore] public virtual ICollection<Driver> Drivers { get; set; } = new List<Driver>();
 
 }

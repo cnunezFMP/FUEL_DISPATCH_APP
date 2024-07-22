@@ -13,7 +13,7 @@ public partial class Zone
 
     [Required] public string? FullZoneSpecs { get; set; }
     [Required] public string? Code { get; set; }
-
+    [Required] public int CompanyId { get; set; }
     public string? Status { get; set; }
 
     public string? CreatedBy { get; set; }
@@ -23,6 +23,6 @@ public partial class Zone
     public string? UpdatedBy { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
-
+    [JsonIgnore] public virtual Companies? Company { get; set; }
     [JsonIgnore] public virtual ICollection<Road> Road { get; set; } = new List<Road>();
 }

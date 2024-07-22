@@ -36,17 +36,25 @@ namespace FUEL_DISPATCH_API.Controllers
         }
 
         /// <summary>
-        /// Create new article.
-        /// Example:
-        /// {
-        ///     "articleNumber": "IT00001",
-        ///     "description": "string",
-        ///     "unitPrice": 0,
-        ///     "maker": "string",
-        ///     "barCode": "string",
-        /// }
+        /// Crear un nuevo articulo en un almacen. 
         /// </summary>
+        /// <remarks>
+        /// Sample request: 
+        /// 
+        ///     POST /Articles
+        ///     {
+        ///         "articleNumber": "IT-001",
+        ///         "description": "Alguna descripcion del articulo. ",
+        ///         "unitPrice": 100,
+        ///         "manufacturer": "Shell",
+        ///         "barCode": "00010001",
+        ///         "companyId": 1
+        ///     }
+        /// </remarks>
         /// <param name="article"></param>
+        /// <response code="201">Si se crea el articulo correctamente. </response>
+        /// <response code="400">Si se intenta agregar un articulo con el codigo de una ya existente. </response>
+        /// <response code="400">Si se envia el numero de articulo nulo. </response>
         /// <returns></returns>
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<ArticleDataMaster>> PostArticle([FromBody] ArticleDataMaster article)

@@ -7,8 +7,6 @@ using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.Numerics;
-#pragma warning disable
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class DriversServices : GenericRepository<Driver>, IDriversServices
@@ -25,15 +23,19 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             _DBContext.Driver.Add(entity);
             _DBContext.SaveChanges();
-
-            // CheckAndUpdateDriver(entity);
             if (entity.Email is not null)
-                _emailSender.SendEmailAsync(entity.Email, AppConstants.ACCOUNT_CREATED_MESSAGE, "Your account was created successfully. ");
-            return ResultPattern<Driver>.Success(entity, StatusCodes.Status200OK, "Driver added successfully. ");
+                _emailSender.SendEmailAsync(entity.Email,
+                    AppConstants.ACCOUNT_CREATED_MESSAGE,
+                    "Your account was created successfully. ");
+
+            return ResultPattern<Driver>.Success(
+                entity,
+                StatusCodes.Status200OK,
+                "Driver added successfully. ");
         }
         public bool CheckIfIdIsUnique(Driver entity)
             => !_DBContext.Driver.Any(x => x.Identification == entity.Identification);
-        // TODO: Chequear esta validacion. 
+        // DONE: Chequear esta validacion. 
         public bool IsEmailUnique(Driver driver)
             => !_DBContext.User.Any(x => x.Email == driver.Email);
 
@@ -55,7 +57,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             return true;
         }*/
         // DONE: Implementar esta funcion en el controlador de Driver
-        // TODO: Ver si implementar la misma forma de devolver los despachos como los "BranchOffices" en las compañias. 
         public ResultPattern<List<WareHouseMovement>> GetDriverDispatches(int driverId)
         {
             var driverDispatches = _DBContext.WareHouseMovement

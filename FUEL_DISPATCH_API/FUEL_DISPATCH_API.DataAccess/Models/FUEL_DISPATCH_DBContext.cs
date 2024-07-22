@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel;
+using System.Xml.Linq;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 
@@ -52,7 +53,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<UsersRols> UsersRols { get; set; }
     public virtual DbSet<Vehicle> Vehicle { get; set; }
     public virtual DbSet<Zone> Zone { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AllComsuption>(entity =>
@@ -137,10 +137,14 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(e => e.WareHouse)
             .WithMany(e => e.WareHouseMovements)
             .HasForeignKey(f => f.WareHouseId);
+
             entity.HasOne(e => e.ToWareHouse)
             .WithMany(e => e.ToWareHouseMovements)
             .HasForeignKey(f => f.ToWareHouseId);
-            entity.HasOne(e => e.ArticleDataMaster).WithMany(e => e.WareHouseMovements).HasForeignKey(f => f.ItemId);
+
+            entity.HasOne(e => e.ArticleDataMaster)
+            .WithMany(e => e.WareHouseMovements)
+            .HasForeignKey(f => f.ItemId);
         });
         modelBuilder.Entity<WareHouse>(entity =>
         {
@@ -181,6 +185,10 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             x => x.HasOne(x => x.Driver)
             .WithMany()
             .HasForeignKey(x => x.DriverId));
+
+            entity.HasOne(x => x.BranchOffice)
+            .WithMany(x => x.Drivers)
+            .HasForeignKey(x => x.BranchOfficeId);
         });
         modelBuilder.Entity<EmployeeConsumptionLimits>(entity =>
         {
@@ -278,11 +286,18 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         });
         modelBuilder.Entity<Road>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Roads__3214EC0750670522");
+            entity.HasKey(e => e.Id)
+            .HasName("PK__Roads__3214EC0750670522");
 
             entity.ToTable("Road");
-            entity.HasOne(d => d.Zone).WithMany(p => p.Road)
-                .HasForeignKey(d => d.ZoneId);
+
+            entity.HasOne(x => x.Company)
+            .WithMany(x => x.Roads)
+            .HasForeignKey(x => x.CompanyId);
+
+            entity.HasOne(d => d.Zone)
+            .WithMany(p => p.Road)
+            .HasForeignKey(d => d.ZoneId);
         });
         modelBuilder.Entity<WareHouseMovementRequest>(entity =>
         {
@@ -290,6 +305,14 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.ToTable("WareHouseMovementRequest");
             entity.HasOne(e => e.Vehicle).WithMany(e => e.Requests).HasForeignKey(e => e.VehicleId);
             entity.HasOne(e => e.Driver).WithMany(e => e.Requests).HasForeignKey(e => e.DriverId);
+
+            entity.HasOne(e => e.WareHouse)
+            .WithMany(e => e.WareHouseMovementRequests)
+            .HasForeignKey(f => f.WareHouseId);
+
+            entity.HasOne(e => e.ToWareHouse)
+            .WithMany(e => e.ToWareHouseMovementRequests)
+            .HasForeignKey(f => f.ToWareHouseId);
         });
         modelBuilder.Entity<Role>(entity =>
         {
@@ -393,6 +416,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.UsersRols)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
+
         });
         modelBuilder.Entity<vw_ActualStock>(entity =>
         {
@@ -469,6 +493,10 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+
+            entity.HasOne(x => x.Company)
+            .WithMany(x => x.Zones)
+            .HasForeignKey(x => x.CompanyId);
         });
         OnModelCreatingGeneratedProcedures(modelBuilder);
         OnModelCreatingGeneratedFunctions(modelBuilder);

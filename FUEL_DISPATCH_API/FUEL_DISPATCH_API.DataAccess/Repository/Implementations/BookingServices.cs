@@ -22,22 +22,25 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext = dbContext;
             _wareHouseServices = wareHouseServices;
         }
-        // TODO: Hacer este servicio para Booking. 
-        //public bool CheckDriver(Booking booking)
-        //{
-        //    return _wareHouseServices.CheckDriver(booking.DriverId);
-        //}
+        // DONE: Hacer este servicio para Booking. 
+        public bool CheckDriver(Booking book)
+        {
+            var driverForBook = _DBContext.Driver
+                .AsNoTrackingWithIdentityResolution()
+                .FirstOrDefault(d => d.Id == book.DriverId)
+                ?? throw new NotFoundException("No driver found. ");
+
+            return (driverForBook!.Status is not ValidationConstants.InactiveStatus
+                && driverForBook!.Status is not ValidationConstants.NotAvailableStatus);
+        }
         public bool CheckVehicle(Booking booking)
-        {
-            return _wareHouseServices.CheckVehicle(booking.VehicleId);
-        }
+            => _wareHouseServices.CheckVehicle(booking.VehicleId);
         public bool VerifyDisponibility(Booking booking)
-        {
-            return !_DBContext.Booking.Any(r => r.VehicleId == booking.VehicleId
+            => !_DBContext.Booking.Any(r => r.VehicleId == booking.VehicleId
                        && r.Status != ValidationConstants.CanceledStatus
-                       && (booking.SpecificDate <= r.ToSpecificDate && booking.ToSpecificDate >= r.SpecificDate)
+                       && (booking.SpecificDate <= r.ToSpecificDate 
+                       && booking.ToSpecificDate >= r.SpecificDate)
                        && r.SpecificDate != booking.SpecificDate);
-        }
         public bool VehicleHasDriverAssigned(Booking booking)
         {
             var vehicleForBook = _DBContext.Vehicle.FirstOrDefault(x => x.Id == booking.VehicleId);

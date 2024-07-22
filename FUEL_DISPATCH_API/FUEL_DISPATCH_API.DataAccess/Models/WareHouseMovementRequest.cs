@@ -6,6 +6,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
     public class WareHouseMovementRequest
     {
         public int Id { get; set; } // Primary Key with IDENTITY
+        [Required] public int WareHouseId { get; set; }
+        public int? ToWareHouseId { get; set; }
         [Required] public int DriverId { get; set; }
         [Required] public string? Type { get; set; }   // Salida o Transferencia.
         public int VehicleId { get; set; }
@@ -15,6 +17,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public DateTime? UpdatedAt { get; set; }
         public string? UpdatedBy { get; set; }
         public string? CreatedBy { get; set; }
+        [JsonIgnore] public virtual WareHouse? WareHouse { get; set; }
+        [JsonIgnore] public virtual WareHouse? ToWareHouse { get; set; }
         [JsonIgnore] public Vehicle? Vehicle { get; set; } // Foreign Key relationship with Vehicle
         [JsonIgnore] public Driver? Driver { get; set; } // Foreign Key relationship with Driver
     }

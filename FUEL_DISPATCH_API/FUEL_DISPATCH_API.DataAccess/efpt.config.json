@@ -56,10 +56,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Location]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Make]",
          "ObjectType": 0
       },

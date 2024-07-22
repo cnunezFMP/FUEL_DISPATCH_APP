@@ -2,7 +2,7 @@
 <Root Type="DevExpress.CodeRush.Foundation.Markers.SolutionBookmarksContainer">
   <Options Language="Neutral">
     <Items>
-      <Item Id="{1eb2549a-b57a-49e6-8f96-38621a32be03}">
+      <Item Id="{1acdca04-c9e2-4b16-a497-745237041c5b}">
         <Id>4</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API\Controllers\ArticlesController.cs</File>
         <Line>66</Line>
@@ -11,7 +11,7 @@
         <ViewportTopMax>1796</ViewportTopMax>
         <TopLine>36</TopLine>
       </Item>
-      <Item Id="{e29afa2a-5456-4b76-a997-a4e5131cc324}">
+      <Item Id="{046ee7c6-e487-40f2-a336-ca54a143c59d}">
         <Id>5</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API\Controllers\DriversController.cs</File>
         <Line>44</Line>
@@ -20,7 +20,7 @@
         <ViewportTopMax>2226</ViewportTopMax>
         <TopLine>36</TopLine>
       </Item>
-      <Item Id="{617e8ef2-35fb-4032-b279-5e86f51bbf13}">
+      <Item Id="{40d17114-0196-49e2-b102-5956379b85d9}">
         <Id>2</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API\Controllers\UsersCompaniesController.cs</File>
         <Line>7</Line>
@@ -29,7 +29,7 @@
         <ViewportTopMax>1176</ViewportTopMax>
         <TopLine>3</TopLine>
       </Item>
-      <Item Id="{7994e342-c19a-42d2-8f5f-a4e49aee42a2}">
+      <Item Id="{a0ca64fe-9e49-47eb-9d5e-1c82031c2e73}">
         <Id>3</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API\Controllers\ArticlesController.cs</File>
         <Line>16</Line>
@@ -38,7 +38,7 @@
         <ViewportTopMax>1796</ViewportTopMax>
         <TopLine>15</TopLine>
       </Item>
-      <Item Id="{47f9805b-13fc-494b-9bd7-a73dcf9f6288}">
+      <Item Id="{345e8da4-175e-429e-8af8-547c93a4b999}">
         <Id>1</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API\Controllers\DriversController.cs</File>
         <Line>15</Line>
@@ -47,7 +47,7 @@
         <ViewportTopMax>2230</ViewportTopMax>
         <TopLine>14</TopLine>
       </Item>
-      <Item Id="{8cbf096f-513d-4d70-a949-4d6f26d17ea6}">
+      <Item Id="{880c528e-f121-4419-a4da-3e34931b8633}">
         <Id>6</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API.DataAccess\Repository\Implementations\BranchIslandServices.cs</File>
         <Line>13</Line>

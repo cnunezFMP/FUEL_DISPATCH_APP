@@ -35,6 +35,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
 
 
         [JsonIgnore] public virtual ICollection<Stock>? Stocks { get; set; } = new List<Stock>();
+        [JsonIgnore] public virtual ICollection<WareHouseMovementRequest>? WareHouseMovementRequests { get; set; } = new List<WareHouseMovementRequest>();
+        [JsonIgnore] public virtual ICollection<WareHouseMovementRequest>? ToWareHouseMovementRequests { get; set; } = new List<WareHouseMovementRequest>();
         [JsonIgnore] public virtual ICollection<WareHouseMovement>? ToWareHouseMovements { get; set; } = new List<WareHouseMovement>();
 
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;

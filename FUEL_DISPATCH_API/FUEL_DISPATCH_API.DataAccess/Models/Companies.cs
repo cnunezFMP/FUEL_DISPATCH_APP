@@ -23,13 +23,9 @@ public partial class Companies
     public string? EmailAddress2 { get; set; }
 
     public string? Website { get; set; }
-
     [Required] public string? Industry { get; set; }
-
     public DateTime? DateEstablished { get; set; }
-
     [Required] public string? CEOFounder { get; set; }
-
     public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
     public DateTime? UpdatedAt { get; set; } = DateTime.Now;
@@ -37,7 +33,9 @@ public partial class Companies
     public string? CreatedBy { get; set; }
 
     public string? UpdatedBy { get; set; }
+    [JsonIgnore] public virtual ICollection<Zone>? Zones { get; set; } = new HashSet<Zone>();
     [JsonIgnore] public virtual ICollection<Vehicle>? Vehicles { get; set; } = new List<Vehicle>();
+    [JsonIgnore] public virtual ICollection<Road>? Roads { get; set; } = new List<Road>();
     [JsonIgnore] public virtual ICollection<ArticleDataMaster>? Articles { get; set; } = new List<ArticleDataMaster>();
     [JsonIgnore] public virtual ICollection<User>? Users { get; set; } = new List<User>();
     [JsonIgnore] public virtual ICollection<WareHouse>? WareHouses { get; set; } = new List<WareHouse>();

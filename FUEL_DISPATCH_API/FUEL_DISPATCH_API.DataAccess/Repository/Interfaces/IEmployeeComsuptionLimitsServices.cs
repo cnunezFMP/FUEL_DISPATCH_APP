@@ -7,10 +7,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
     public interface IEmployeeComsuptionLimitsServices : IGenericInterface<EmployeeConsumptionLimits>
     {
-        ResultPattern<Driver> DeleteDriverMethod(int driverId, int methodId);
-        ResultPattern<Driver> UpdateDriverMethod(int driverId, int methodId, EmployeeConsumptionLimits employeeConsumptionLimit);
+        // ResultPattern<EmployeeConsumptionLimits> DeleteDriverMethod(int driverId, int methodId);
+        /*ResultPattern<EmployeeConsumptionLimits> UpdateDriverMethod(int driverId, int methodId, EmployeeConsumptionLimits employeeConsumptionLimit);*/
         bool DriverHasTheMethod(int driverId, int methodOfComsuptionId);
-        // ResultPattern<EmployeeConsumptionLimits> UpdateDriverMethod(int driverId, int methodId);
 
     }
 }

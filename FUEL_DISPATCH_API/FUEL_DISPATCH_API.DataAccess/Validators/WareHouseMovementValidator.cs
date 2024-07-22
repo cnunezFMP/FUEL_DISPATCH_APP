@@ -12,8 +12,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             RuleFor(x => x.Vehicle).Must(x =>
             {
                 return wareHouseMovementServices.CheckVehicle(x!.Id);
-            }
-            ).WithMessage("{PropertyName} is inactive or unavailable. ").When(x => x.VehicleId.HasValue);
+            }).WithMessage("{PropertyName} is inactive or unavailable. ").When(x => x.VehicleId.HasValue);
             RuleFor(x => x.Qty).Must((qty, _) =>
             {
                 return wareHouseMovementServices.QtyCantBeZero(qty);
@@ -22,19 +21,16 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             {
                 return wareHouseMovementServices.CheckWareHouseStock(movement);
             }).WithMessage("No stock in warehouse, or stock qty is lesser than specified qty. ");
-            RuleFor(x => x.DriverId).Must((x, _) =>
-            {
-                return !wareHouseMovementServices.CheckDriver(x);
-            }).WithMessage("Driver is inactive or unavailable.");
+            RuleFor(x => x).Must(wareHouseMovementServices.CheckDriver).WithMessage("Driver is inactive or unavailable.");
             RuleFor(x => x.BranchOffice).Must((branch, _) =>
             {
                 return !wareHouseMovementServices.CheckBranchOffice(branch);
             }).WithMessage("{PropertyName} is inactive or unavailable. ");
-            RuleFor(x => x.Dispenser).Must((branch, _) =>
+            RuleFor(x => x.Dispenser).Must((dispenser, _) =>
             {
-                return !wareHouseMovementServices.CheckBranchOffice(branch);
+                return !wareHouseMovementServices.CheckDispenser(dispenser);
             }).WithMessage("PropertyName} is inactive or unavailable. ");
-            RuleFor(x => x).Must(x => wareHouseMovementServices.CheckIfProductIsInTheWareHouse(x)).WithMessage("The product isn't in the specified warehouse. ");
+            RuleFor(x => x).Must(wareHouseMovementServices.CheckIfProductIsInTheWareHouse).WithMessage("The product isn't in the specified warehouse. ");
             RuleFor(x => x.WareHouse).Must((wareHouse, _) =>
             {
                 return wareHouseMovementServices.CheckIfWareHousesHasActiveStatus(wareHouse);
@@ -51,7 +47,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             {
                 return !wareHouseMovementServices.WillStockFallMaximun(wareHouseMovement);
             }).When(x => x.Type is MovementsTypesEnum.Entrada || x.Type is MovementsTypesEnum.Transferencia).WithMessage("The input quantity will exceed the maximum warehouse quantity. ");
-            // TODO: Test this validation.
+            // DONE: Test this validation.
             RuleFor(x => x)
                 .Must(x => wareHouseMovementServices.SetRequestForMovement(x))
                 .When(x => x.RequestId.HasValue

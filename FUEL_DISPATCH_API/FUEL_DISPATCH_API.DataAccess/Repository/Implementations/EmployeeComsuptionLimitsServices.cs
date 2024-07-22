@@ -1,11 +1,11 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.Utils.Constants;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class EmployeeComsuptionLimitsServices : GenericRepository<EmployeeConsumptionLimits>, IEmployeeComsuptionLimitsServices
@@ -16,37 +16,30 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             _DBContext = dbContext;
         }
-        public ResultPattern<Driver> DeleteDriverMethod(int driverId, int methodId)
+        public override ResultPattern<EmployeeConsumptionLimits> Delete(Func<EmployeeConsumptionLimits, bool> predicate)
         {
-            var driver = _DBContext.Driver.Include(x => x.DriverMethodsOfComsuption).FirstOrDefault(x => x.Id == driverId)
-                ?? throw new NotFoundException("This user doesn't exist. ");
+            var employeeComsuptionLimitEntityToDelete = _DBContext.EmployeeConsumptionLimits
+                .FirstOrDefault(predicate);
 
-            var method = _DBContext.EmployeeConsumptionLimits.Find(driverId, methodId)
-                ?? throw new NotFoundException("This method doesn't exist. ");
-            _DBContext.EmployeeConsumptionLimits.Remove(method!);
+            _DBContext.EmployeeConsumptionLimits.Remove(employeeComsuptionLimitEntityToDelete!);
             _DBContext.SaveChanges();
-            return ResultPattern<Driver>.Success(driver, StatusCodes.Status200OK, "Method updated. ");
+            return ResultPattern<EmployeeConsumptionLimits>.Success(employeeComsuptionLimitEntityToDelete!, StatusCodes.Status200OK, "Driver method deleted. ");
         }
-        // TODO: Actualizar.
-        public ResultPattern<Driver> UpdateDriverMethod(int userId, int roleId, EmployeeConsumptionLimits employeeConsumptionLimit)
+        
+        // DONE: Actualizar.
+        public override ResultPattern<EmployeeConsumptionLimits> Update(Func<EmployeeConsumptionLimits, bool> predicate, EmployeeConsumptionLimits updatedEntity)
         {
-            var driver = _DBContext.Driver
-                .Include(x => x.DriverMethodsOfComsuption)
-                .FirstOrDefault(x => x.Id == userId)
-                ?? throw new NotFoundException("This driver doesn't exist. ");
+            var employeeComsuptionLimitEntity = _DBContext.EmployeeConsumptionLimits
+                .FirstOrDefault(predicate);
 
-            var method = _DBContext.DriverMethodOfComsuption.Find(roleId)
-                ?? throw new NotFoundException("This method doesn't exist. ");
-
-            driver.DriverMethodsOfComsuption!.Add(method);
-            _DBContext.Driver.Update(driver);
-            _DBContext.EmployeeConsumptionLimits.Update(employeeConsumptionLimit);
+            _DBContext.Entry(employeeComsuptionLimitEntity!).CurrentValues.SetValues(updatedEntity);
             _DBContext.SaveChanges();
-            return ResultPattern<Driver>.Success(driver, StatusCodes.Status200OK, "User rols updated. ");
+            return ResultPattern<EmployeeConsumptionLimits>.Success(employeeComsuptionLimitEntity!, StatusCodes.Status200OK, AppConstants.DATA_UPDATED_MESSAGE);
+
         }
 
         // DONE: Poner en FluentValidation
-        // TODO: Test this Validation.
+        // DONE: Test this Validation. Funciona correcamente. 
         public bool DriverHasTheMethod(int driverId, int methodOfComsuptionId)
             => !_DBContext.EmployeeConsumptionLimits.Any(x => x.DriverId == driverId && x.DriverMethodOfComsuptionId == methodOfComsuptionId);
     }

@@ -151,7 +151,13 @@ app.UseExceptionHandler();
 app.UseCors(corsName);
 app.UseSwagger();
 app.UseSwaggerUI();
-
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwaggerUI(options => // UseSwaggerUI is called only in Development.
+    {
+        options.InjectStylesheet(@"C:\repositorio_local\FUEL_DISPATCH_API\FUEL_DISPATCH_API\Swagger\SwaggerSpecs.cs");
+    });
+}
 app.UseReDoc(c =>
 {
     c.DocumentTitle = "FUEL_DISPATCH_API Doc";

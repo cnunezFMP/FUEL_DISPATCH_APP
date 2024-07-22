@@ -9,7 +9,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         [Required] public int WareHouseId { get; set; }
         [Required] public int ItemId { get; set; }
         [Required] public decimal StockQty { get; set; }
-
         [JsonIgnore] public virtual WareHouse WareHouse { get; set; }
 
         [JsonIgnore] public virtual ArticleDataMaster ArticleDataMaster { get; set; }

@@ -36,6 +36,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext.SaveChanges();
             return ResultPattern<WareHouseMovement>.Success(wareHouseMovement, StatusCodes.Status201Created, "Registered dispatch. ");
         }
+
         #region Logic
         public bool SetDriverIdByVehicle(WareHouseMovement wareHouseMovement)
         {
@@ -84,9 +85,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             var vehicleForDispatch = _DBContext.Vehicle
                 .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefault(v => v.Id == vehicleId)
-                                        ?? throw new NotFoundException("No se encontro el vehiculo. ");
+                ?? throw new NotFoundException("No se encontro el vehiculo. ");
 
-            return vehicleForDispatch.Status is ValidationConstants.InactiveStatus || vehicleForDispatch!.Status is ValidationConstants.NotAvailableStatus;
+            return (vehicleForDispatch.Status is not ValidationConstants.InactiveStatus
+                && vehicleForDispatch!.Status is not ValidationConstants.NotAvailableStatus);
         }
         public bool CheckDriver(WareHouseMovement wareHouseMovement)
         {
@@ -96,8 +98,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                  .FirstOrDefault(d => d.Id == wareHouseMovement.DriverId)
                     ?? throw new NotFoundException("No driver found. ");
 
-
-            return (driverForDispatch!.Status is ValidationConstants.InactiveStatus || driverForDispatch!.Status is ValidationConstants.NotAvailableStatus);
+            return (driverForDispatch!.Status is not ValidationConstants.InactiveStatus && driverForDispatch!.Status is not ValidationConstants.NotAvailableStatus);
 
         }
         public bool CheckBranchOffice(WareHouseMovement wareHouseMovement)
@@ -114,9 +115,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             var dispenser = _DBContext.Dispenser
                 .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefault(dp => dp.Id == wareHouseMovement.DispenserId)
-                ?? throw new NotFoundException("No se encontro dispensador para el despacho");
+                ?? throw new NotFoundException("No dispenser found. ");
 
-            return dispenser.Status is ValidationConstants.InactiveStatus;
+            return dispenser.Status is not ValidationConstants.InactiveStatus;
         }
         public bool ChangeDriverStatus(WareHouseMovement wareHouseMovement)
         {
@@ -234,7 +235,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             }
         }
         // DONE: Verificar el estado de las solicitudes. Agregar a FluentValidation.
-        // TODO: Verificar si la validacion me funcionara en vez de las excepciones.
         public bool SetRequestForMovement(WareHouseMovement wareHouseMovement)
         {
             var requestForMovement = _DBContext.WareHouseMovementRequest
