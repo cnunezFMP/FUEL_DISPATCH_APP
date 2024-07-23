@@ -12,7 +12,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
-        [JsonIgnore] public virtual Driver Driver { get; set; }
-        [JsonIgnore] public virtual DriverMethodOfComsuption DriverMethodOfComsuption { get; set; }
+        [JsonIgnore] public virtual Driver? Driver { get; set; }
+        [JsonIgnore] public virtual DriverMethodOfComsuption? DriverMethodOfComsuption { get; set; }
     }
 }

@@ -34,9 +34,11 @@ public partial class BranchOffices
     public string Status { get; set; } = ValidationConstants.ActiveStatus;
     public DateTime? UpdatedAt { get; set; } = DateTime.Now;
     public string? UpdatedBy { get; set; }
+    [JsonIgnore] public virtual ICollection<UsersBranchOffices> UsersBranchOffices { get; set; } = new List<UsersBranchOffices>();
     [JsonIgnore] public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
     [JsonIgnore] public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
     [JsonIgnore] public virtual ICollection<WareHouse> WareHouses { get; set; } = new List<WareHouse>();
     [JsonIgnore] public virtual ICollection<Driver> Drivers { get; set; } = new List<Driver>();
+    [JsonIgnore] public virtual ICollection<User> Users { get; set; } = new List<User>();
 
 }

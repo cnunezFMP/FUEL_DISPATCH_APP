@@ -1,16 +1,10 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
-using FUEL_DISPATCH_API.Utils.Constants;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
@@ -49,7 +43,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             return ResultPattern<Vehicle>.Success(entity, StatusCodes.Status201Created, "Vehicle created successfully. ");
         }
-
         public bool DriverIdHasValue(Vehicle entity)
             => _DBContext.Driver.Any(x => x.Id == entity.DriverId);
         /*public bool CheckAndUpdateDriver(Vehicle entity)
@@ -79,7 +72,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             => !_DBContext.Measure.Any(x => x.Id == vehicle.OdometerMeasureId);
         public bool FichaMustBeUnique(Vehicle vehicleToken)
             => !_DBContext.Vehicle.Any(x => x.Ficha == vehicleToken.Ficha);
-
         // DONE: Implementar esto en el controlador de Vehicle
         public ResultPattern<List<WareHouseMovement>> GetVehicleDispatches(int vehicleId)
         {

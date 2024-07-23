@@ -6,17 +6,25 @@
     <members>
         <member name="M:FUEL_DISPATCH_API.Controllers.ArticlesController.PostArticle(FUEL_DISPATCH_API.DataAccess.Models.ArticleDataMaster)">
             <summary>
-            Create new article.
-            Example:
-            {
-                "articleNumber": "IT00001",
-                "description": "string",
-                "unitPrice": 0,
-                "maker": "string",
-                "barCode": "string",
-            }
+            Crear un nuevo articulo en un almacen. 
             </summary>
+            <remarks>
+            Sample request: 
+            
+                POST /Articles
+                {
+                    "articleNumber": "IT-001",
+                    "description": "Alguna descripcion del articulo. ",
+                    "unitPrice": 100,
+                    "manufacturer": "Shell",
+                    "barCode": "00010001",
+                    "companyId": 1
+                }
+            </remarks>
             <param name="article"></param>
+            <response code="201">Si se crea el articulo correctamente. </response>
+            <response code="400">Si se intenta agregar un articulo con el codigo de una ya existente. </response>
+            <response code="400">Si se envia el numero de articulo nulo. </response>
             <returns></returns>
         </member>
         <member name="M:FUEL_DISPATCH_API.Controllers.CompanyController.GetCompanyBranchOfficess(System.Int32)">
@@ -41,6 +49,45 @@
             }
             </remarks>
             <param name="employeeConsumption"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FUEL_DISPATCH_API.Controllers.UsersCompaniesController.UpdateUserCompany(System.Int32,System.Int32,FUEL_DISPATCH_API.DataAccess.Models.UsersCompanies)">
+            <summary>
+            Actualizar relaciones Usuario-Compañia.
+            </summary>
+            <remarks>
+            Sample request:
+                
+                PUT /UsersCompanies
+                {
+                    "userId": 1,
+                    "companyId": 2
+                }
+            </remarks>
+            <param name="userId">Id del usuario. </param>
+            <param name="companyId">Id de la compañia. </param>
+            <param name="usersCompany">El cuerpo de la relacion. </param>
+            <response code="200">Si se actualiza la entidad correctamente. </response>
+            <response code="400">Si falla una validacion. </response>
+            <response code="404">Si no se encuentra la endidad con los Id que se proveen. </response>
+            <returns></returns>
+        </member>
+        <member name="M:FUEL_DISPATCH_API.Controllers.UsersCompaniesController.SetUsersCompany(FUEL_DISPATCH_API.DataAccess.Models.UsersCompanies)">
+            <summary>
+            Agregar una nueva relacion Usuario-Compañia. 
+            </summary>
+            <remarks>
+            Sample request:
+            
+                POST /UsersCompanies
+                {
+                    "userId": 1,
+                    "companyId": 1
+                }
+            </remarks>
+            <param name="usersCompany"></param>
+            <response code="201">Si se actualiza la entidad correctamente. </response>
+            <response code="400">Si falla una validacion. </response>
             <returns></returns>
         </member>
     </members>

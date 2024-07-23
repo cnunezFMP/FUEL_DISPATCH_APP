@@ -7,7 +7,6 @@ public partial class User
     public int Id { get; set; }
 
     public string? Email { get; set; }
-
     [Required] public string FullName { get; set; } = null!;
 
     [Required] public string Username { get; set; } = null!;
@@ -28,9 +27,10 @@ public partial class User
     [JsonIgnore] public virtual Driver? Driver { get; set; }
 
     [JsonIgnore] public virtual ICollection<UsersRols> UsersRols { get; set; } = new List<UsersRols>();
-
+    [JsonIgnore] public virtual ICollection<UsersBranchOffices> UsersBranchOffices { get; set; } = new List<UsersBranchOffices>();
     [JsonIgnore] public virtual ICollection<Role>? Rols { get; set; }
 
     [JsonIgnore] public virtual ICollection<UsersCompanies> UsersCompanies { get; set; } = new List<UsersCompanies>();
     [JsonIgnore] public virtual ICollection<Companies> Companies { get; set; } = new List<Companies>();
+    [JsonIgnore] public virtual ICollection<BranchOffices> BranchOffices { get; set; } = new List<BranchOffices>();
 }

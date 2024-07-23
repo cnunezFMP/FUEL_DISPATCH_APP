@@ -1,8 +1,9 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
+
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
-    public interface IActualStockServices : IGenericInterface<vw_ActualStock>
+    public interface IMakeServices : IGenericInterface<Make>
     {
     }
 }

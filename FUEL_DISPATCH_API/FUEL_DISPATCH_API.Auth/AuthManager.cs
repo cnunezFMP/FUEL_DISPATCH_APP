@@ -31,11 +31,19 @@ public class AuthManager
                             .Select(uc => uc.CompanyId)
                             .FirstOrDefault();
 
+            var branchId = _dbContext.UsersBranchOffices
+                            .Where(uc => uc.UserId == credenciales.Id)
+                            .Select(uc => uc.BranchOfficeId)
+                            .FirstOrDefault();
+
             var keyBytes = Encoding.UTF8.GetBytes(_secretKey);
             var claims = new ClaimsIdentity();
             claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, usuario.Username!));
             if (companyId is not 0)
                 claims.AddClaim(new Claim("CompanyId", companyId.ToString()));
+
+            if (branchId is not 0)
+                claims.AddClaim(new Claim("BranchOfficeId", branchId.ToString()));
             if (credenciales.Email is not null)
                 claims.AddClaim(new Claim(ClaimTypes.Email, credenciales.Email));
 

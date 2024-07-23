@@ -9,7 +9,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         [Required] public int WareHouseId { get; set; }
         public int? ToWareHouseId { get; set; }
         [Required] public int DriverId { get; set; }
-        [Required] public string? Type { get; set; }   // Salida o Transferencia.
+        [Required] public MovementsTypesEnum? Type { get; set; }   // Salida o Transferencia.
         public int VehicleId { get; set; }
         public string Status { get; set; } = ValidationConstants.PendingStatus;
         [Required] public decimal Qty { get; set; } // Quantity (decimal for precision)

@@ -36,7 +36,7 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost]
         public ActionResult<ResultPattern<WareHouseMovementRequest>> PostRequest([FromBody] WareHouseMovementRequest request)
         {
-            var validationResult = _validator.Validate(request);
+            var validationResult = _validator.Validate(request, option => option.IncludeRuleSets("WareHouses"));
             if (!validationResult.IsValid)
             {
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));

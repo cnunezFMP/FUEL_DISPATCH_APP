@@ -9,12 +9,12 @@
         public string? ToWareHouseCode { get; set; }
         public int? ItemId { get; set; }
         public string? MovementType { get; set; }
-        public double? ArtQuantity { get; set; }
-        public double? Odometer { get; set; }
+        public decimal? ArtQuantity { get; set; }
+        public decimal? Odometer { get; set; }
         public string? VehicleToken { get; set; }
         public string? DispenserCode { get; set; }
         public string? DriverName { get; set; }
-        public string? MovementDate { get; set; }
+        public DateTime? MovementDate { get; set; }
         public string? RoadCode { get; set; }
     }
 }

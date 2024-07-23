@@ -8,7 +8,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
     {
         public WareHouseMovementValidator(IWareHouseMovementServices wareHouseMovementServices)
         {
-            RuleFor(x => x.Amount).NotNull().NotEmpty().When(x => x.Type == MovementsTypesEnum.Salida && x.DriverId.HasValue);
+            RuleFor(x => x.Amount)
+                .NotNull()
+                .NotEmpty()
+                .When(x => x.Type == MovementsTypesEnum.Salida && x.DriverId.HasValue);
             RuleFor(x => x.Vehicle).Must(x =>
             {
                 return wareHouseMovementServices.CheckVehicle(x!.Id);
@@ -21,24 +24,30 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             {
                 return wareHouseMovementServices.CheckWareHouseStock(movement);
             }).WithMessage("No stock in warehouse, or stock qty is lesser than specified qty. ");
-            RuleFor(x => x).Must(wareHouseMovementServices.CheckDriver).WithMessage("Driver is inactive or unavailable.");
+            RuleFor(x => x)
+                .Must(wareHouseMovementServices.CheckDriver)
+                .WithMessage("Driver is inactive or unavailable.");
             RuleFor(x => x.BranchOffice).Must((branch, _) =>
             {
                 return !wareHouseMovementServices.CheckBranchOffice(branch);
             }).WithMessage("{PropertyName} is inactive or unavailable. ");
             RuleFor(x => x.Dispenser).Must((dispenser, _) =>
             {
-                return !wareHouseMovementServices.CheckDispenser(dispenser);
-            }).WithMessage("PropertyName} is inactive or unavailable. ");
-            RuleFor(x => x).Must(wareHouseMovementServices.CheckIfProductIsInTheWareHouse).WithMessage("The product isn't in the specified warehouse. ");
+                return wareHouseMovementServices.CheckDispenser(dispenser);
+            }).WithMessage("{PropertyName} is inactive or unavailable. ");
+            RuleFor(x => x)
+                .Must(wareHouseMovementServices.CheckIfProductIsInTheWareHouse)
+                .WithMessage("The product isn't in the specified warehouse. ");
             RuleFor(x => x.WareHouse).Must((wareHouse, _) =>
             {
                 return wareHouseMovementServices.CheckIfWareHousesHasActiveStatus(wareHouse);
             }).WithMessage("WareHouse in not active. ");
-            RuleFor(x => x.ToWareHouse).Must((wareHouse, _) =>
+            RuleFor(x => x.ToWareHouse)
+                .Must((wareHouse, _) =>
             {
                 return wareHouseMovementServices.CheckIfWareHousesHasActiveStatus(wareHouse);
-            }).When(x => x.Type is MovementsTypesEnum.Transferencia).WithMessage("One or both of the warehose are not active. ");
+            }).When(x => x.Type is MovementsTypesEnum.Transferencia)
+                .WithMessage("One or both of the warehose are not active. ");
             RuleFor(x => x.WareHouse).Must((wareHouseMovement, _) =>
             {
                 return !wareHouseMovementServices.WillStockFallBelowMinimum(wareHouseMovement);

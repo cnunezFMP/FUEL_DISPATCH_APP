@@ -23,7 +23,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _validator = validator;
         }
         [HttpGet, Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<Paging<EmployeeConsumptionLimits>>> GetDrivers([FromQuery] GridifyQuery query)
+        public ActionResult<ResultPattern<Paging<EmployeeConsumptionLimits>>> GetEmployeeComsuptionMethods([FromQuery] GridifyQuery query)
         {
             return Ok(_employeeComsuptionLimitsServices.GetAll(query));
         }
@@ -51,7 +51,7 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<EmployeeConsumptionLimits>> SetEmployeLimitAndMethod([FromBody] EmployeeConsumptionLimits employeeConsumption)
         {
-            var validationResult = _validator.Validate(employeeConsumption);
+            var validationResult = _validator.Validate(employeeConsumption, options => options.IncludeRuleSets("InPost"));
             if (!validationResult.IsValid)
             {
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
@@ -64,6 +64,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{driverId:int}, {methodId:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<EmployeeConsumptionLimits>> UpdateUserMethod(int driverId, int methodId, EmployeeConsumptionLimits employeeConsumptionLimit)
         {
+            var validationResult = _validator.Validate(employeeConsumptionLimit);
+            if (!validationResult.IsValid)
+            {
+                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            }
             Func<EmployeeConsumptionLimits, bool> predicate = x => x.DriverId == driverId && x.DriverMethodOfComsuptionId == methodId;
             employeeConsumptionLimit.UpdatedAt = DateTime.Now;
             employeeConsumptionLimit.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
