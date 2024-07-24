@@ -34,12 +34,35 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_driverServices.GetDriverDispatches(driverId));
         }
 
-        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpGet("{id:int}")]
         public ActionResult<ResultPattern<Driver>> GetDriver(int id)
         {
             return Ok(_driverServices.Get(x => x.Id == id));
         }
 
+        /// <summary>
+        /// Agrega un nuevo conductor
+        /// </summary>
+        /// <remarks>
+        /// El email no es obligatorio, solo es en caso de que el conductor vaya a tener email.
+        /// 
+        /// Sample request: 
+        /// 
+        ///     {
+        ///          "birthDate": "2000-01-04 00:00:00:000",
+        ///          "branchOfficeId": "1",
+        ///          "fullDirection": "C/ Luis Padilla #53",
+        ///          "fullName": "Jhon Doe",
+        ///          "identification": "001-0239485-3",
+        ///          "phoneNumber": "8090909828",
+        ///          "email": "e@gmail.com",
+        ///          "licenceExpDate": "2024-01-04 00:00:00:000"
+        ///     }
+        /// </remarks>
+        /// <param name="driver"></param>
+        /// <response code="201">Conductor registrado</response>
+        /// <response code="400">Si alguna validacion falla</response>
+        /// <returns></returns>
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Driver>> PostDriver([FromBody] Driver driver)
         {

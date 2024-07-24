@@ -12,6 +12,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
                 .NotNull()
                 .NotEmpty()
                 .When(x => x.Type == MovementsTypesEnum.Salida && x.DriverId.HasValue);
+
+            RuleFor(x => x.FuelMethodOfComsuptionId)
+                .NotEmpty()
+                .NotNull()
+                .NotEqual(0)
+                .When(x => x.Type == MovementsTypesEnum.Salida && x.DriverId.HasValue);
             RuleFor(x => x.Vehicle).Must(x =>
             {
                 return wareHouseMovementServices.CheckVehicle(x!.Id);
@@ -38,7 +44,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             RuleFor(x => x)
                 .Must(wareHouseMovementServices.CheckIfProductIsInTheWareHouse)
                 .WithMessage("The product isn't in the specified warehouse. ");
-            RuleFor(x => x.WareHouse).Must((wareHouse, _) =>
+            RuleFor(x => x).Must((wareHouse, _) =>
             {
                 return wareHouseMovementServices.CheckIfWareHousesHasActiveStatus(wareHouse);
             }).WithMessage("WareHouse in not active. ");

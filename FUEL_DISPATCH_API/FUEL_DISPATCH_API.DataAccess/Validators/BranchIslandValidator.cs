@@ -9,7 +9,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
     {
         public BranchIslandValidator(IBranchIslandServices branchIslandServices)
         {
-            RuleFor(x => x.Code).NotEmpty().NotNull().Must((island, _) =>
+            RuleFor(x => x.Code)
+                .NotEmpty()
+                .NotNull()
+                .Must((island, _) =>
             {
                 return !branchIslandServices.BranchIslandCodeMustBeUnique(island);
             });

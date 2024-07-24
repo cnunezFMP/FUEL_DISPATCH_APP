@@ -12,7 +12,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
     {
         bool VerifyDisponibility(Booking booking);
         bool CheckVehicle(Booking booking);
-        bool CheckDriver(Booking booking);
+        bool CheckDriver(int driverId);
         bool VehicleHasDriverAssigned(Booking booking);
     }
 }

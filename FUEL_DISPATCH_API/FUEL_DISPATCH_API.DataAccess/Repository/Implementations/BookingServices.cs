@@ -17,17 +17,18 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IWareHouseMovementServices _wareHouseServices;
-        public BookingServices(FUEL_DISPATCH_DBContext dbContext, IWareHouseMovementServices wareHouseServices) : base(dbContext)
+        public BookingServices(FUEL_DISPATCH_DBContext dbContext, IWareHouseMovementServices wareHouseServices)
+            : base(dbContext)
         {
             _DBContext = dbContext;
             _wareHouseServices = wareHouseServices;
         }
         // DONE: Hacer este servicio para Booking. 
-        public bool CheckDriver(Booking book)
+        public bool CheckDriver(int driverId)
         {
             var driverForBook = _DBContext.Driver
                 .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault(d => d.Id == book.DriverId)
+                .FirstOrDefault(d => d.Id == driverId)
                 ?? throw new NotFoundException("No driver found. ");
 
             return (driverForBook!.Status is not ValidationConstants.InactiveStatus
@@ -38,7 +39,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         public bool VerifyDisponibility(Booking booking)
             => !_DBContext.Booking.Any(r => r.VehicleId == booking.VehicleId
                        && r.Status != ValidationConstants.CanceledStatus
-                       && (booking.SpecificDate <= r.ToSpecificDate 
+                       && (booking.SpecificDate <= r.ToSpecificDate
                        && booking.ToSpecificDate >= r.SpecificDate)
                        && r.SpecificDate != booking.SpecificDate);
         public bool VehicleHasDriverAssigned(Booking booking)

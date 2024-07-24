@@ -7,5 +7,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
     {
         bool CheckVehicle(WareHouseMovementRequest newRequest);
         bool CheckDispatch(WareHouseMovementRequest newRequest);
+        bool CheckIfWareHousesHasActiveStatus(WareHouseMovementRequest wareHouseMovementRequest);
     }
 }

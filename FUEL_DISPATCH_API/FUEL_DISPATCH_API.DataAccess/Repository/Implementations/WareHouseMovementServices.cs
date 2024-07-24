@@ -142,7 +142,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             return true;
 
         }
-        // TODO: Corregir la excepcion aqui
+        // DONE: Corregir la excepcion aqui
         public bool CheckWareHouseStock(WareHouseMovement wareHouseMovement)
         {
             var wareHouseStock = _DBContext.vw_ActualStock
@@ -156,8 +156,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             .Any(x => x.WareHouseId == wareHouseMovement!.WareHouseId && x.ItemId == wareHouseMovement!.ItemId);
         public bool CheckIfWareHousesHasActiveStatus(WareHouseMovement wareHouseMovement)
         {
-            var wareHouse = _DBContext.WareHouse.AsNoTrackingWithIdentityResolution().FirstOrDefault(x => x.Id == wareHouseMovement.WareHouseId);
-            var toWareHouse = _DBContext.WareHouse.AsNoTrackingWithIdentityResolution().FirstOrDefault(x => x.Id == wareHouseMovement.ToWareHouseId);
+            var wareHouse = _DBContext.WareHouse
+                .AsNoTrackingWithIdentityResolution()
+                .FirstOrDefault(x => x.Id == wareHouseMovement.WareHouseId);
+
+            var toWareHouse = _DBContext.WareHouse
+                .AsNoTrackingWithIdentityResolution()
+                .FirstOrDefault(x => x.Id == wareHouseMovement.ToWareHouseId);
+
             if (wareHouseMovement.Type is MovementsTypesEnum.Transferencia)
                 return wareHouse!.Status is ValidationConstants.ActiveStatus && toWareHouse!.Status is ValidationConstants.ActiveStatus;
 
@@ -224,7 +230,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 _DBContext.SaveChanges();
             }
 
-            if (driverCurrentAmount!.DriverMethodOfComsuptionId is ValidationConstants.GallonsMethod)
+            if (driverCurrentAmount!.DriverMethodOfComsuptionId is ValidationConstants.GallonsMethod || driverCurrentAmount!.DriverMethodOfComsuptionId is ValidationConstants.TickecMethod)
             {
                 if (wareHouseMovement.Qty > driverCurrentAmount.CurrentAmount)
                     throw new BadRequestException("Driver have'nt enough amount. ");
@@ -233,6 +239,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 driverCurrentAmount.CurrentAmount = newDriverAmount;
                 _DBContext.SaveChanges();
             }
+
+
         }
         // DONE: Verificar el estado de las solicitudes. Agregar a FluentValidation.
         public bool SetRequestForMovement(WareHouseMovement wareHouseMovement)

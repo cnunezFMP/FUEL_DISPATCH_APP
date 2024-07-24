@@ -16,14 +16,21 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             {
                 return driversServices.CheckIfIdIsUnique(identification);
             }).WithMessage("Ya existe un registro con {PropertyName}. Se ingreso {PropertyValue}. ");
-            RuleFor(x => x.Email).EmailAddress().Must((driverEmail, _) =>
+            RuleFor(x => x.Email)
+                .EmailAddress()
+                .Must((driverEmail, _) =>
             {
                 return driversServices.IsEmailUnique(driverEmail);
-            }).WithMessage("El {PropertyName} ya esta registrado. Se ingreso {PropertyValue}. ");
+            }).WithMessage("El {PropertyName} ya esta registrado. Se ingreso {PropertyValue}. ")
+              .When(x => x.Email is not null);
 
             RuleFor(x => x.BirthDate)
-                .Must(x => x > DateTime.Now 
+                .Must(x => x > DateTime.Now
                 && x >= DateTime.Parse("2006-07-17 00:00:00.000"));
+
+            RuleFor(x => x.PhoneNumber)
+                .NotNull()
+                .NotEmpty();
         }
     }
 }

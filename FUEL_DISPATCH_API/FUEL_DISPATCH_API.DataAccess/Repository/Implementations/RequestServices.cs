@@ -5,6 +5,7 @@ using FUEL_DISPATCH_API.Utils.Constants;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
@@ -31,7 +32,22 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool CheckDispatch(WareHouseMovementRequest newRequest)
             => newRequest.Qty is ValidationConstants.ZeroGallons;
+        public bool CheckIfWareHousesHasActiveStatus(WareHouseMovementRequest wareHouseMovementRequest)
+        {
+            var wareHouse = _DBContext.WareHouse
+                .AsNoTrackingWithIdentityResolution()
+                .FirstOrDefault(x => x.Id == wareHouseMovementRequest.WareHouseId);
 
+            var toWareHouse = _DBContext.WareHouse
+                .AsNoTrackingWithIdentityResolution()
+                .FirstOrDefault(x => x.Id == wareHouseMovementRequest.ToWareHouseId);
+
+            if (wareHouseMovementRequest.Type is MovementsTypesEnum.Transferencia)
+                return wareHouse!.Status is not ValidationConstants.InactiveStatus
+                    && toWareHouse!.Status is not ValidationConstants.InactiveStatus;
+
+            return wareHouse!.Status is not ValidationConstants.InactiveStatus;
+        }
         public bool CheckVehicle(WareHouseMovementRequest newRequest)
         {
             var vehicleForDispatch = _DBContext.Vehicle.FirstOrDefault(x => x.Id == newRequest.VehicleId);

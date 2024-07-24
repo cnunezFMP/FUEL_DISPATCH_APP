@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
+using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
@@ -12,8 +13,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
 {
     public class RequestValidator : AbstractValidator<WareHouseMovementRequest>
     {
-        // TODO: Hacer las validaciones para las entidades en los servicios de Request.
-        public RequestValidator() 
+        // DONE: Hacer las validaciones para las entidades en los servicios de Request.
+        public RequestValidator(IBookingServices bookingServices,
+            IWareHouseMovementServices wareHouseMovementServices,
+            IRequestServices requestServices)
         {
             RuleSet("WareHouses", () =>
             {
@@ -24,7 +27,18 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
                 .NotEqual(0)
                 .When(x => x.Type is MovementsTypesEnum.Transferencia);
             });
-            //RuleFor(x => x.);
-        }   
+            RuleFor(x => x.DriverId)
+                .Must(bookingServices.CheckDriver)
+                .WithMessage("Drive doesn't exist or is unavailable. "); ;
+
+            RuleFor(x => x.VehicleId)
+                .Must(wareHouseMovementServices.CheckVehicle)
+                .WithMessage("The vehicle is inactive or unavailable. ");
+
+            RuleFor(x => x)
+                .Must(requestServices.CheckIfWareHousesHasActiveStatus)
+                .WithMessage("WareHouse in not active. ");
+
+        }
     }
 }

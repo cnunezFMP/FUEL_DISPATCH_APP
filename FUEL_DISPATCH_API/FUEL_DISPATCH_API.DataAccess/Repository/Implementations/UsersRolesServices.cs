@@ -34,7 +34,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             return ResultPattern<User>.Success(user, StatusCodes.Status200OK, "Rol updated. ");
         }
 
-        // TODO: Corregir: Me da un 405(Method not allowed. )
+        // DONE: Corregir: Me da un 405(Method not allowed. )
         public ResultPattern<User> UpdateUserRol(int userId, int roleId)
         {
             var user = _DBContext.User.Include(x => x.Rols).FirstOrDefault(x => x.Id == userId)

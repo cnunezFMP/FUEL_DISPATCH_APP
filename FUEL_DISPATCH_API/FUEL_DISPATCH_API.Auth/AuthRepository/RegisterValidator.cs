@@ -7,7 +7,8 @@ namespace FUEL_DISPATCH_API.Auth.AuthRepository
     {
         public RegisterValidator(IUsersAuth usersAuthServices)
         {
-            RuleFor(x => x.Email).Must((email, _) =>
+            RuleFor(x => x.Email)
+                .Must((email, _) =>
             {
                 return usersAuthServices.IsEmailUnique(email);
             }).When(x => x.Email is not null);

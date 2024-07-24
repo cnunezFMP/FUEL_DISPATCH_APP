@@ -8,31 +8,24 @@ public partial class Driver
     public string? Email { get; set; }
     [Required] public string? FullName { get; set; }
     [Required] public int BranchOfficeId { get; set; }
-    [Required] public string PhoneNumber { get; set; }
+    [Required, Phone] public string? PhoneNumber { get; set; }
     // DONE: Hacer que la fecha no pueda ser menor de edad ni que sea la del mismo dia en un validador de FluentValidation.
     [Required] public DateTime BirthDate { get; set; }
-    [Required] public string FullDirection { get; set; }
-    public DateTime? LicenceExpDate { get; set; }
+    [Required] public string? FullDirection { get; set; }
+    [Required] public DateTime? LicenceExpDate { get; set; }
     public string? Status { get; set; } = ValidationConstants.ActiveStatus;
     public string? CreatedBy { get; set; }
     public DateTime? CreatedAt { get; set; } = DateTime.Now;
-
     public string? UpdatedBy { get; set; }
-
     public DateTime? UpdatedAt { get; set; } = DateTime.Now;
-
-    [Required] public string Identification { get; set; }
+    [Required, MinLength(13), MaxLength(13)] public string? Identification { get; set; }
     [JsonIgnore] public virtual ICollection<WareHouseMovement>? WareHouseMovements { get; set; } = new List<WareHouseMovement>();
-
     [JsonIgnore] public virtual ICollection<User>? User { get; set; } = new List<User>();
     [JsonIgnore] public virtual ICollection<Vehicle>? Vehicles { get; set; } = new List<Vehicle>();
     [JsonIgnore] public virtual BranchOffices? BranchOffice { get; set; }
     [JsonIgnore] public virtual ICollection<WareHouseMovementRequest>? Requests { get; set; } = new List<WareHouseMovementRequest>();
-
     [JsonIgnore] public virtual ICollection<EmployeeConsumptionLimits>? EmployeeConsumptionLimits { get; set; } = new List<EmployeeConsumptionLimits>();
-
     [JsonIgnore] public virtual ICollection<DriverMethodOfComsuption> DriverMethodsOfComsuption { get; set; } = new List<DriverMethodOfComsuption>();
-
     [JsonIgnore] public virtual ICollection<Booking>? Bookings { get; set; } = new List<Booking>();
 
 }

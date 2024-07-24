@@ -16,6 +16,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         // Indica que hay alguna ruta con el mismo codigo.
         public bool RoadCodeMustBeUnique(Road road)
             => _DBContext.Road.Any(x => x.Code == road.Code);
-        // TODO: Hacer validacion para que en el objeto que se esta enviando no se repitan los puntos.
+        
     }
 }
