@@ -40,14 +40,13 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_usersBranchOfficesServices.Post(usersBranchOffice));
         }
 
-        [HttpPut("{driverId:int}, {methodId:int}"), Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<UsersBranchOffices>> UpdateUserBranch(int userId, int branchOfficeId, UsersBranchOffices usersBranchOffices)
+        [HttpPut("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize(Roles = "Administrator")]
+        public ActionResult<ResultPattern<UsersBranchOffices>> UpdateUserCompany(int userId, int branchOfficeId, UsersBranchOffices usersBranchOffices)
         {
             Func<UsersBranchOffices, bool> predicate = x => x.UserId == userId && x.BranchOfficeId == branchOfficeId;
-
-            usersBranchOffices.UpdatedAt = DateTime.Now;
             usersBranchOffices.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            return Created(string.Empty, _usersBranchOfficesServices.Update(predicate, usersBranchOffices));
+            usersBranchOffices.UpdatedAt = DateTime.Now;
+            return Ok(_usersBranchOfficesServices.Update(predicate, usersBranchOffices));
         }
     }
 }

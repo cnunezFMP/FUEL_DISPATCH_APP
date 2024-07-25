@@ -26,6 +26,16 @@
             <response code="400">Si se envia el numero de articulo nulo. </response>
             <returns></returns>
         </member>
+        <member name="M:FUEL_DISPATCH_API.Controllers.Auth.Register(FUEL_DISPATCH_API.DataAccess.DTOs.UserRegistrationDto)">
+            <summary>
+            Registrar un nuevo usuario
+            </summary>
+            <remarks>
+            Tanto el "DriverId" como el "Email" pueden ser nulos. Las propiedades "CreatedBy" y "UpdatedBy" se quitan del JSON.
+            </remarks>
+            <param name="user"></param>
+            <returns></returns>
+        </member>
         <member name="M:FUEL_DISPATCH_API.Controllers.CompanyController.GetCompanyBranchOfficess(System.Int32)">
             <summary>
             Obtener todas las sucursales de una compañia. 
@@ -80,13 +90,7 @@
             Actualizar relaciones Usuario-Compañia.
             </summary>
             <remarks>
-            Sample request:
-                
-                PUT /UsersCompanies
-                {
-                    "userId": 1,
-                    "companyId": 2
-                }
+            
             </remarks>
             <param name="userId">Id del usuario. </param>
             <param name="companyId">Id de la compañia. </param>
@@ -101,13 +105,6 @@
             Agregar una nueva relacion Usuario-Compañia. 
             </summary>
             <remarks>
-            Sample request:
-            
-                POST /UsersCompanies
-                {
-                    "userId": 1,
-                    "companyId": 1
-                }
             </remarks>
             <param name="usersCompany"></param>
             <response code="201">Si se actualiza la entidad correctamente. </response>

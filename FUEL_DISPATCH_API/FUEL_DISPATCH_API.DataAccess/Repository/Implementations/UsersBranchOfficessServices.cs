@@ -29,12 +29,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         // DONE: Actualizar.
         public override ResultPattern<UsersBranchOffices> Update(Func<UsersBranchOffices, bool> predicate, UsersBranchOffices updatedEntity)
         {
-            var userBranchOfficeEntityToUpdate = _DBContext.UsersBranchOffices
-                .FirstOrDefault(predicate);
+            var userCompanyEntity = _DBContext.UsersBranchOffices.FirstOrDefault(predicate);
 
-            _DBContext.Entry(userBranchOfficeEntityToUpdate!).CurrentValues.SetValues(updatedEntity);
+            _DBContext.Entry(userCompanyEntity!).CurrentValues.SetValues(updatedEntity);
             _DBContext.SaveChanges();
-            return ResultPattern<UsersBranchOffices>.Success(userBranchOfficeEntityToUpdate!, StatusCodes.Status200OK, AppConstants.DATA_UPDATED_MESSAGE);
+            return ResultPattern<UsersBranchOffices>.Success(userCompanyEntity!, StatusCodes.Status200OK, AppConstants.DATA_UPDATED_MESSAGE);
 
         }
     }
