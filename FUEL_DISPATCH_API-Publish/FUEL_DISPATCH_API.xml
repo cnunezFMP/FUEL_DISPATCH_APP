@@ -11,7 +11,6 @@
             <remarks>
             Sample request: 
             
-                POST /Articles
                 {
                     "articleNumber": "IT-001",
                     "description": "Alguna descripcion del articulo. ",
@@ -32,6 +31,31 @@
             Obtener todas las sucursales de una compañia. 
             </summary>
             <param name="companyId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FUEL_DISPATCH_API.Controllers.DriversController.PostDriver(FUEL_DISPATCH_API.DataAccess.Models.Driver)">
+            <summary>
+            Agrega un nuevo conductor
+            </summary>
+            <remarks>
+            El email no es obligatorio, solo es en caso de que el conductor vaya a tener email.
+            
+            Sample request: 
+            
+                {
+                     "birthDate": "2000-01-04 00:00:00:000",
+                     "branchOfficeId": "1",
+                     "fullDirection": "C/ Luis Padilla #53",
+                     "fullName": "Jhon Doe",
+                     "identification": "001-0239485-3",
+                     "phoneNumber": "8090909828",
+                     "email": "e@gmail.com",
+                     "licenceExpDate": "2024-01-04 00:00:00:000"
+                }
+            </remarks>
+            <param name="driver"></param>
+            <response code="201">Conductor registrado</response>
+            <response code="400">Si alguna validacion falla</response>
             <returns></returns>
         </member>
         <member name="M:FUEL_DISPATCH_API.Controllers.EmployeeConsumptionLimitsController.SetEmployeLimitAndMethod(FUEL_DISPATCH_API.DataAccess.Models.EmployeeConsumptionLimits)">

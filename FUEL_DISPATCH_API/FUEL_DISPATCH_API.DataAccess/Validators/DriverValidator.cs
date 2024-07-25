@@ -5,6 +5,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
 {
     public class DriverValidator : AbstractValidator<Driver>
     {
+        // TODO: Agregar validacion para la fecha de expiracion de la licencia. 
         public DriverValidator(IDriversServices driversServices)
         {
             RuleFor(x => x.Identification)
@@ -25,8 +26,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
               .When(x => x.Email is not null);
 
             RuleFor(x => x.BirthDate)
-                .Must(x => x > DateTime.Now
-                && x >= DateTime.Parse("2006-07-17 00:00:00.000"));
+                 .Must(date => date != DateTime.Today
+                 && date <= DateTime.Today.AddYears(-18))
+                 .WithMessage("The date of birth cannot be today and must correspond to a person over 18 years of age. ");
+
+            RuleFor(x => x.LicenceExpDate).Must(date => date > DateTime.Today)
+                 .WithMessage("The date of birth cannot be today and must correspond to a person over 18 years of age. ");
 
             RuleFor(x => x.PhoneNumber)
                 .NotNull()

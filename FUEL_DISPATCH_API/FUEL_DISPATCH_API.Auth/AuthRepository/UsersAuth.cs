@@ -23,20 +23,38 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _emailSender = emailSender;
             _secretKey = config.GetSection("settings:secretkey").Value; //Obtener llave y valor
         }
-        public override ResultPattern<User> Post(User entity)
+        public ResultPattern<User> UserRegistration(UserRegistrationDto entity)
         {
+            if (!IsUserNameUnique(entity))
+                throw new BadRequestException("User with this user name exist. ");
             if (entity.DriverId.HasValue)
                 DriverIdHasValue(entity);
-            
+
             var passwordHash = PasswordHashing(entity.Password);
             entity.Password = passwordHash;
-            _DBContext.User.Add(entity);
+
+            var newUser = new User
+            {
+                Email = entity.Email,
+                FullName = entity.FullName,
+                Username = entity.Username,
+                BirthDate = entity.BirthDate,
+                PhoneNumber = entity.PhoneNumber,
+                FullDirection = entity.FullDirection,
+                Password = entity.Password,
+                DriverId = entity.DriverId,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                CreatedBy = entity.CreatedBy,
+                UpdatedBy = entity.UpdatedBy
+            };
+
+            _DBContext.User.Add(newUser);
             _DBContext.SaveChanges();
             if (entity.Email is not null)
-                _emailSender.SendEmailAsync(entity.Email!, AppConstants.ACCOUNT_CREATED_MESSAGE, $"Hello {entity.FullName} your account in the app was created successfully at {DateTime.Now}");
-            
-            
-            return ResultPattern<User>.Success(entity, StatusCodes.Status200OK, "Usuario registrado correctamente. ");
+                _emailSender.SendEmailAsync(entity.Email, AppConstants.ACCOUNT_CREATED_MESSAGE, $"Hello {entity.FullName} your account in the app was created successfully at {DateTime.Now}");
+
+            return ResultPattern<User>.Success(newUser, StatusCodes.Status200OK, "Usuario registrado correctamente. ");
         }
         public ResultPattern<object> Login(LoginDto loginDto)
         {
@@ -44,26 +62,25 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             var result = authManager.AuthToken(loginDto); // Validar usuario)
             return ResultPattern<object>.Success(result, StatusCodes.Status200OK, "Token obtenido correctamente. "); // Devolver token
         }
-        public bool IsUserNameUnique(User user)
+        public bool IsUserNameUnique(UserRegistrationDto user)
            => !_DBContext.User.Any(x => x.Username == user.Username);
-        public bool IsEmailUnique(User user)
+        public bool IsEmailUnique(UserRegistrationDto user)
             => !_DBContext.User.Any(x => x.Email == user.Email);
         string PasswordHashing(string password)
             => BCrypt.Net.BCrypt.HashPassword(password, 13);
-        public bool DriverIdHasValue(User user)
+        public bool DriverIdHasValue(UserRegistrationDto user)
         {
             var driver = _DBContext.Driver.FirstOrDefault(x => x.Id == user.DriverId);
             if (driver!.Status is ValidationConstants.InactiveStatus)
                 throw new BadRequestException("This driver is Inactive. ");
 
-            user.FullName = driver!.FullName;
-            user.Email = driver!.Email;
-            user.PhoneNumber = driver!.PhoneNumber;
+            user.FullName = driver.FullName!;
+            user.Email = driver.Email;
+            user.PhoneNumber = driver.PhoneNumber!;
             user.BirthDate = driver!.BirthDate;
-            user.FullDirection = driver!.FullDirection;
+            user.FullDirection = driver.FullDirection!;
 
             return false;
         }
-
     }
 }

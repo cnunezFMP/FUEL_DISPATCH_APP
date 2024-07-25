@@ -62,8 +62,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             var driverDispatches = _DBContext.WareHouseMovement
                 .AsNoTracking()
                 .Where(x => x.DriverId == driverId)
-                .ToList()
-                ?? throw new BadRequestException("This driver has no movements or, the vehicle doesn't exist. "); ;
+                .ToList();
+
+            if (!driverDispatches.Any())
+                throw new BadRequestException("This driver don't has movements registered. ");
 
             return ResultPattern<List<WareHouseMovement>>
                 .Success

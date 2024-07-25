@@ -29,8 +29,6 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_companiesServices.GetAll(query));
         }
 
-
-        
         /// <summary>
         /// Obtener todas las sucursales de una compañia. 
         /// </summary>
@@ -46,11 +44,13 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             return Ok(_companiesServices.Get(x => x.Id == id));
         }
-        [HttpGet("{companyRnc}"), Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<Companies>> GetCompany(string companyRnc)
-        {
-            return Ok(_companiesServices.GetCompanyByRnc(companyRnc));
-        }
+
+        //[HttpGet("{companyRnc}"), Authorize(Roles = "Administrator")]
+        //public ActionResult<ResultPattern<Companies>> GetCompany(string companyRnc)
+        //{
+        //    return Ok(_companiesServices.GetCompanyByRnc(companyRnc));
+        //}
+
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Companies>> PostCompany([FromBody] Companies company)
         {

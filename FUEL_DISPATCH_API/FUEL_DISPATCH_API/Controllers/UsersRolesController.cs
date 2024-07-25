@@ -23,10 +23,10 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             return Ok(_userRolesServices.UpdateUserRol(userId, rolId));
         }
-        [HttpDelete("{userId}/Roles/{driverId}"), Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<User>> DeleteUserRol(int userId, int driverId)
+        [HttpDelete("{userId}/Roles/{rolId}"), Authorize(Roles = "Administrator")]
+        public ActionResult<ResultPattern<User>> DeleteUserRol(int userId, int rolId)
         {
-            return Ok(_userRolesServices.DeleteUserRol(userId, driverId));
+            return Ok(_userRolesServices.DeleteUserRol(userId, rolId));
         }
     }
 }

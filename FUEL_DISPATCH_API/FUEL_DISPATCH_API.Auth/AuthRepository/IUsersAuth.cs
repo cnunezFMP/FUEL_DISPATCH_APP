@@ -8,8 +8,9 @@ namespace FUEL_DISPATCH_API.Auth
     public interface IUsersAuth : IGenericInterface<User>
     {
         ResultPattern<object> Login(LoginDto loginDto);
-        bool IsUserNameUnique(User user);
-        bool IsEmailUnique(User user);
-        bool DriverIdHasValue(User user);
+        ResultPattern<User> UserRegistration(UserRegistrationDto entity);
+        bool IsUserNameUnique(UserRegistrationDto user);
+        bool IsEmailUnique(UserRegistrationDto user);
+        bool DriverIdHasValue(UserRegistrationDto user);
     }
 }

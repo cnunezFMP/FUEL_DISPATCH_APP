@@ -1,13 +1,6 @@
-﻿using Azure.Core;
-using FluentValidation;
+﻿using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
-using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FUEL_DISPATCH_API.DataAccess.Validators
 {
@@ -20,7 +13,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
         {
             RuleSet("WareHouses", () =>
             {
-                RuleFor(x => x.WareHouseId).NotEmpty().NotNull().NotEqual(0);
+                RuleFor(x => x.WareHouseId)
+                .NotEmpty()
+                .NotNull()
+                .NotEqual(0);
                 RuleFor(x => x.ToWareHouseId)
                 .NotEmpty()
                 .NotNull()

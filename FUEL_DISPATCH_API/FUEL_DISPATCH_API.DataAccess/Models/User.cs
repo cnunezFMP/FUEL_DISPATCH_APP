@@ -5,13 +5,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Models;
 public partial class User
 {
     public int Id { get; set; }
-
+   
     public string? Email { get; set; }
     [Required] public string FullName { get; set; } = null!;
 
     [Required] public string Username { get; set; } = null!;
 
-    [Required] public string Password { get; set; } = null!;
+    [Required, JsonIgnore] public string Password { get; set; } = null!;
 
     [Required] public string PhoneNumber { get; set; } = null!;
 

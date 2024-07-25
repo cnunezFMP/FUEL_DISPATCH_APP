@@ -1,6 +1,9 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.Utils.Exceptions;
+using FUEL_DISPATCH_API.Utils.ResponseObjects;
+using Microsoft.AspNetCore.Http;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
@@ -11,6 +14,34 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             : base(dbContext)
         {
             _DBContext = dbContext;
+        }
+
+        public ResultPattern<List<vw_ActualStock>> GetWareHouseArticles(int wareHouseId, int? articleId)
+        {
+            var wareHouse = _DBContext.WareHouse.Find(wareHouseId)
+                ?? throw new NotFoundException("This warehouse doesn't exist. ");
+
+            if (articleId.HasValue)
+            {
+                var article = _DBContext.ArticleDataMaster.Find(articleId)
+                    ?? throw new NotFoundException("This article doesn't exist. ");
+
+                var actualStockFromWareHouseWithArticleId = _DBContext.vw_ActualStock
+                .Where(x => x.WareHouseId == wareHouseId
+                && x.ItemId == articleId)
+                .ToList();
+
+            }
+
+            var actualStockFromWareHouse = _DBContext.vw_ActualStock
+                .Where(x => x.WareHouseId == wareHouseId)
+                .ToList();
+
+
+            return ResultPattern<List<vw_ActualStock>>
+                .Success(actualStockFromWareHouse,
+                StatusCodes.Status200OK,
+                "Actual stock from warehouse obtained. ");
         }
     }
 }

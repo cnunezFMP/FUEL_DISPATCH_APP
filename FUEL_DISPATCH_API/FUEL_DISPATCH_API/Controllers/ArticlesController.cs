@@ -39,7 +39,6 @@ namespace FUEL_DISPATCH_API.Controllers
         /// <remarks>
         /// Sample request: 
         /// 
-        ///     POST /Articles
         ///     {
         ///         "articleNumber": "IT-001",
         ///         "description": "Alguna descripcion del articulo. ",

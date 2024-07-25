@@ -2,16 +2,19 @@ using FluentValidation;
 using FMP_DISPATCH_API.Services.Emails;
 using FUEL_DISPATCH_API.Auth;
 using FUEL_DISPATCH_API.Auth.AuthRepository;
+using FUEL_DISPATCH_API.DataAccess.DTOs;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Middlewares;
 using FUEL_DISPATCH_API.Swagger;
+using FUEL_DISPATCH_API.Swagger.SwaggerExamples;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -29,6 +32,7 @@ builder.Services.AddControllers()
     });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerExamplesFromAssemblyOf<UserSwaggerExample>();
 builder.Services.AddSwaggerGen(
     info =>
 {
@@ -58,9 +62,11 @@ builder.Services.AddSwaggerGen(
             new string[] {}
         }
     });
+
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     info.IncludeXmlComments(xmlPath);
+    info.ExampleFilters();
 
 });
 builder.Services.AddDbContext<FUEL_DISPATCH_DBContext>(options =>
@@ -85,6 +91,7 @@ builder.Services.AddAuthentication(config =>
             ValidateAudience = false,
         };
     });
+
 #region ServicesContainers
 builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IValidator<EmployeeConsumptionLimits>, EmployeeComsuptionLimitsValidator>()
@@ -97,7 +104,7 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IValidator<WareHouse>, WareHouseValidator>()
                 .AddScoped<IValidator<Driver>, DriverValidator>()
                 .AddScoped<IValidator<WareHouseMovement>, WareHouseMovementValidator>()
-                .AddScoped<IValidator<User>, RegisterValidator>()
+                .AddScoped<IValidator<UserRegistrationDto>, RegisterValidator>()
                 .AddScoped<IValidator<ArticleDataMaster>, ArticlesValidator>()
                 .AddScoped<IValidator<EmployeeConsumptionLimits>, EmployeeComsuptionLimitsValidator>()
                 .AddScoped<IEmployeeComsuptionLimitsServices, EmployeeComsuptionLimitsServices>()

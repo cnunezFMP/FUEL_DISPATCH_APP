@@ -35,6 +35,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
         public virtual ResultPattern<Paging<T>> GetAll(GridifyQuery query)
         {
             var entities = _DBContext.Set<T>().AsNoTrackingWithIdentityResolution().Gridify(query);
+
+            if (entities.Count == 0)
+                throw new BadRequestException("No data found. ");
+
             return ResultPattern<Paging<T>>.Success(entities, StatusCodes.Status200OK, AppConstants.DATA_OBTAINED_MESSAGE);
         }
         public virtual ResultPattern<T> Post(T entity)

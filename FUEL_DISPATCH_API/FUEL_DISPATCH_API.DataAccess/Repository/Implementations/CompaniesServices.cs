@@ -50,12 +50,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 "All company branch offices obtained. "
             );
         }
-        public ResultPattern<Companies> GetCompanyByRnc(string companyRNC)
-        {
-            var companyByRnc = _DBContext.Companies.FirstOrDefault(x => x.CompanyRNC == companyRNC)
-                ?? throw new BadRequestException("No company with this RNC. ");
-            return ResultPattern<Companies>.Success(companyByRnc, StatusCodes.Status200OK, "Company obtained. ");
-        }
+        //public ResultPattern<Companies> GetCompanyByRnc(string companyRNC)
+        //{
+        //    var companyByRnc = _DBContext.Companies.FirstOrDefault(x => x.CompanyRNC == companyRNC)
+        //        ?? throw new NotFoundException("No company with this RNC. ");
+        //    return ResultPattern<Companies>.Success(companyByRnc, 
+        //        StatusCodes.Status200OK, 
+        //        "Company obtained. ");
+        //}
         public bool IsCompanyUnique(Companies company)
             => !_DBContext.Companies.Any(x => x.CompanyRNC == company.CompanyRNC);
     }

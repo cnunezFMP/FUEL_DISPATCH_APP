@@ -37,13 +37,7 @@ namespace FUEL_DISPATCH_API.Controllers
         /// Actualizar relaciones Usuario-Compañia.
         /// </summary>
         /// <remarks>
-        /// Sample request:
-        ///     
-        ///     PUT /UsersCompanies
-        ///     {
-        ///         "userId": 1,
-        ///         "companyId": 2
-        ///     }
+        /// 
         /// </remarks>
         /// <param name="userId">Id del usuario. </param>
         /// <param name="companyId">Id de la compañia. </param>
@@ -64,13 +58,6 @@ namespace FUEL_DISPATCH_API.Controllers
         /// Agregar una nueva relacion Usuario-Compañia. 
         /// </summary>
         /// <remarks>
-        /// Sample request:
-        /// 
-        ///     POST /UsersCompanies
-        ///     {
-        ///         "userId": 1,
-        ///         "companyId": 1
-        ///     }
         /// </remarks>
         /// <param name="usersCompany"></param>
         /// <response code="201">Si se actualiza la entidad correctamente. </response>

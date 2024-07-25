@@ -12,7 +12,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
     public interface ICompaniesServices : IGenericInterface<Companies>
     {
         bool IsCompanyUnique(Companies companyRNC);
-        ResultPattern<Companies> GetCompanyByRnc(string companyRNC);
+        //ResultPattern<Companies> GetCompanyByRnc(string companyRNC);
         ResultPattern<List<BranchOffices>> GetCompanyBranchOfficess(int companyId);
     }
 }
