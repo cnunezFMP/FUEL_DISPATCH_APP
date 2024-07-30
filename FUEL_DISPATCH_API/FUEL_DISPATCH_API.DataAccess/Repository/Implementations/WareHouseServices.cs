@@ -7,15 +7,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class WareHouseServices : GenericRepository<WareHouse>, IWareHouseServices
     {
-        private readonly FUEL_DISPATCH_DBContext _DBContext;
-        public WareHouseServices(FUEL_DISPATCH_DBContext dbContext)
-            : base(dbContext)
-        {
-            _DBContext = dbContext;
-        }
-        public bool WareHouseExists(WareHouse wareHouse)
-            => !_DBContext.WareHouse.Any(x => x.Code == wareHouse.Code);
-        
         public override ResultPattern<WareHouse> Post(WareHouse wareHouse)
         {
             if (wareHouse.BranchOfficeId.HasValue)
@@ -30,6 +21,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 StatusCodes.Status201Created,
                 "Warehouse added successfully. ");
         }
+        private readonly FUEL_DISPATCH_DBContext _DBContext;
+        public WareHouseServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor)
+            : base(dbContext, httpContextAccessor)
+        {
+            _DBContext = dbContext;
+        }
+        public bool WareHouseExists(WareHouse wareHouse)
+            => !_DBContext.WareHouse.Any(x => x.Code == wareHouse.Code);
         public bool SetCompanyId(WareHouse wareHouse)
         {
             var branchOffice = _DBContext.BranchOffices.FirstOrDefault(x => x.Id == wareHouse.BranchOfficeId);
@@ -44,6 +43,5 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             wareHouse.FullDirection = branchOffice!.FullLocation;
             return true;
         }
-        
     }
 }

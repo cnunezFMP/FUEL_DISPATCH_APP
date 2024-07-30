@@ -10,10 +10,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     public class ActualStockServices : GenericRepository<vw_ActualStock>, IActualStockServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
-        public ActualStockServices(FUEL_DISPATCH_DBContext dbContext)
-            : base(dbContext)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public ActualStockServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor)
+            : base(dbContext, httpContextAccessor)
         {
             _DBContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public ResultPattern<List<vw_ActualStock>> GetWareHouseArticles(int wareHouseId, int? articleId)

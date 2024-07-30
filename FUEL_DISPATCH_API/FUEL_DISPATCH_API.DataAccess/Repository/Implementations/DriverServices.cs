@@ -13,8 +13,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IEmailSender _emailSender;
-        public DriversServices(FUEL_DISPATCH_DBContext dBContext, IEmailSender emailSender)
-            : base(dBContext)
+        public DriversServices(FUEL_DISPATCH_DBContext dBContext, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
+            : base(dBContext, httpContextAccessor)
         {
             _DBContext = dBContext;
             _emailSender = emailSender;

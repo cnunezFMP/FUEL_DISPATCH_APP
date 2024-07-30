@@ -14,8 +14,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     public class WareHouseMovementServices : GenericRepository<WareHouseMovement>, IWareHouseMovementServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
-        public WareHouseMovementServices(FUEL_DISPATCH_DBContext dbContext)
-            : base(dbContext)
+        public WareHouseMovementServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor)
+            : base(dbContext, httpContextAccessor)
         {
             _DBContext = dbContext;
         }

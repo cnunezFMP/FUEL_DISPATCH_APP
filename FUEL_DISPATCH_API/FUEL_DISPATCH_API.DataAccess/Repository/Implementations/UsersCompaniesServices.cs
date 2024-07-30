@@ -2,19 +2,16 @@
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Constants;
-using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class UsersCompaniesServices : GenericRepository<UsersCompanies>, ICompaniesUsersServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
-        public UsersCompaniesServices(FUEL_DISPATCH_DBContext dBContext)
-            : base(dBContext)
+        public UsersCompaniesServices(FUEL_DISPATCH_DBContext dBContext, IHttpContextAccessor httpContextAccessor)
+            : base(dBContext, httpContextAccessor)
         {
             _DBContext = dBContext;
         }
@@ -27,7 +24,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext.SaveChanges();
             return ResultPattern<UsersCompanies>.Success(userCompanyEntity!, StatusCodes.Status200OK, "User removed from the company. ");
         }
-
         public override ResultPattern<UsersCompanies> Update(Func<UsersCompanies, bool> predicate, UsersCompanies updatedEntity)
         {
             var userCompanyEntity = _DBContext.UsersCompanies.FirstOrDefault(predicate);

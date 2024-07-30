@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
+using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;

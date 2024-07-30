@@ -13,8 +13,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     public class RequestServices : GenericRepository<WareHouseMovementRequest>, IRequestServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
-        public RequestServices(FUEL_DISPATCH_DBContext DBContext)
-            : base(DBContext)
+        public RequestServices(FUEL_DISPATCH_DBContext DBContext, IHttpContextAccessor httpContextAccessor)
+            : base(DBContext, httpContextAccessor)
         {
             _DBContext = DBContext;
         }

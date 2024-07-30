@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
+using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
@@ -24,6 +25,8 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<ArticleDataMaster>>> GetArticles([FromQuery] GridifyQuery query)
         {
+            var companyId = HttpContext.Items["CompanyId"] as string;
+            var branchId = HttpContext.Items["BranchOfficeId"] as string;
             return Ok(_articleServices.GetAll(query));
         }
 
@@ -36,18 +39,6 @@ namespace FUEL_DISPATCH_API.Controllers
         /// <summary>
         /// Crear un nuevo articulo en un almacen. 
         /// </summary>
-        /// <remarks>
-        /// Sample request: 
-        /// 
-        ///     {
-        ///         "articleNumber": "IT-001",
-        ///         "description": "Alguna descripcion del articulo. ",
-        ///         "unitPrice": 100,
-        ///         "manufacturer": "Shell",
-        ///         "barCode": "00010001",
-        ///         "companyId": 1
-        ///     }
-        /// </remarks>
         /// <param name="article"></param>
         /// <response code="201">Si se crea el articulo correctamente. </response>
         /// <response code="400">Si se intenta agregar un articulo con el codigo de una ya existente. </response>
@@ -69,6 +60,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<User>> UpdateArticle(int id, [FromBody] ArticleDataMaster article)
         {
+            var validationResult = _validator.Validate(article);
+            if (!validationResult.IsValid)
+            {
+                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            }
             article.UpdatedAt = DateTime.Now;
             article.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return Ok(_articleServices.Update(x => x.Id == id, article));

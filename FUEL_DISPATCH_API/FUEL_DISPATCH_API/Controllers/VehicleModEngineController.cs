@@ -20,6 +20,8 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<ModEngine>>> GetModEngines([FromQuery] GridifyQuery query)
         {
+            string? companyId, branchId;
+            GetUserCompanyAndBranchClass.GetUserCompanyAndBranch(out companyId, out branchId);
             return Ok(_modEngineServices.GetAll(query));
         }
     }

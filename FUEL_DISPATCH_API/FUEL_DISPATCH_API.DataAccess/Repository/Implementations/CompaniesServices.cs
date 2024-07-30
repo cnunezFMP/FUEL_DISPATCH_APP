@@ -12,8 +12,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     public class CompaniesServices : GenericRepository<Companies>, ICompaniesServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
-        public CompaniesServices(FUEL_DISPATCH_DBContext dbContext)
-            : base(dbContext)
+        public CompaniesServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor)
+            : base(dbContext, httpContextAccessor)
         {
             _DBContext = dbContext;
         }

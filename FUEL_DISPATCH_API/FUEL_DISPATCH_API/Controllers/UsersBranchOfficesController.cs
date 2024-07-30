@@ -1,14 +1,11 @@
-﻿using FluentValidation;
-using FUEL_DISPATCH_API.DataAccess.Models;
+﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
-using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-
 namespace FUEL_DISPATCH_API.Controllers
 {
     [ApiController]
@@ -23,6 +20,8 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<UsersBranchOffices>>> GetUsersBranchOfficess([FromQuery] GridifyQuery query)
         {
+            string? companyId, branchId;
+            GetUserCompanyAndBranchClass.GetUserCompanyAndBranch(out companyId, out branchId);
             return Ok(_usersBranchOfficesServices.GetAll(query));
         }
         [HttpDelete("{userId:int}, {branchOfficeId:int}"), Authorize(Roles = "Administrator")]
@@ -37,7 +36,7 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             usersBranchOffice.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             usersBranchOffice.CreatedAt = DateTime.Now;
-            return Ok(_usersBranchOfficesServices.Post(usersBranchOffice));
+            return Created(string.Empty, _usersBranchOfficesServices.Post(usersBranchOffice));
         }
 
         [HttpPut("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize(Roles = "Administrator")]

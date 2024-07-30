@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
+using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
@@ -22,21 +23,21 @@ namespace FUEL_DISPATCH_API.Controllers
             _wareHouseMovementValidator = wareHouseMovementValidator;
         }
 
-        [HttpGet, Authorize(Roles = "Administrator")]
+        [HttpGet, Authorize(Roles = "Administrator, Dispatcher")]
         public ActionResult<ResultPattern<Paging<WareHouseMovement>>> GetMovements([FromQuery] GridifyQuery query)
         {
             return Ok(_wareHouseMovementServices.GetAll(query));
         }
 
-        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrator, Dispatcher")]
         public ActionResult<ResultPattern<WareHouseMovement>> GetMovement(int id)
         {
             return Ok(_wareHouseMovementServices.Get(x => x.Id == id));
         }
 
-        [HttpPost, Authorize(Roles = "Administrator")]
+        [HttpPost, Authorize(Roles = "Administrator, Dispatcher")]
         public ActionResult<ResultPattern<WareHouseMovement>> PostMovement([FromBody] WareHouseMovement wareHouseMovement)
-            {
+        {
             var validationResult = _wareHouseMovementValidator.Validate(wareHouseMovement);
             if (!validationResult.IsValid)
             {
@@ -47,7 +48,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return CreatedAtAction(nameof(GetMovement), new { id = wareHouseMovement.Id }, _wareHouseMovementServices.Post(wareHouseMovement));
         }
 
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrator, Dispatcher")]
         public ActionResult<ResultPattern<User>> UpdateMovement(int id, [FromBody] WareHouseMovement wareHouseMovement)
         {
             wareHouseMovement.UpdatedAt = DateTime.Now;

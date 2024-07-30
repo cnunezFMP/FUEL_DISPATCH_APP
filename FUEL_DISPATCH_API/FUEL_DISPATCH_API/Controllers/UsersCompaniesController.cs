@@ -24,6 +24,8 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<UsersCompanies>>> GetDrivers([FromQuery] GridifyQuery query)
         {
+            string? companyId, branchId;
+            GetUserCompanyAndBranchClass.GetUserCompanyAndBranch(out companyId, out branchId);
             return Ok(_companiesUsersServices.GetAll(query));
         }
         [HttpDelete("{userId}/Company/{companyId}"), Authorize(Roles = "Administrator")]

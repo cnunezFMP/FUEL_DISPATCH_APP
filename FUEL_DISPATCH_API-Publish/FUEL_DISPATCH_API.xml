@@ -8,18 +8,6 @@
             <summary>
             Crear un nuevo articulo en un almacen. 
             </summary>
-            <remarks>
-            Sample request: 
-            
-                {
-                    "articleNumber": "IT-001",
-                    "description": "Alguna descripcion del articulo. ",
-                    "unitPrice": 100,
-                    "manufacturer": "Shell",
-                    "barCode": "00010001",
-                    "companyId": 1
-                }
-            </remarks>
             <param name="article"></param>
             <response code="201">Si se crea el articulo correctamente. </response>
             <response code="400">Si se intenta agregar un articulo con el codigo de una ya existente. </response>

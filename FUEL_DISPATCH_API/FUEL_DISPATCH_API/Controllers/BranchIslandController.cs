@@ -26,6 +26,8 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<BranchIsland>>> GetBranchIslands([FromQuery] GridifyQuery query)
         {
+            string? companyId, branchId;
+            GetUserCompanyAndBranchClass.GetUserCompanyAndBranch(out companyId, out branchId);
             return Ok(_branchIslandServices.GetAll(query));
         }
         [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]

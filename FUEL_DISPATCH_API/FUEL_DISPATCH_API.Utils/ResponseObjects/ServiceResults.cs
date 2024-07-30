@@ -16,7 +16,6 @@ namespace FUEL_DISPATCH_API.Utils.ResponseObjects
             IsSuccess = isSuccess;
             StatusCode = statusCode;
             Data = data;
-
         }
         public ServiceResults(int statusCode, string message = "An error ocurred. ", object data = null)
         {

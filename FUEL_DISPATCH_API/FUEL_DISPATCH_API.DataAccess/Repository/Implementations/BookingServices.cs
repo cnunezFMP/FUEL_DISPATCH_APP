@@ -3,23 +3,19 @@ using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Constants;
 using FUEL_DISPATCH_API.Utils.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Twilio.TwiML.Voice;
-
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class BookingServices : GenericRepository<Booking>, IBookingServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IWareHouseMovementServices _wareHouseServices;
-        public BookingServices(FUEL_DISPATCH_DBContext dbContext, IWareHouseMovementServices wareHouseServices)
-            : base(dbContext)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public BookingServices(FUEL_DISPATCH_DBContext dbContext, IWareHouseMovementServices wareHouseServices, IHttpContextAccessor httpContextAccessor)
+            : base(dbContext, httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _DBContext = dbContext;
             _wareHouseServices = wareHouseServices;
         }

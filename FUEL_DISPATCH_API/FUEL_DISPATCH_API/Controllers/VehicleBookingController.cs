@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
+using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
@@ -23,6 +24,8 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet]
         public ActionResult<ResultPattern<Paging<Booking>>> GetBookings([FromQuery] GridifyQuery query)
         {
+            string? companyId, branchId;
+            GetUserCompanyAndBranchClass.GetUserCompanyAndBranch(out companyId, out branchId);
             return Ok(_bookingServices.GetAll(query));
         }
         [HttpGet("{id:int}")]

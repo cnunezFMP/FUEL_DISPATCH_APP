@@ -24,6 +24,7 @@ const string swaggerVersion = "v1";
 const string corsName = "MyPolicy";
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers()
     .AddJsonOptions
     (opt =>
@@ -94,6 +95,7 @@ builder.Services.AddAuthentication(config =>
 
 #region ServicesContainers
 builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
+                .AddScoped<IValidator<Vehicle>, VehiclesValidator>()
                 .AddScoped<IValidator<EmployeeConsumptionLimits>, EmployeeComsuptionLimitsValidator>()
                 .AddScoped<IValidator<Booking>, BookingValidator>()
                 .AddScoped<IValidator<BranchOffices>, BranchOfficeValidator>()
@@ -148,7 +150,6 @@ builder.Services.AddControllers().AddJsonOptions(option =>
 {
     option.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
-
 builder.Services.AddCors((options) =>
 {
     options.DefaultPolicyName = corsName;
@@ -161,6 +162,26 @@ builder.Services.AddCors((options) =>
 });
 var app = builder.Build();
 app.UseExceptionHandler();
+/*app.Use(async (context, next) =>
+{
+    var c = context.Request.HttpContext.User;
+    if (c.Identity?.IsAuthenticated ?? false)
+    {
+        string? companyId, branchId;
+
+        companyId = c.Claims
+        .FirstOrDefault(x => x.Type == "CompanyId")?
+        .Value;
+
+        branchId = c.Claims
+        .FirstOrDefault(x => x.Type == "BranchOfficeId")?
+        .Value;
+
+
+    }
+    await next();
+});*/
+app.UseMiddleware<AuthMiddleware>();
 app.UseCors(corsName);
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -179,9 +200,6 @@ app.UseReDoc(c =>
     c.HeadContent = "<img src=\"https://www.fmp.com.do/images/logo/Logo3.png\" alt=\"FMP Logo\">";
 });
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

@@ -11,8 +11,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     public class EmployeeComsuptionLimitsServices : GenericRepository<EmployeeConsumptionLimits>, IEmployeeComsuptionLimitsServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
-        public EmployeeComsuptionLimitsServices(FUEL_DISPATCH_DBContext dbContext)
-            : base(dbContext)
+        public EmployeeComsuptionLimitsServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor)
+            : base(dbContext, httpContextAccessor)
         {
             _DBContext = dbContext;
         }
@@ -25,7 +25,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext.SaveChanges();
             return ResultPattern<EmployeeConsumptionLimits>.Success(employeeComsuptionLimitEntityToDelete!, StatusCodes.Status200OK, "Driver method deleted. ");
         }
-        
+
         // DONE: Actualizar.
         public override ResultPattern<EmployeeConsumptionLimits> Update(Func<EmployeeConsumptionLimits, bool> predicate, EmployeeConsumptionLimits updatedEntity)
         {

@@ -1,5 +1,6 @@
 ﻿using Azure;
 using FUEL_DISPATCH_API.DataAccess.Models;
+using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.Utils.Constants;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
@@ -13,9 +14,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
     public abstract class GenericRepository<T> : IGenericInterface<T> where T : class
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
-        public GenericRepository(FUEL_DISPATCH_DBContext DBContext)
+        private readonly IHttpContextAccessor _httpContextAccesor;
+        public GenericRepository(FUEL_DISPATCH_DBContext DBContext, IHttpContextAccessor httpContextAccesor)
         {
             _DBContext = DBContext;
+            _httpContextAccesor = httpContextAccesor;
+
         }
         public virtual ResultPattern<T> Delete(Func<T, bool> predicate)
         {
@@ -34,12 +38,30 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
         }
         public virtual ResultPattern<Paging<T>> GetAll(GridifyQuery query)
         {
-            var entities = _DBContext.Set<T>().AsNoTrackingWithIdentityResolution().Gridify(query);
+            
+            string? companyId, branchId;
+            companyId = _httpContextAccesor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccesor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
-            if (entities.Count == 0)
-                throw new BadRequestException("No data found. ");
+            if (companyId is not null && branchId is not null && typeof(T).GetProperty("BranchOfficeId") is not null)
+            {
+                var entities = _DBContext.Set<T>()
+                    .AsNoTrackingWithIdentityResolution()
+                    .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId) &&
+                    EF.Property<int>(x, "BranchOfficeId") == int.Parse(companyId))
+                    .Gridify(query);
 
-            return ResultPattern<Paging<T>>.Success(entities, StatusCodes.Status200OK, AppConstants.DATA_OBTAINED_MESSAGE);
+                return ResultPattern<Paging<T>>.Success(entities, StatusCodes.Status200OK, AppConstants.DATA_OBTAINED_MESSAGE);
+            }
+
+            var entitiesComp = _DBContext.Set<T>()
+                .AsNoTrackingWithIdentityResolution()
+                .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId!))
+                .Gridify(query);
+
+            return ResultPattern<Paging<T>>.Success(entitiesComp,
+                StatusCodes.Status200OK,
+                AppConstants.DATA_OBTAINED_MESSAGE);
         }
         public virtual ResultPattern<T> Post(T entity)
         {

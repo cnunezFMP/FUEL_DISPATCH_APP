@@ -10,8 +10,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     public class UsersBranchOfficessServices : GenericRepository<UsersBranchOffices>, IUsersBranchOfficesServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
-        public UsersBranchOfficessServices(FUEL_DISPATCH_DBContext dbContext)
-            : base(dbContext)
+        public UsersBranchOfficessServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor)
+            : base(dbContext, httpContextAccessor)
         {
             _DBContext = dbContext;
         }

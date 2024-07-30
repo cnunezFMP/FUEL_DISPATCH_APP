@@ -16,8 +16,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         private readonly IEmailSender _emailSender;
 
         private readonly string? _secretKey;
-        public UsersAuth(IConfiguration config, FUEL_DISPATCH_DBContext DBContext, IEmailSender emailSender)
-            : base(DBContext)
+        public UsersAuth(IConfiguration config, FUEL_DISPATCH_DBContext DBContext, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
+            : base(DBContext, httpContextAccessor)
         {
             _DBContext = DBContext;
             _emailSender = emailSender;
