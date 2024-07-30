@@ -43,15 +43,15 @@ namespace FUEL_DISPATCH_API.Controllers
             {
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             }
-            branchIsland.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            branchIsland.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            branchIsland.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            branchIsland.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return CreatedAtAction(nameof(GetBranchIsland), new { id = branchIsland.Id }, _branchIslandServices.Post(branchIsland));
         }
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<User>> UpdateBranchIsland(int id, [FromBody] BranchIsland branchIsland)
         {
             branchIsland.UpdatedAt = DateTime.Now;
-            branchIsland.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            branchIsland.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return Ok(_branchIslandServices.Update(x => x.Id == id, branchIsland));
         }
     }

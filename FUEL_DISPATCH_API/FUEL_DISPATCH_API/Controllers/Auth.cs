@@ -41,8 +41,8 @@ namespace FUEL_DISPATCH_API.Controllers
                 }
                 return ValidationProblem(modelstateDictionary);
             }
-            user.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            user.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            user.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            user.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return Created(string.Empty, _usersAuth.UserRegistration(user));
         }
         [HttpPost("Login")]

@@ -42,8 +42,8 @@ namespace FUEL_DISPATCH_API.Controllers
             {
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             }
-            request.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            request.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            request.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            request.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return CreatedAtAction(nameof(GetRequest), new
             {
                 id = request.Id
@@ -54,7 +54,7 @@ namespace FUEL_DISPATCH_API.Controllers
         public ActionResult<ResultPattern<User>> UpdateRequest(int id, [FromBody] WareHouseMovementRequest request)
         {
             request.UpdatedAt = DateTime.Now;
-            request.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            request.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return Ok(_requestServices.Update(x => x.Id == id, request));
         }
     }
