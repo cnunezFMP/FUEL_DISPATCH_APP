@@ -19,7 +19,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public ResultPattern<List<BranchOffices>> GetCompanyBranchOfficess(int companyId)
         {
-            // TODO: Buscar porque esta forma no funciona 
+            // TODO: Buscar porque esta forma no funciona
             //var company = _DBContext
             //    .Companies
             //    .FirstOrDefault(x => x.Id == companyId)

@@ -21,8 +21,6 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<CalculatedComsuption>>> GetCalculatedComsuption([FromQuery] GridifyQuery query)
         {
-            string? companyId, branchId;
-            GetUserCompanyAndBranchClass.GetUserCompanyAndBranch(out companyId, out branchId);
             return Ok(_calculatedComsuptionServices.GetAll(query));
         }
     }

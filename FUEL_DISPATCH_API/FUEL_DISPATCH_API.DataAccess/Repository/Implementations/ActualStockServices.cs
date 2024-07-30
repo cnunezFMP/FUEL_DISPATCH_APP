@@ -39,7 +39,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 .Where(x => x.WareHouseId == wareHouseId)
                 .ToList();
 
-
             return ResultPattern<List<vw_ActualStock>>
                 .Success(actualStockFromWareHouse,
                 StatusCodes.Status200OK,

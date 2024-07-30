@@ -22,8 +22,6 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<BranchIsland>>> GetOdometerMeasures([FromQuery] GridifyQuery query)
         {
-            string? companyId, branchId;
-            GetUserCompanyAndBranchClass.GetUserCompanyAndBranch(out companyId, out branchId);
             return Ok(_odometerMeasureServices.GetAll(query));
         }
     }

@@ -6,17 +6,17 @@ using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using System.ComponentModel;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class WareHouseMovementServices : GenericRepository<WareHouseMovement>, IWareHouseMovementServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public WareHouseMovementServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor)
             : base(dbContext, httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _DBContext = dbContext;
         }
         // DONE: Hacer despachos y transferencias con solicitudes.
@@ -36,15 +36,19 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext.SaveChanges();
             return ResultPattern<WareHouseMovement>.Success(wareHouseMovement, StatusCodes.Status201Created, "Registered dispatch. ");
         }
-
         #region Logic
         public bool SetDriverIdByVehicle(WareHouseMovement wareHouseMovement)
         {
+            string? companyId, branchOfficeId;
+            new GetUserCompanyAndBranchClass(_httpContextAccessor).GetUserCompanyAndBranch(out companyId, out branchOfficeId);
+
             var vehicleDriver = _DBContext.Vehicle
                 .AsNoTrackingWithIdentityResolution()
+                .Where(x => x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchOfficeId))
                 .FirstOrDefault(x => x.Id == wareHouseMovement.VehicleId);
 
-            if (vehicleDriver!.DriverId is not null)
+            if (vehicleDriver?.DriverId is not null)
             {
                 wareHouseMovement.DriverId = vehicleDriver!.DriverId;
                 return true;
@@ -53,10 +57,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool VehicleHasMovements(WareHouseMovement wareHouseMovement)
         {
+            string? companyId, branchOfficeId;
+            new GetUserCompanyAndBranchClass(_httpContextAccessor).GetUserCompanyAndBranch(out companyId, out branchOfficeId);
             var vehicleForDispatch = _DBContext.Vehicle
                 .Include(x => x.WareHouseMovements)
                 .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault(v => v.Id == wareHouseMovement.VehicleId);
+                .Where(x => x.CompanyId == int.Parse(companyId)
+                && x.BranchOfficeId == int.Parse(branchOfficeId))
+                .FirstOrDefault(v => v.Id == wareHouseMovement.VehicleId)
+                ?? throw new NotFoundException("No vehicle found. ");
 
             if (vehicleForDispatch!.WareHouseMovements.Any())
             {
@@ -71,8 +80,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             => wareHouseMovement.Qty > ValidationConstants.ZeroGallons;
         public bool CheckPreviousVehicleDispatch(WareHouseMovement wareHouseMovement)
         {
+            string? companyId, branchOfficeId;
+            new GetUserCompanyAndBranchClass(_httpContextAccessor).GetUserCompanyAndBranch(out companyId, out branchOfficeId);
+
             var previousDispatch = _DBContext.WareHouseMovement
-                .Where(x => x.VehicleId == wareHouseMovement.VehicleId)
+                .Where(x => x.VehicleId == wareHouseMovement.VehicleId &&
+                x.BranchOfficeId == int.Parse(branchOfficeId))
                 .OrderByDescending(x => x.WareHouseId)
                 .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefault();
@@ -82,49 +95,69 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         // DONE: Corregir las funciones "CheckVehicle", "CheckDriver".
         public bool CheckVehicle(int vehicleId)
         {
+            string? companyId, branchOfficeId;
+            new GetUserCompanyAndBranchClass(_httpContextAccessor).GetUserCompanyAndBranch(out companyId, out branchOfficeId);
+
             var vehicleForDispatch = _DBContext.Vehicle
                 .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault(v => v.Id == vehicleId)
-                ?? throw new NotFoundException("No se encontro el vehiculo. ");
+                .FirstOrDefault(v => v.Id == vehicleId &&
+                v.CompanyId == int.Parse(companyId) &&
+                v.BranchOfficeId == int.Parse(branchOfficeId))
+                ?? throw new NotFoundException("No vehicle found. ");
 
             return (vehicleForDispatch.Status is not ValidationConstants.InactiveStatus
                 && vehicleForDispatch!.Status is not ValidationConstants.NotAvailableStatus);
         }
         public bool CheckDriver(WareHouseMovement wareHouseMovement)
         {
+            string? companyId, branchOfficeId;
+            new GetUserCompanyAndBranchClass(_httpContextAccessor).GetUserCompanyAndBranch(out companyId, out branchOfficeId);
 
             var driverForDispatch = _DBContext.Driver
                 .AsNoTrackingWithIdentityResolution()
-                 .FirstOrDefault(d => d.Id == wareHouseMovement.DriverId)
-                    ?? throw new NotFoundException("No driver found. ");
+                .FirstOrDefault(d => d.Id == wareHouseMovement.DriverId &&
+                d.BranchOfficeId == int.Parse(branchOfficeId) &&
+                d.BranchOffice.Company.Id == int.Parse(companyId))
+                ?? throw new NotFoundException("No driver found. ");
 
-            return (driverForDispatch!.Status is not ValidationConstants.InactiveStatus && driverForDispatch!.Status is not ValidationConstants.NotAvailableStatus);
-
+            return (driverForDispatch!.Status is not ValidationConstants.InactiveStatus &&
+                driverForDispatch!.Status is not ValidationConstants.NotAvailableStatus);
         }
         public bool CheckBranchOffice(WareHouseMovement wareHouseMovement)
         {
+            string? companyId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             var branchOffice = _DBContext.BranchOffices
                 .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault(b => b.Id == wareHouseMovement.BranchOfficeId)
+                .FirstOrDefault(b => b.Id == wareHouseMovement.BranchOfficeId &&
+                b.CompanyId == int.Parse(companyId))
                 ?? throw new NotFoundException("No branch office found. ");
 
             return branchOffice.Status is ValidationConstants.InactiveStatus;
         }
         public bool CheckDispenser(WareHouseMovement wareHouseMovement)
         {
+            string? companyId, branchOfficeId;
+            new GetUserCompanyAndBranchClass(_httpContextAccessor).GetUserCompanyAndBranch(out companyId, out branchOfficeId);
             var dispenser = _DBContext.Dispenser
                 .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault(dp => dp.Id == wareHouseMovement.DispenserId)
+                .FirstOrDefault(dp => dp.Id == wareHouseMovement.DispenserId &&
+                dp.BranchIsland.BranchOfficeId == int.Parse(branchOfficeId) &&
+                dp.BranchIsland.BranchOffice.CompanyId == int.Parse(branchOfficeId))
                 ?? throw new NotFoundException("No dispenser found. ");
 
             return dispenser.Status is not ValidationConstants.InactiveStatus;
         }
         public bool ChangeDriverStatus(WareHouseMovement wareHouseMovement)
         {
+            string? companyId, branchOfficeId;
+            new GetUserCompanyAndBranchClass(_httpContextAccessor).GetUserCompanyAndBranch(out companyId, out branchOfficeId);
 
             var driverForDispatch = _DBContext.Driver
                 .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault(d => d.Id == wareHouseMovement.DriverId)
+                .FirstOrDefault(d => d.Id == wareHouseMovement.DriverId &&
+                d.BranchOffice.Company.Id == int.Parse(companyId) &&
+                d.BranchOfficeId == int.Parse(branchOfficeId))
                     ?? throw new NotFoundException("No se encontro el conductor.");
 
             driverForDispatch.Status = ValidationConstants.NotAvailableStatus;
@@ -133,10 +166,16 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool ChangeVehicleStatus(WareHouseMovement wareHouseMovement)
         {
+            string? companyId, 
+                    branchOfficeId;
+            new GetUserCompanyAndBranchClass(_httpContextAccessor)
+                .GetUserCompanyAndBranch(out companyId, out branchOfficeId);
+
             var vehicleForDispatch = _DBContext.Vehicle
                 .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault(v => v.Id == wareHouseMovement.VehicleId);
-
+                .FirstOrDefault(v => v.Id == wareHouseMovement.VehicleId &&
+                v.CompanyId == int.Parse(companyId) &&
+                v.BranchOfficeId == int.Parse(branchOfficeId));
             vehicleForDispatch!.Status = ValidationConstants.NotAvailableStatus;
 
             return true;
@@ -145,9 +184,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         // DONE: Corregir la excepcion aqui
         public bool CheckWareHouseStock(WareHouseMovement wareHouseMovement)
         {
+            string? companyId, branchOfficeId;
+            new GetUserCompanyAndBranchClass(_httpContextAccessor).GetUserCompanyAndBranch(out companyId, out branchOfficeId);
+
             var wareHouseStock = _DBContext.vw_ActualStock
                 .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault(x => x.WareHouseId == wareHouseMovement.WareHouseId && x.ItemId == wareHouseMovement.ItemId);
+                .FirstOrDefault(x => x.WareHouseId == wareHouseMovement.WareHouseId &&
+                x.ItemId == wareHouseMovement.ItemId);
+
             return wareHouseStock!.StockQty > 0 || wareHouseStock.StockQty > wareHouseMovement.Qty;
         }
         public bool CheckIfProductIsInTheWareHouse(WareHouseMovement wareHouseMovement)

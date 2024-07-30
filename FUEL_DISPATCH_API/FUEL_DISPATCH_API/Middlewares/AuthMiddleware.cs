@@ -9,6 +9,9 @@
         }
         public async Task InvokeAsync(HttpContext context)
         {
+            // INPROGRESS: Validar los tokens. 
+            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last() ?? "";
+
             var user = context.User;
             if (user.Identity?.IsAuthenticated ??
                 false)

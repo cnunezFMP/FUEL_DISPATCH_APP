@@ -15,15 +15,17 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         public BookingServices(FUEL_DISPATCH_DBContext dbContext, IWareHouseMovementServices wareHouseServices, IHttpContextAccessor httpContextAccessor)
             : base(dbContext, httpContextAccessor)
         {
-            _httpContextAccessor = httpContextAccessor;
             _DBContext = dbContext;
             _wareHouseServices = wareHouseServices;
         }
         // DONE: Hacer este servicio para Booking. 
         public bool CheckDriver(int driverId)
         {
+            string? branchOfficeId = _httpContextAccessor.HttpContext?.User.FindFirst("BranchOfficeId")?.Value;
+
             var driverForBook = _DBContext.Driver
                 .AsNoTrackingWithIdentityResolution()
+                .Where(d => d.BranchOfficeId == int.Parse(branchOfficeId))
                 .FirstOrDefault(d => d.Id == driverId)
                 ?? throw new NotFoundException("No driver found. ");
 

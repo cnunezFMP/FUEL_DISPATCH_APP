@@ -24,8 +24,6 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet]
         public ActionResult<ResultPattern<Paging<Booking>>> GetBookings([FromQuery] GridifyQuery query)
         {
-            string? companyId, branchId;
-            GetUserCompanyAndBranchClass.GetUserCompanyAndBranch(out companyId, out branchId);
             return Ok(_bookingServices.GetAll(query));
         }
         [HttpGet("{id:int}")]

@@ -19,8 +19,6 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<Make>>> GetMakes([FromQuery] GridifyQuery query)
         {
-            string? companyId, branchId;
-            GetUserCompanyAndBranchClass.GetUserCompanyAndBranch(out companyId, out branchId);
             return Ok(_makeServices.GetAll(query));
         }
     }

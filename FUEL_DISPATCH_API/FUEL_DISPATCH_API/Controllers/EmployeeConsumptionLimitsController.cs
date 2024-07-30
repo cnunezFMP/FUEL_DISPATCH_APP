@@ -26,8 +26,6 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<EmployeeConsumptionLimits>>> GetEmployeeComsuptionMethods([FromQuery] GridifyQuery query)
         {
-            string? companyId, branchId;
-            GetUserCompanyAndBranchClass.GetUserCompanyAndBranch(out companyId, out branchId);
             return Ok(_employeeComsuptionLimitsServices.GetAll(query));
         }
         [HttpDelete("{driverId:int}, {methodId:int}"), Authorize(Roles = "Administrator")]

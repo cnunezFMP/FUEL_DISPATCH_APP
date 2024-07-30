@@ -9,7 +9,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _httpContextAccessor = httpContextAccessor;
         }
         // DONE: Pasarle el context accesor desde los controladores. 
-        public static void GetUserCompanyAndBranch(out string? companyId, out string? branchId)
+        public void GetUserCompanyAndBranch(out string? companyId, out string? branchId)
         {
             var httpContext = _httpContextAccessor?.HttpContext;
 

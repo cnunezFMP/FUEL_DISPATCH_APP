@@ -19,7 +19,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
                 .Must((artNumber, _) =>
             {
                 return articlesServices.IsArticleUnique(artNumber);
-            });
+            }).WithMessage("An article with this code already exist. ");
 
         }
     }

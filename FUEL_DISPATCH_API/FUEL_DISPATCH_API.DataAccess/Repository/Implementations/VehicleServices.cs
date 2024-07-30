@@ -74,7 +74,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         public bool FichaMustBeUnique(Vehicle vehicleToken)
         {
             string? companyId, branchId;
-            GetUserCompanyAndBranchClass.GetUserCompanyAndBranch(out companyId, out branchId);
+            new GetUserCompanyAndBranchClass(_httpContextAccessor).GetUserCompanyAndBranch(out companyId, out branchId);
             return !_DBContext.Vehicle
                 .Any(x => x.Ficha == vehicleToken.Ficha &&
                 x.CompanyId == Convert.ToInt32(companyId) &&

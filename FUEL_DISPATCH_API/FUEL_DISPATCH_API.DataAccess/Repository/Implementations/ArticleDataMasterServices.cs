@@ -17,43 +17,36 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
         }
-
-        public ResultPattern<ArticleDataMaster> GetByCode(string code, string companyId)
-        {
-            var article = _DBContext.ArticleDataMaster
-                .FirstOrDefault(x => x.ArticleNumber == code &&
-                x.CompanyId == Convert.ToInt32(companyId));
-
-            if (article is null)
-                throw new NotFoundException("No article find for this code. ");
-
-            return ResultPattern<ArticleDataMaster>.Success(article, StatusCodes.Status200OK, "Article obtained succesfully. ");
-        }
-        public override ResultPattern<ArticleDataMaster> Post(ArticleDataMaster newArticle)
-        {
-            _DBContext.ArticleDataMaster.Add(newArticle!);
-            _DBContext.SaveChanges();
-            return ResultPattern<ArticleDataMaster>.Success(newArticle!, StatusCodes.Status201Created, "Article saved succesfully. ");
-        }
-        public bool IsArticleUnique(ArticleDataMaster articleDataMaster)
+        /*public ResultPattern<ArticleDataMaster> GetByCode(string code)
         {
             string? companyId, branchId;
-            GetUserCompanyAndBranchClass.GetUserCompanyAndBranch(out companyId, out branchId);
+            new GetUserCompanyAndBranchClass(_httpContextAccessor).GetUserCompanyAndBranch(out companyId, out branchId);
+            var article = _DBContext.ArticleDataMaster
+                .FirstOrDefault(x => x.ArticleNumber == code &&
+                x.CompanyId == Convert.ToInt32(companyId))
+                ?? throw new NotFoundException("No article find for this code. ");
 
+            return ResultPattern<ArticleDataMaster>.Success(article, StatusCodes.Status200OK, "Article obtained succesfully. ");
+        }*/
+
+        public bool IsArticleUnique(ArticleDataMaster articleDataMaster)
+        {
+            string? companyId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             return !_DBContext.ArticleDataMaster
-                .Where(x => x.CompanyId == Convert.ToInt32(companyId))
-                .Any(x => x.ArticleNumber == articleDataMaster.ArticleNumber);
-
+                .Any(x => x.ArticleNumber == articleDataMaster.ArticleNumber
+                && x.CompanyId == int.Parse(companyId));
         }
 
         public ResultPattern<ArticleDataMaster> GetByCode(string code)
         {
+            string? companyId, branchId;
+            new GetUserCompanyAndBranchClass(_httpContextAccessor).GetUserCompanyAndBranch(out companyId, out branchId);
 
             var article = _DBContext.ArticleDataMaster
-                .FirstOrDefault(x => x.ArticleNumber == code);
-
-            if (article is null)
-                throw new NotFoundException("No article find for this code. ");
+                .FirstOrDefault(x => x.ArticleNumber == code
+                && x.CompanyId == int.Parse(companyId))
+                ?? throw new NotFoundException("No article find for this code. ");
 
             return ResultPattern<ArticleDataMaster>.Success(article, StatusCodes.Status200OK, "Article obtained succesfully. ");
         }

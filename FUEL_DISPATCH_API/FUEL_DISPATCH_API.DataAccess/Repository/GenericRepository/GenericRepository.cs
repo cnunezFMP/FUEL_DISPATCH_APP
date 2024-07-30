@@ -38,37 +38,74 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
         }
         public virtual ResultPattern<Paging<T>> GetAll(GridifyQuery query)
         {
-            
             string? companyId, branchId;
             companyId = _httpContextAccesor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccesor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
-            if (companyId is not null && branchId is not null && typeof(T).GetProperty("BranchOfficeId") is not null)
+            if (companyId is not null &&
+                branchId is not null &&
+                typeof(T).GetProperty("BranchOfficeId") is not null)
             {
-                var entities = _DBContext.Set<T>()
+                var entitiesCompBranch = _DBContext.Set<T>()
                     .AsNoTrackingWithIdentityResolution()
                     .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId) &&
                     EF.Property<int>(x, "BranchOfficeId") == int.Parse(companyId))
                     .Gridify(query);
 
-                return ResultPattern<Paging<T>>.Success(entities, StatusCodes.Status200OK, AppConstants.DATA_OBTAINED_MESSAGE);
+                return ResultPattern<Paging<T>>.Success(entitiesCompBranch, StatusCodes.Status200OK, AppConstants.DATA_OBTAINED_MESSAGE);
             }
 
-            var entitiesComp = _DBContext.Set<T>()
+            if (companyId is not null && typeof(T).GetProperty("CompanyId") is not null)
+            {
+                var entitiesComp = _DBContext.Set<T>()
                 .AsNoTrackingWithIdentityResolution()
                 .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId!))
                 .Gridify(query);
 
-            return ResultPattern<Paging<T>>.Success(entitiesComp,
+                return ResultPattern<Paging<T>>.Success(entitiesComp,
                 StatusCodes.Status200OK,
                 AppConstants.DATA_OBTAINED_MESSAGE);
+            }
+
+            var entities = _DBContext.Set<T>()
+                .AsNoTrackingWithIdentityResolution()
+                .Gridify(query);
+            return ResultPattern<Paging<T>>.Success(entities, StatusCodes.Status200OK, AppConstants.DATA_OBTAINED_MESSAGE);
         }
+        // DONE: Asignar los id de compañia y sucursal a las entidades que se creen.
         public virtual ResultPattern<T> Post(T entity)
         {
+            string? companyId, branchId;
+            companyId = _httpContextAccesor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccesor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            // Assign company and branch IDs to the entity
+            if (companyId is not null &&
+                branchId is not null &&
+                typeof(T).GetProperty("BranchOfficeId") is not null)
+            {
+                typeof(T).GetProperty("CompanyId")?
+                    .SetValue(entity,
+                    int.Parse(companyId!));
+
+                typeof(T).GetProperty("BranchOfficeId")?
+                    .SetValue(entity,
+                    int.Parse(branchId!));
+            }
+
+            if (companyId is not null && typeof(T).GetProperty("CompanyId") is not null)
+            {
+                typeof(T).GetProperty("CompanyId")?
+                    .SetValue(entity,
+                    int.Parse(companyId!));
+            }
+                
+
             _DBContext.Set<T>().Add(entity);
             _DBContext.SaveChanges();
             return ResultPattern<T>.Success(entity!, StatusCodes.Status201Created, AppConstants.DATA_SAVED_MESSAGE);
         }
+        // UNDONE: Buscar alguna forma de que no se actualicen las propiedades que no envio en los PUT.
         public virtual ResultPattern<T> Update(Func<T, bool> predicate, T updatedEntity)
         {
             var entityToUpdate = _DBContext.Set<T>().FirstOrDefault(predicate)

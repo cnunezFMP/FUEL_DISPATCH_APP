@@ -25,8 +25,6 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<ArticleDataMaster>>> GetArticles([FromQuery] GridifyQuery query)
         {
-            var companyId = HttpContext.Items["CompanyId"] as string;
-            var branchId = HttpContext.Items["BranchOfficeId"] as string;
             return Ok(_articleServices.GetAll(query));
         }
 
