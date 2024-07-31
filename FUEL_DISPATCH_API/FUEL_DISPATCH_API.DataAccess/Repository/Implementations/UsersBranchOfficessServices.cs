@@ -32,7 +32,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             var userBranchOfficeEntity = _DBContext.UsersBranchOffices
                 .FirstOrDefault(predicate)
                 ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
-
             // Remove the existing entity
             _DBContext.UsersBranchOffices.Remove(userBranchOfficeEntity);
             _DBContext.SaveChanges();
@@ -43,5 +42,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             return ResultPattern<UsersBranchOffices>.Success(updatedEntity, StatusCodes.Status200OK, AppConstants.DATA_UPDATED_MESSAGE);
         }
+        // Verificar si el usuario pertenece a la sucursal.
+        public bool IsUserInBranchOffice(int userId, int branchOfficeId)
+            => !_DBContext.UsersBranchOffices.Any(x => x.UserId == userId &&
+                       x.BranchOfficeId == branchOfficeId);
     }
 }

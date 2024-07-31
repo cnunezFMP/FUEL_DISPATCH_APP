@@ -32,6 +32,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 .FirstOrDefault(predicate)
                 ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
 
+            
             // Remove the existing entity
             _DBContext.UsersCompanies.Remove(userCompanyEntity);
             _DBContext.SaveChanges();
@@ -42,7 +43,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             return ResultPattern<UsersCompanies>.Success(updatedEntity, StatusCodes.Status200OK, AppConstants.DATA_UPDATED_MESSAGE);
         }
-        public bool UserIsInTheCompany(User user, int rolId)
-            => user.Companies.Any(r => r.Id == rolId);
+        // Verificar si el usuario pertenece a la compañía.
+        public bool IsUserInCompany(int userId, int companyId)
+            => !_DBContext.UsersCompanies.Any(x => x.UserId == userId &&
+            x.CompanyId == companyId);
     }
 }

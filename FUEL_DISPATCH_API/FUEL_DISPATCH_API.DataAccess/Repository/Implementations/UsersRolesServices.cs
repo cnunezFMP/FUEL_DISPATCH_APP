@@ -50,7 +50,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             return ResultPattern<UsersRols>.Success(updatedEntity, StatusCodes.Status200OK, AppConstants.DATA_UPDATED_MESSAGE);
         }
-        public bool UserHasTheRole(User user, int rolId)
-            => user.Rols!.Any(r => r.Id == rolId);
+        // Verificar si el usuario tiene el rol.
+        public bool IsUserRol(int userId, int rolId)
+            => !_DBContext.UsersRols.Any(x => x.UserId == userId &&
+                                  x.RolId == rolId);
     }
 }

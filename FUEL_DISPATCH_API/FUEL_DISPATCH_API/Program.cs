@@ -92,7 +92,6 @@ builder.Services.AddAuthentication(config =>
             ValidateAudience = false,
         };
     });
-
 #region ServicesContainers
 builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IValidator<Vehicle>, VehiclesValidator>()
@@ -108,6 +107,9 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IValidator<WareHouseMovement>, WareHouseMovementValidator>()
                 .AddScoped<IValidator<UserRegistrationDto>, RegisterValidator>()
                 .AddScoped<IValidator<ArticleDataMaster>, ArticlesValidator>()
+                .AddScoped<IValidator<UsersRols>, UsersRolsValidator>()
+                .AddScoped<IValidator<UsersCompanies>, UsersCompanyValidator>()
+                .AddScoped<IValidator<UsersBranchOffices>, UsersBranchOfficeValidator>()
                 .AddScoped<IValidator<EmployeeConsumptionLimits>, EmployeeComsuptionLimitsValidator>()
                 .AddScoped<IEmployeeComsuptionLimitsServices, EmployeeComsuptionLimitsServices>()
                 .AddScoped<IZoneServices, ZoneServices>()
@@ -116,6 +118,7 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IBranchOfficeServices, BranchOfficeServices>()
                 .AddScoped<IUsersBranchOfficesServices, UsersBranchOfficessServices>()
                 .AddScoped<IBranchIslandServices, BranchIslandServices>()
+                .AddScoped<IRoleServices, RoleServices>()
                 .AddScoped<IMakeServices, MakeServices>()
                 .AddScoped<IModelServices, ModelServices>()
                 .AddScoped<IModEngineServices, ModEngineServices>()
@@ -143,8 +146,7 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IUsersAuth, UsersAuth>()
                 .AddScoped<IUserServices, UsersServices>()
                 .AddTransient<IEmailSender, EmailSender>();
-#endregion\
-
+#endregion
 // Ignore cycles in the object that is actually serializing.
 builder.Services.AddControllers().AddJsonOptions(option =>
 {
@@ -162,6 +164,8 @@ builder.Services.AddCors((options) =>
 });
 var app = builder.Build();
 app.UseExceptionHandler();
+
+# region AuthMiddlewareInLine
 /*app.Use(async (context, next) =>
 {
     var c = context.Request.HttpContext.User;
@@ -181,6 +185,9 @@ app.UseExceptionHandler();
     }
     await next();
 });*/
+#endregion
+
+
 app.UseMiddleware<AuthMiddleware>();
 app.UseCors(corsName);
 app.UseSwagger();

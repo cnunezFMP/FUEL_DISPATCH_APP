@@ -6,7 +6,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
     public interface ICompaniesUsersServices : IGenericInterface<UsersCompanies>
     {
-        bool UserIsInTheCompany(User user, int companieId);
+        bool IsUserInCompany(int userId, int companyId);
         // ResultPattern<User> UpdateUserCompany(int userId, int companieId);
         // ResultPattern<UsersCompanies> DeleteUserCompany(int userId, int companieId);
     }

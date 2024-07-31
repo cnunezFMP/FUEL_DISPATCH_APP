@@ -1,26 +1,21 @@
-﻿using Azure;
-using FUEL_DISPATCH_API.DataAccess.Models;
-using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
+﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.Utils.Constants;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
 {
     public abstract class GenericRepository<T> : IGenericInterface<T> where T : class
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IHttpContextAccessor _httpContextAccesor;
-        public GenericRepository(FUEL_DISPATCH_DBContext DBContext, IHttpContextAccessor httpContextAccesor)
+        public GenericRepository(FUEL_DISPATCH_DBContext DBContext,
+                                 IHttpContextAccessor httpContextAccesor)
         {
             _DBContext = DBContext;
             _httpContextAccesor = httpContextAccesor;
-
         }
         public virtual ResultPattern<T> Delete(Func<T, bool> predicate)
         {
@@ -83,6 +78,21 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                     AppConstants.DATA_OBTAINED_MESSAGE);
             }
 
+            if (companyId is not null ||
+                branchId is not null &&
+                typeof(T).GetProperty("BranchOfficeId") is null &&
+                typeof(T).GetProperty("CompanyId") is null)
+            {
+                // Retornar todo
+                var entities = _DBContext.Set<T>()
+                    .AsNoTrackingWithIdentityResolution()
+                    .Gridify(query);
+
+                return ResultPattern<Paging<T>>.Success(entities,
+                    StatusCodes.Status200OK,
+                    AppConstants.DATA_OBTAINED_MESSAGE);
+            }
+
             return ResultPattern<Paging<T>>.Success(new Paging<T>(),
                 StatusCodes.Status200OK,
                 "This user isn't in a company or branch office. ");
@@ -110,14 +120,16 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                     int.Parse(branchId!));
             }
 
-            if (companyId is not null && typeof(T).GetProperty("CompanyId") is not null)
+            if (companyId is not null &&
+                typeof(T).GetProperty("CompanyId") is not null)
             {
                 typeof(T).GetProperty("CompanyId")?
                     .SetValue(entity,
                     int.Parse(companyId!));
             }
 
-            if (branchId is not null && typeof(T).GetProperty("BranchOfficeId") is not null)
+            if (branchId is not null &&
+                typeof(T).GetProperty("BranchOfficeId") is not null)
             {
                 typeof(T).GetProperty("BranchOfficeId")?
                     .SetValue(entity,
@@ -126,7 +138,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
 
             _DBContext.Set<T>().Add(entity);
             _DBContext.SaveChanges();
-            return ResultPattern<T>.Success(entity!, StatusCodes.Status201Created, AppConstants.DATA_SAVED_MESSAGE);
+            return ResultPattern<T>.Success(entity!,
+                StatusCodes.Status201Created,
+                AppConstants.DATA_SAVED_MESSAGE);
         }
         // UNDONE: Buscar alguna forma de que no se actualicen las propiedades que no envio en los PUT.
         public virtual ResultPattern<T> Update(Func<T, bool> predicate, T updatedEntity)

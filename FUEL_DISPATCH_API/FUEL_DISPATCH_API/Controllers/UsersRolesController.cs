@@ -2,6 +2,7 @@
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,15 +16,22 @@ namespace FUEL_DISPATCH_API.Controllers
     public class UsersRolesController : ControllerBase
     {
         private readonly IUsersRolesServices _userRolesServices;
-        public UsersRolesController(IUsersRolesServices userRolesServices)
+        private readonly IValidator<UsersRols> _validator;
+        public UsersRolesController(IUsersRolesServices userRolesServices, IValidator<UsersRols> validator)
         {
             _userRolesServices = userRolesServices;
+            _validator = validator;
+
         }
 
         [HttpPut("{userId:int}/Roles/{rolId:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<UsersRols>> UpdateUserRol(int userId, int rolId, UsersRols userRol)
         {
             Func<UsersRols, bool> predicate = x => x.UserId == userId && x.RolId == rolId;
+            var validationResult = _validator.Validate(userRol);
+
+            if (!validationResult.IsValid)
+                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             userRol.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             userRol.UpdatedAt = DateTime.Now;
             return Ok(_userRolesServices.UpdateUserRol(predicate, userRol));
@@ -31,6 +39,12 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost]
         public ActionResult<ResultPattern<UsersRols>> PostUserRol([FromBody] UsersRols userRol)
         {
+            var validationResult = _validator.Validate(userRol);
+
+            if (!validationResult.IsValid)
+                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+
+
             return Created(string.Empty, _userRolesServices.Post(userRol));
         }
         [HttpDelete("{userId}/Roles/{rolId}"), Authorize(Roles = "Administrator")]

@@ -9,7 +9,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Models;
 public partial class Role
 {
     public int Id { get; set; }
-
     public string? RolName { get; set; }
 
     public string? CreatedBy { get; set; }
@@ -21,5 +20,5 @@ public partial class Role
     public DateTime? UpdatedAt { get; set; }
 
     [JsonIgnore] public virtual ICollection<UsersRols> UsersRols { get; set; } = new List<UsersRols>();
-    [JsonIgnore] public virtual ICollection<User>? Users { get; set; }    
+    [JsonIgnore] public virtual ICollection<User>? Users { get; set; }
 }

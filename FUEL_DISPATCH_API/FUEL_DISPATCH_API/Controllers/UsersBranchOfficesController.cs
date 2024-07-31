@@ -1,6 +1,8 @@
-﻿using FUEL_DISPATCH_API.DataAccess.Models;
+﻿using FluentValidation;
+using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Authorization;
@@ -13,9 +15,11 @@ namespace FUEL_DISPATCH_API.Controllers
     public class UsersBranchOfficesController : ControllerBase
     {
         private readonly IUsersBranchOfficesServices _usersBranchOfficesServices;
-        public UsersBranchOfficesController(IUsersBranchOfficesServices usersBranchOfficesServices)
+        private readonly IValidator<UsersBranchOffices> _validator;
+        public UsersBranchOfficesController(IUsersBranchOfficesServices usersBranchOfficesServices, IValidator<UsersBranchOffices> validator)
         {
             _usersBranchOfficesServices = usersBranchOfficesServices;
+            _validator = validator;
         }
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<UsersBranchOffices>>> GetUsersBranchOfficess([FromQuery] GridifyQuery query)
@@ -33,6 +37,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<UsersBranchOffices>> SetUsersBranchOffices([FromBody] UsersBranchOffices usersBranchOffice)
         {
+            var validationResult = _validator.Validate(usersBranchOffice);
+
+            if (!validationResult.IsValid)
+                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+
             usersBranchOffice.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             usersBranchOffice.CreatedAt = DateTime.Now;
             return Created(string.Empty, _usersBranchOfficesServices.Post(usersBranchOffice));
@@ -41,6 +50,10 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<UsersBranchOffices>> UpdateUserCompany(int userId, int branchOfficeId, UsersBranchOffices usersBranchOffices)
         {
+            var validationResult = _validator.Validate(usersBranchOffices);
+
+            if (!validationResult.IsValid)
+                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             Func<UsersBranchOffices, bool> predicate = x => x.UserId == userId && x.BranchOfficeId == branchOfficeId;
             usersBranchOffices.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             usersBranchOffices.UpdatedAt = DateTime.Now;

@@ -12,5 +12,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
     public interface IUsersBranchOfficesServices : IGenericInterface<UsersBranchOffices>
     {
         ResultPattern<UsersBranchOffices> UpdateUserBranchOffice(Func<UsersBranchOffices, bool> predicate, UsersBranchOffices updatedEntity);
+
+        bool IsUserInBranchOffice(int userId, int branchOfficeId);
     }
 }
