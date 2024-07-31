@@ -159,11 +159,14 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         modelBuilder.Entity<Dispenser>(entity =>
         {
             entity.HasKey(e => e.Id);
-
             entity.ToTable("Dispenser");
+            entity.HasOne(e => e.BranchIsland)
+            .WithMany(e => e.Dispensers)
+            .HasForeignKey(e => e.BranchIslandId);
 
-            entity.HasOne(e => e.BranchIsland).WithMany(e => e.Dispensers).HasForeignKey(e => e.BranchIslandId);
-
+            entity.HasOne(e => e.BranchOffice)
+            .WithMany(e => e.Dispensers)
+            .HasForeignKey(e => e.BranchOfficeId);
         });
         modelBuilder.Entity<Driver>(entity =>
         {

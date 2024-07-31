@@ -5,6 +5,8 @@ using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.Design;
+using System.Security.Claims;
 
 namespace FUEL_DISPATCH_API.Controllers
 {
@@ -18,15 +20,24 @@ namespace FUEL_DISPATCH_API.Controllers
             _userRolesServices = userRolesServices;
         }
 
-        [HttpPut("{userId}/Roles/{rolId}")]
-        public ActionResult<ResultPattern<User>> UpdateUserRol(int userId, int rolId)
+        [HttpPut("{userId:int}/Roles/{rolId:int}"), Authorize(Roles = "Administrator")]
+        public ActionResult<ResultPattern<UsersRols>> UpdateUserRol(int userId, int rolId, UsersRols userRol)
         {
-            return Ok(_userRolesServices.UpdateUserRol(userId, rolId));
+            Func<UsersRols, bool> predicate = x => x.UserId == userId && x.RolId == rolId;
+            userRol.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            userRol.UpdatedAt = DateTime.Now;
+            return Ok(_userRolesServices.UpdateUserRol(predicate, userRol));
+        }
+        [HttpPost]
+        public ActionResult<ResultPattern<UsersRols>> PostUserRol([FromBody] UsersRols userRol)
+        {
+            return Created(string.Empty, _userRolesServices.Post(userRol));
         }
         [HttpDelete("{userId}/Roles/{rolId}"), Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<User>> DeleteUserRol(int userId, int rolId)
+        public ActionResult<ResultPattern<UsersRols>> DeleteUserRol(int userId, int rolId)
         {
-            return Ok(_userRolesServices.DeleteUserRol(userId, rolId));
+            Func<UsersRols, bool> predicate = x => x.UserId == userId && x.RolId == rolId;
+            return Ok(_userRolesServices.Delete(predicate));
         }
     }
 }

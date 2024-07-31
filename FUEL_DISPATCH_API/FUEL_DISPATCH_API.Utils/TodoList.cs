@@ -1,3 +1,6 @@
 ﻿// DONE: Resolver los errores de compilación en los archivos de la carpeta DataAccess.
 // DONE: Buscar la forma final de como utilizare el httpcontext para buscar los datos correspondientes a companyId y branchId.
-// TODO: Terminar de implementar el middleware de autenticación en todas las validaciones. 
+// INPROGRESS: Terminar de implementar el middleware de autenticación en todas las validaciones.
+// TODO: Añadir los demas roles a la base de datos y controladores.
+// TODO: Verificar si añadir la llave primaria compuesta en UsersBranchOffice.
+// TODO: Publicar los cambios en el server.

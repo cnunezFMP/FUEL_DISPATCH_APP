@@ -7,6 +7,7 @@ using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
@@ -42,46 +43,62 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
             companyId = _httpContextAccesor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccesor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
-            if (companyId is not null &&
-                branchId is not null &&
+
+            if (branchId is not null &&
+                companyId is not null &&
+                typeof(T).GetProperty("CompanyId") is not null &&
                 typeof(T).GetProperty("BranchOfficeId") is not null)
             {
-                var entitiesCompBranch = _DBContext.Set<T>()
+                var entitiesByCompAndBranch = _DBContext.Set<T>()
                     .AsNoTrackingWithIdentityResolution()
-                    .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId) &&
-                    EF.Property<int>(x, "BranchOfficeId") == int.Parse(companyId))
+                    .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId!) && EF.Property<int>(x, "BranchOfficeId") == int.Parse(branchId!))
                     .Gridify(query);
 
-                return ResultPattern<Paging<T>>.Success(entitiesCompBranch, StatusCodes.Status200OK, AppConstants.DATA_OBTAINED_MESSAGE);
+                return ResultPattern<Paging<T>>.Success(entitiesByCompAndBranch,
+                                       StatusCodes.Status200OK,
+                                       AppConstants.DATA_OBTAINED_MESSAGE);
             }
 
             if (companyId is not null && typeof(T).GetProperty("CompanyId") is not null)
             {
                 var entitiesComp = _DBContext.Set<T>()
-                .AsNoTrackingWithIdentityResolution()
-                .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId!))
-                .Gridify(query);
+                    .AsNoTrackingWithIdentityResolution()
+                    .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId!))
+                    .Gridify(query);
 
                 return ResultPattern<Paging<T>>.Success(entitiesComp,
-                StatusCodes.Status200OK,
-                AppConstants.DATA_OBTAINED_MESSAGE);
+                    StatusCodes.Status200OK,
+                    AppConstants.DATA_OBTAINED_MESSAGE);
             }
 
-            var entities = _DBContext.Set<T>()
-                .AsNoTrackingWithIdentityResolution()
-                .Gridify(query);
-            return ResultPattern<Paging<T>>.Success(entities, StatusCodes.Status200OK, AppConstants.DATA_OBTAINED_MESSAGE);
+            if (branchId is not null && typeof(T).GetProperty("BranchOfficeId") is not null)
+            {
+                var entitiesBranch = _DBContext.Set<T>()
+                    .AsNoTrackingWithIdentityResolution()
+                    .Where(x => EF.Property<int>(x, "BranchOfficeId") == int.Parse(branchId!))
+                    .Gridify(query);
+
+                return ResultPattern<Paging<T>>.Success(entitiesBranch,
+                    StatusCodes.Status200OK,
+                    AppConstants.DATA_OBTAINED_MESSAGE);
+            }
+
+            return ResultPattern<Paging<T>>.Success(new Paging<T>(),
+                StatusCodes.Status200OK,
+                "This user isn't in a company or branch office. ");
+
         }
         // DONE: Asignar los id de compañia y sucursal a las entidades que se creen.
+        // DONE: Hacer esto al igual que el metodo GET, para los Id de compañia y sucursal.
         public virtual ResultPattern<T> Post(T entity)
         {
             string? companyId, branchId;
             companyId = _httpContextAccesor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccesor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
-            // Assign company and branch IDs to the entity
-            if (companyId is not null &&
-                branchId is not null &&
+            if (branchId is not null &&
+                companyId is not null &&
+                typeof(T).GetProperty("CompanyId") is not null &&
                 typeof(T).GetProperty("BranchOfficeId") is not null)
             {
                 typeof(T).GetProperty("CompanyId")?
@@ -99,7 +116,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                     .SetValue(entity,
                     int.Parse(companyId!));
             }
-                
+
+            if (branchId is not null && typeof(T).GetProperty("BranchOfficeId") is not null)
+            {
+                typeof(T).GetProperty("BranchOfficeId")?
+                    .SetValue(entity,
+                    int.Parse(branchId!));
+            }
 
             _DBContext.Set<T>().Add(entity);
             _DBContext.SaveChanges();

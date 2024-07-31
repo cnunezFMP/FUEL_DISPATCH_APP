@@ -2,6 +2,7 @@
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Constants;
+using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 
@@ -15,26 +16,32 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             _DBContext = dbContext;
         }
-
         public override ResultPattern<UsersBranchOffices> Delete(Func<UsersBranchOffices, bool> predicate)
         {
             var userBranchOfficeEntityToDelete = _DBContext.UsersBranchOffices
-                .FirstOrDefault(predicate);
+                .FirstOrDefault(predicate)
+                ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
 
             _DBContext.UsersBranchOffices.Remove(userBranchOfficeEntityToDelete!);
             _DBContext.SaveChanges();
             return ResultPattern<UsersBranchOffices>.Success(userBranchOfficeEntityToDelete!, StatusCodes.Status200OK, "User deleted from Branch Office. ");
         }
-
         // DONE: Actualizar.
-        public override ResultPattern<UsersBranchOffices> Update(Func<UsersBranchOffices, bool> predicate, UsersBranchOffices updatedEntity)
+        public ResultPattern<UsersBranchOffices> UpdateUserBranchOffice(Func<UsersBranchOffices, bool> predicate, UsersBranchOffices updatedEntity)
         {
-            var userCompanyEntity = _DBContext.UsersBranchOffices.FirstOrDefault(predicate);
+            var userBranchOfficeEntity = _DBContext.UsersBranchOffices
+                .FirstOrDefault(predicate)
+                ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
 
-            _DBContext.Entry(userCompanyEntity!).CurrentValues.SetValues(updatedEntity);
+            // Remove the existing entity
+            _DBContext.UsersBranchOffices.Remove(userBranchOfficeEntity);
             _DBContext.SaveChanges();
-            return ResultPattern<UsersBranchOffices>.Success(userCompanyEntity!, StatusCodes.Status200OK, AppConstants.DATA_UPDATED_MESSAGE);
 
+            // Add the updated entity
+            _DBContext.UsersBranchOffices.Add(updatedEntity);
+            _DBContext.SaveChanges();
+
+            return ResultPattern<UsersBranchOffices>.Success(updatedEntity, StatusCodes.Status200OK, AppConstants.DATA_UPDATED_MESSAGE);
         }
     }
 }

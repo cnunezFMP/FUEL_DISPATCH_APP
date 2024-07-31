@@ -26,6 +26,7 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<Dispenser>>> GetDispensers([FromQuery] GridifyQuery query)
         {
+
             return Ok(_dispenserServices.GetAll(query));
         }
 

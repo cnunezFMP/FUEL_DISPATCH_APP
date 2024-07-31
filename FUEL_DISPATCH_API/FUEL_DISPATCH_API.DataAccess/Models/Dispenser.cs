@@ -17,9 +17,9 @@ public partial class Dispenser
     public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
     public string? UpdatedBy { get; set; }
-
+    public int? BranchOfficeId { get; set; }
     public DateTime? UpdatedAt { get; set; } = DateTime.Now;
-
+    [JsonIgnore] public virtual BranchOffices? BranchOffice { get; set; }
     [JsonIgnore] public virtual BranchIsland? BranchIsland { get; set; }
 
     [JsonIgnore] public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();

@@ -35,6 +35,7 @@ public partial class BranchOffices
     public DateTime? UpdatedAt { get; set; } = DateTime.Now;
     public string? UpdatedBy { get; set; }
     [JsonIgnore] public virtual ICollection<UsersBranchOffices> UsersBranchOffices { get; set; } = new List<UsersBranchOffices>();
+    [JsonIgnore] public virtual ICollection<Dispenser> Dispensers { get; set; } = new List<Dispenser>();
     [JsonIgnore] public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
     [JsonIgnore] public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
     [JsonIgnore] public virtual ICollection<WareHouse> WareHouses { get; set; } = new List<WareHouse>();

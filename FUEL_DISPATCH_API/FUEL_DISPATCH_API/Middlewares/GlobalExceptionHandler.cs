@@ -82,7 +82,8 @@ namespace FUEL_DISPATCH_API.Middlewares
             {
                 var details = new ProblemDetails
                 {
-                    Detail = "An unexpected error has occurred. ",
+                    // DONE: Cambiar el mensaje de error. (An unexpected error ocurred)
+                    Detail = "An unexpected error ocurred",
                     Instance = httpContext.ToString(),
                     Status = StatusCodes.Status500InternalServerError,
                     Title = "Something went wrong. ",

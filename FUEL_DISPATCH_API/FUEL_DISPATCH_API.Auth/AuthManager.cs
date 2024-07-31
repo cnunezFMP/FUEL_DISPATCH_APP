@@ -36,6 +36,8 @@ public class AuthManager
                             .Select(uc => uc.BranchOfficeId)
                             .FirstOrDefault();
 
+            var userFullName = credenciales.FullName;
+
             var keyBytes = Encoding.UTF8.GetBytes(_secretKey);
             var claims = new ClaimsIdentity();
             claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, usuario.Username!));
@@ -44,6 +46,9 @@ public class AuthManager
 
             if (branchId is not 0)
                 claims.AddClaim(new Claim("BranchOfficeId", branchId.ToString()));
+
+            claims.AddClaim(new Claim("FullName", userFullName!));
+
             if (credenciales.Email is not null)
                 claims.AddClaim(new Claim(ClaimTypes.Email, credenciales.Email));
 

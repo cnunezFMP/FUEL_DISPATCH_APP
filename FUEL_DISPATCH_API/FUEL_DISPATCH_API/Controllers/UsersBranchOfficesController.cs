@@ -22,13 +22,14 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             return Ok(_usersBranchOfficesServices.GetAll(query));
         }
-        [HttpDelete("{userId:int}, {branchOfficeId:int}"), Authorize(Roles = "Administrator")]
+        [HttpDelete("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<UsersBranchOffices>> DeleteUserBranchOffice(int userId, int branchOfficeId)
         {
             Func<UsersBranchOffices, bool> predicate = x => x.UserId == userId && x.BranchOfficeId == branchOfficeId;
             return Ok(_usersBranchOfficesServices.Delete(predicate));
         }
 
+        // DONE: Corregir exception. (Cannot insert duplicate key in object 'dbo.UsersBranchOffices'. The duplicate key value is (1, 1)). Solution: Quite la llave primaria compuesta de la tabla UsersBranchOffices.
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<UsersBranchOffices>> SetUsersBranchOffices([FromBody] UsersBranchOffices usersBranchOffice)
         {
@@ -36,14 +37,14 @@ namespace FUEL_DISPATCH_API.Controllers
             usersBranchOffice.CreatedAt = DateTime.Now;
             return Created(string.Empty, _usersBranchOfficesServices.Post(usersBranchOffice));
         }
-
+        // DONE: Luego de resolver los problemas aqui, aplicarlo en los demas servicios. 
         [HttpPut("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<UsersBranchOffices>> UpdateUserCompany(int userId, int branchOfficeId, UsersBranchOffices usersBranchOffices)
         {
             Func<UsersBranchOffices, bool> predicate = x => x.UserId == userId && x.BranchOfficeId == branchOfficeId;
             usersBranchOffices.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             usersBranchOffices.UpdatedAt = DateTime.Now;
-            return Ok(_usersBranchOfficesServices.Update(predicate, usersBranchOffices));
+            return Ok(_usersBranchOfficesServices.UpdateUserBranchOffice(predicate, usersBranchOffices));
         }
     }
 }

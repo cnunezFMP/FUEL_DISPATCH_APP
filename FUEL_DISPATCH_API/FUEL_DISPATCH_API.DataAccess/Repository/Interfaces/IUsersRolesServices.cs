@@ -9,11 +9,9 @@ using System.Threading.Tasks;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
-    public interface IUsersRolesServices : IGenericInterface<User>
+    public interface IUsersRolesServices : IGenericInterface<UsersRols>
     {
-        ResultPattern<User> UpdateUserRol(int userId, int roleId);
+        ResultPattern<UsersRols> UpdateUserRol(Func<UsersRols, bool> predicate, UsersRols updatedEntity);
         bool UserHasTheRole(User user, int rolId);
-
-        ResultPattern<User> DeleteUserRol(int userId, int roleId);
     }
 }
