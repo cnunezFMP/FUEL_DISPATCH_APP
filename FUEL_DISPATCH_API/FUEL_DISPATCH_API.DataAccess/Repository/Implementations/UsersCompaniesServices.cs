@@ -25,7 +25,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext.SaveChanges();
             return ResultPattern<UsersCompanies>.Success(userCompanyEntity!, StatusCodes.Status200OK, "User removed from the company. ");
         }
-        // TODO: Exception - Property cannot be null. (Parameter 'entity')
+        // DONE: Exception - Property cannot be null. (Parameter 'entity')
         public ResultPattern<UsersCompanies> UpdateUserCompany(Func<UsersCompanies, bool> predicate, UsersCompanies updatedEntity)
         {
             var userCompanyEntity = _DBContext.UsersCompanies

@@ -11,15 +11,16 @@ public partial class Generation
 {
     public int Id { get; set; }
 
-    public string? GenerationN { get; set; }
+    public string? Name { get; set; }
 
-    public string? CreatedBy { get; set; }
+    public string? ImgUrl { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+    public string? Url { get; set; }
 
-    public string? UpdatedBy { get; set; }
+    public int? ModelId { get; set; }
 
-    public DateTime? UpdatedAt { get; set; }
+    public virtual ICollection<ModEngine> ModEngines { get; set; } = new List<ModEngine>();
+
+    public virtual Model? Model { get; set; }
     [JsonIgnore] public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
-
 }

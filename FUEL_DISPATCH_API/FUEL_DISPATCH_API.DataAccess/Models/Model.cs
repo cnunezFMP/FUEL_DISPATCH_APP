@@ -10,14 +10,16 @@ public partial class Model
 {
     public int Id { get; set; }
 
-    public string? CreatedBy { get; set; }
+    public string? Name { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+    public string? ImgUrl { get; set; }
 
-    public string? UpdatedBy { get; set; }
+    public string? Url { get; set; }
 
-    public DateTime? UpdatedAt { get; set; }
+    public int? MakeId { get; set; }
 
-    public string? Modelname { get; set; }
+    public virtual ICollection<Generation> Generations { get; set; } = new List<Generation>();
+
+    public virtual Make? Make { get; set; }
     [JsonIgnore] public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
 }

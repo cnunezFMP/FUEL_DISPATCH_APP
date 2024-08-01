@@ -10,14 +10,13 @@ public partial class Make
 {
     public int Id { get; set; }
 
-    public string? CreatedBy { get; set; }
+    public string? Name { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+    public string? ImgUrl { get; set; }
 
-    public string? UpdatedBy { get; set; }
+    public string? Url { get; set; }
 
-    public DateTime? UpdatedAt { get; set; }
+    public virtual ICollection<Model> Models { get; set; } = new List<Model>();
 
-    public string? Makename { get; set; }
     [JsonIgnore] public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
 }

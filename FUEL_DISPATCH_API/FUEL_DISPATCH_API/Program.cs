@@ -31,7 +31,7 @@ builder.Services.AddControllers()
     {
         opt.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerExamplesFromAssemblyOf<UserSwaggerExample>();
 builder.Services.AddSwaggerGen(
@@ -164,7 +164,6 @@ builder.Services.AddCors((options) =>
 });
 var app = builder.Build();
 app.UseExceptionHandler();
-
 # region AuthMiddlewareInLine
 /*app.Use(async (context, next) =>
 {
@@ -186,8 +185,6 @@ app.UseExceptionHandler();
     await next();
 });*/
 #endregion
-
-
 app.UseMiddleware<AuthMiddleware>();
 app.UseCors(corsName);
 app.UseSwagger();

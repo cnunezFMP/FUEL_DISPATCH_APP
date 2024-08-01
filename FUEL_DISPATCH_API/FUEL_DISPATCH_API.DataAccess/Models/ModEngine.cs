@@ -10,15 +10,14 @@ public partial class ModEngine
 {
     public int Id { get; set; }
 
-    public string? ModEngineN { get; set; }
+    public string? Name { get; set; }
 
-    public string? CreatedBy { get; set; }
+    public string? ImgUrl { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+    public string? Url { get; set; }
 
-    public string? UpdatedBy { get; set; }
+    public int? GenerationId { get; set; }
 
-    public DateTime? UpdatedAt { get; set; }
-
-    [JsonIgnore] public virtual ICollection<Vehicle> Vehicle { get; set; } = new List<Vehicle>();
+    public virtual Generation? Generation { get; set; }
+    [JsonIgnore] public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
 }

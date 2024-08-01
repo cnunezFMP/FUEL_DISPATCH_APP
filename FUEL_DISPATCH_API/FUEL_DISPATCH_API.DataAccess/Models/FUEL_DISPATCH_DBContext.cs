@@ -200,33 +200,22 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         });
         modelBuilder.Entity<Generation>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Generati__3214EC07F57C4C1D");
+            entity.HasKey(e => e.Id);
 
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
-            entity.Property(e => e.CreatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.GenerationN)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
-            entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
+            entity.ToTable("Generation");
+
+            entity.Property(e => e.ImgUrl).HasMaxLength(2000);
+            entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.Url).HasMaxLength(2000);
+
+            entity.HasOne(d => d.Model).WithMany(p => p.Generations)
+                .HasForeignKey(d => d.ModelId);
         });
         modelBuilder.Entity<Make>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Makes__3214EC0766C44BA6");
+            entity.HasKey(e => e.Id);
 
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
-            entity.Property(e => e.CreatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.Makename).HasMaxLength(255);
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
-            entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
+            entity.ToTable("Make");
         });
         modelBuilder.Entity<OdometerMeasure>(entity =>
         {
@@ -253,33 +242,21 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         });
         modelBuilder.Entity<ModEngine>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ModEngin__3214EC07C96E9CC0");
+            entity.HasKey(e => e.Id);
 
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
-            entity.Property(e => e.CreatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.ModEngineN)
-                .HasMaxLength(255)
-                .IsUnicode(false);
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
-            entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
+            entity.ToTable("ModEngine");
+
+            entity.HasOne(d => d.Generation).WithMany(p => p.ModEngines)
+                .HasForeignKey(d => d.GenerationId);
         });
         modelBuilder.Entity<Model>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Models__3214EC0777312CA4");
+            entity.HasKey(e => e.Id);
 
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
-            entity.Property(e => e.CreatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.Modelname).HasMaxLength(255);
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
-            entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
+            entity.ToTable("Model");
+
+            entity.HasOne(d => d.Make).WithMany(p => p.Models)
+                .HasForeignKey(d => d.MakeId);
         });
         modelBuilder.Entity<Road>(entity =>
         {
@@ -406,25 +383,25 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         });
         modelBuilder.Entity<UsersCompanies>(entity =>
         {
-            entity.HasKey(e => new { e.UserId, e.CompanyId });
+            // entity.HasKey(e => new { e.UserId, e.CompanyId });
             entity.HasOne(e => e.User).WithMany(e => e.UsersCompanies).HasForeignKey(e => e.UserId);
             entity.HasOne(e => e.Company).WithMany(e => e.UsersCompanies).HasForeignKey(e => e.CompanyId);
         });
         modelBuilder.Entity<UsersBranchOffices>(entity =>
         {
-            entity.HasKey(e => new
+
+            /*entity.HasKey(e => new
             {
                 e.UserId,
                 e.BranchOfficeId
-            });
+            });*/
             entity.HasOne(e => e.User).WithMany(e => e.UsersBranchOffices).HasForeignKey(e => e.UserId);
             entity.HasOne(e => e.BranchOffice).WithMany(e => e.UsersBranchOffices).HasForeignKey(e => e.BranchOfficeId);
 
         });
         modelBuilder.Entity<UsersRols>(entity =>
         {
-            entity.HasKey(e => new { e.UserId, e.RolId });
-
+            // entity.HasKey(e => new { e.UserId, e.RolId });
             entity.HasOne(d => d.Rol).WithMany(p => p.UsersRols)
                 .HasForeignKey(d => d.RolId)
                 .OnDelete(DeleteBehavior.SetNull);
@@ -472,7 +449,9 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(100)
                 .IsUnicode(false);
-            entity.HasOne(d => d.Generation).WithMany(d => d.Vehicles).HasForeignKey(d => d.GenerationId);
+            entity.HasOne(d => d.Generation)
+            .WithMany(d => d.Vehicles)
+            .HasForeignKey(d => d.GenerationId);
 
 
             entity.HasOne(d => d.Driver).WithMany(p => p.Vehicles)
@@ -483,18 +462,23 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(d => d.Measure).WithMany(p => p.Vehicle)
                 .HasForeignKey(d => d.OdometerMeasureId);
 
-            entity.HasOne(d => d.ModEngine).WithMany(p => p.Vehicle)
+            entity.HasOne(d => d.ModEngine)
+                .WithMany(p => p.Vehicles)
                 .HasForeignKey(d => d.ModEngineId);
 
-            entity.HasOne(d => d.Model).WithMany(p => p.Vehicles)
+            entity.HasOne(d => d.Model)
+                .WithMany(p => p.Vehicles)
                 .HasForeignKey(d => d.ModelId);
 
+
+
             entity.HasOne(d => d.Company)
-            .WithMany(x => x.Vehicles)
-            .HasForeignKey(x => x.CompanyId);
+                .WithMany(x => x.Vehicles)
+                .HasForeignKey(x => x.CompanyId);
+
             entity.HasOne(d => d.BranchOffice)
-            .WithMany(x => x.Vehicles)
-            .HasForeignKey(x => x.BranchOfficeId);
+                .WithMany(x => x.Vehicles)
+                .HasForeignKey(x => x.BranchOfficeId);
         });
         modelBuilder.Entity<Zone>(entity =>
         {
