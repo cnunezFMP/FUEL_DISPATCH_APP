@@ -19,5 +19,8 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Make>> GetMakes([FromQuery] GridifyQuery query)
             => Ok(_makeServices.GetAll(query));
+
+        // TODO: Hacer controlador para recuperar: Las marcas, modelos, generaciones y modification engines por Id de marca. 
+
     }
 }

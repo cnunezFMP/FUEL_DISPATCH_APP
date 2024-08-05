@@ -7,6 +7,7 @@ public partial class Driver
     public int Id { get; set; }
     public string? Email { get; set; }
     [Required] public string? FullName { get; set; }
+    public int? CompanyId { get; set; }
     [Required] public int BranchOfficeId { get; set; }
     [Required, Phone] public string? PhoneNumber { get; set; }
     // DONE: Hacer que la fecha no pueda ser menor de edad ni que sea la del mismo dia en un validador de FluentValidation.
@@ -26,6 +27,7 @@ public partial class Driver
     [JsonIgnore] public virtual ICollection<WareHouseMovementRequest>? Requests { get; set; } = new List<WareHouseMovementRequest>();
     [JsonIgnore] public virtual ICollection<EmployeeConsumptionLimits>? EmployeeConsumptionLimits { get; set; } = new List<EmployeeConsumptionLimits>();
     [JsonIgnore] public virtual ICollection<DriverMethodOfComsuption> DriverMethodsOfComsuption { get; set; } = new List<DriverMethodOfComsuption>();
+    [JsonIgnore] public virtual Companies? Company { get; set; }
     [JsonIgnore] public virtual ICollection<Booking>? Bookings { get; set; } = new List<Booking>();
 
 }

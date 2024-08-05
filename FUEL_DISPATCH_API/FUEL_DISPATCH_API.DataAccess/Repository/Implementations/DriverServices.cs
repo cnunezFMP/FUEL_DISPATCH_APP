@@ -37,7 +37,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             => !_DBContext.Driver.Any(x => x.Identification == entity.Identification);
         // DONE: Chequear esta validacion. 
         public bool IsEmailUnique(Driver driver)
-            => !_DBContext.User.Any(x => x.Email == driver.Email);
+            => !_DBContext.Driver.Any(x => x.Email == driver.Email);
 
         /*public bool VehicleIdHasValue(Driver entity)
             => _DBContext.Vehicle.Any(x => x.Id == entity.VehicleId);

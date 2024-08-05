@@ -20,18 +20,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public override ResultPattern<WareHouseMovementRequest> Post(WareHouseMovementRequest entity)
         {
-            if (CheckDispatch(entity))
-                throw new BadRequestException("Revise que el odometro registrado no sea igual o menor al anterior." +
-                                              "Tambien, que la cantidad de combustible digitados no esten en cero. ");
-            if (CheckVehicle(entity))
-                throw new BadRequestException("Puede que el vehiculo no exista, o este inactivo. ");
-
             _DBContext.WareHouseMovementRequest.Add(entity);
             _DBContext.SaveChanges();
             return ResultPattern<WareHouseMovementRequest>.Success(entity, StatusCodes.Status201Created, "Solicitud enviada. ");
         }
-        public bool CheckDispatch(WareHouseMovementRequest newRequest)
-            => newRequest.Qty is ValidationConstants.ZeroGallons;
         public bool CheckIfWareHousesHasActiveStatus(WareHouseMovementRequest wareHouseMovementRequest)
         {
             var wareHouse = _DBContext.WareHouse
@@ -50,8 +42,24 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool CheckVehicle(WareHouseMovementRequest newRequest)
         {
-            var vehicleForDispatch = _DBContext.Vehicle.FirstOrDefault(x => x.Id == newRequest.VehicleId);
-            return vehicleForDispatch!.Status is not ValidationConstants.InactiveStatus || vehicleForDispatch!.Status is not ValidationConstants.NotAvailableStatus;
+            var vehicleForDispatch = _DBContext.Vehicle
+                .FirstOrDefault(x => x.Id == newRequest.VehicleId)
+                ?? throw new BadRequestException("This vehicle doesn't exist. ");
+
+            return vehicleForDispatch!.Status is not
+                ValidationConstants.InactiveStatus &&
+                vehicleForDispatch!.Status is not ValidationConstants.NotAvailableStatus;
+        }
+
+        public bool CheckDriver(WareHouseMovementRequest newRequest)
+        {
+            var driverForDispatch = _DBContext.Driver
+                .FirstOrDefault(x => x.Id == newRequest.DriverId)
+                ?? throw new NotFoundException("This driver doesn't exist. ");
+
+            return driverForDispatch!.Status is not
+                ValidationConstants.InactiveStatus &&
+                driverForDispatch!.Status is not ValidationConstants.NotAvailableStatus;
         }
     }
 }

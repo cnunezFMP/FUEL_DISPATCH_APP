@@ -10,30 +10,44 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     public class BookingServices : GenericRepository<Booking>, IBookingServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
-        private readonly IWareHouseMovementServices _wareHouseServices;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public BookingServices(FUEL_DISPATCH_DBContext dbContext, IWareHouseMovementServices wareHouseServices, IHttpContextAccessor httpContextAccessor)
+        public BookingServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor)
             : base(dbContext, httpContextAccessor)
         {
             _DBContext = dbContext;
-            _wareHouseServices = wareHouseServices;
+            _httpContextAccessor = httpContextAccessor;
         }
         // DONE: Hacer este servicio para Booking. 
-        public bool CheckDriver(int driverId)
+        public bool CheckDriver(Booking book)
         {
             string? branchOfficeId = _httpContextAccessor.HttpContext?.User.FindFirst("BranchOfficeId")?.Value;
 
             var driverForBook = _DBContext.Driver
                 .AsNoTrackingWithIdentityResolution()
                 .Where(d => d.BranchOfficeId == int.Parse(branchOfficeId))
-                .FirstOrDefault(d => d.Id == driverId)
+                .FirstOrDefault(d => d.Id == book.DriverId)
                 ?? throw new NotFoundException("No driver found. ");
 
             return (driverForBook!.Status is not ValidationConstants.InactiveStatus
                 && driverForBook!.Status is not ValidationConstants.NotAvailableStatus);
         }
-        public bool CheckVehicle(Booking booking)
-            => _wareHouseServices.CheckVehicle(booking.VehicleId);
+        public bool CheckVehicle(Booking book)
+        {
+            string? companyId, branchOfficeId;
+            // DONE: Utilizar httpContextAccessor para obtener el companyId y branchOfficeId.
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            var vehicleForDispatch = _DBContext.Vehicle
+                .AsNoTrackingWithIdentityResolution()
+                .FirstOrDefault(v => v.Id == book.VehicleId &&
+                v.CompanyId == int.Parse(companyId) &&
+                v.BranchOfficeId == int.Parse(branchOfficeId))
+                ?? throw new NotFoundException("No vehicle found. ");
+
+            return (vehicleForDispatch.Status is not ValidationConstants.InactiveStatus
+                && vehicleForDispatch!.Status is not ValidationConstants.NotAvailableStatus);
+        }
         public bool VerifyDisponibility(Booking booking)
             => !_DBContext.Booking.Any(r => r.VehicleId == booking.VehicleId
                        && r.Status != ValidationConstants.CanceledStatus

@@ -23,7 +23,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _validator = validator;
         }
 
-        [HttpGet, Authorize(Roles = "")]
+        [HttpGet, Authorize(Roles = "Administrator, Dispatcher")]
         public ActionResult<ResultPattern<Paging<WareHouseMovementRequest>>> GetRequests([FromQuery] GridifyQuery query)
         {
             return Ok(_requestServices.GetAll(query));

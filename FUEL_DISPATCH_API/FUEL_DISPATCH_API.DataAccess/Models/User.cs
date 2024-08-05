@@ -10,7 +10,7 @@ public partial class User
     [Required] public string FullName { get; set; } = null!;
 
     [Required] public string Username { get; set; } = null!;
-
+    // TODO: Dto para para cambiar la "Password".
     [Required, JsonIgnore] public string Password { get; set; } = null!;
 
     [Required] public string PhoneNumber { get; set; } = null!;

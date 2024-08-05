@@ -10,6 +10,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
     public class vw_ActualStock
     {
         public int WareHouseId { get; set; }
+        public int BranchOfficeId { get; set; }
+        public string BranchOfficeName { get; set; }
+        public int CompanyId{ get; set; }
+        public string CompanyName { get; set; }
         public string WareHouseName { get; set; }
         public string WareHouseCode { get; set; }
         public int ItemId { get; set; }

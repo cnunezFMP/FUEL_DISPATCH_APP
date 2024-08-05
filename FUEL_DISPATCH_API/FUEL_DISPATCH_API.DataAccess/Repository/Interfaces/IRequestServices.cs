@@ -6,7 +6,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
     public interface IRequestServices : IGenericInterface<WareHouseMovementRequest>
     {
         bool CheckVehicle(WareHouseMovementRequest newRequest);
-        bool CheckDispatch(WareHouseMovementRequest newRequest);
+        bool CheckDriver(WareHouseMovementRequest newRequest);
+
         bool CheckIfWareHousesHasActiveStatus(WareHouseMovementRequest wareHouseMovementRequest);
     }
 }

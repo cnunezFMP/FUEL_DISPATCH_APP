@@ -9,7 +9,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public int? RoadId { get; set; }
         [Required] public int ItemId { get; set; }
         [Required] public int BranchOfficeId { get; set; }
-        [Required] public int DispenserId { get; set; }
+        public int? DispenserId { get; set; }
         [Required] public MovementsTypesEnum Type { get; set; }
         [Required] public decimal Qty { get; set; }
         public decimal? Amount { get; set; }
@@ -20,7 +20,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public int? RequestId { get; set; }
         public int? FuelMethodOfComsuptionId { get; set; }
         public string? CreatedBy { get; set; }
-        [Required] public int? DriverId { get; set; }
+        public int? DriverId { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public string? UpdatedBy { get; set; }
         public DateTime UpdatedAt { get; set; } = DateTime.Now;

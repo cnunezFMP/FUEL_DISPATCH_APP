@@ -28,6 +28,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<ComsuptionByMonth> ComsuptionByMonth { get; set; }
     public virtual DbSet<Dispenser> Dispenser { get; set; }
     public virtual DbSet<Driver> Driver { get; set; }
+
     public virtual DbSet<EmployeeConsumptionLimits> EmployeeConsumptionLimits { get; set; }
     public virtual DbSet<Generation> Generation { get; set; }
     public virtual DbSet<Make> Make { get; set; }
@@ -175,16 +176,20 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.ToTable("Driver");
 
             entity.HasMany(r => r.DriverMethodsOfComsuption)
-            .WithMany(d => d.Drivers)
-            .UsingEntity<EmployeeConsumptionLimits>(x => x.HasOne(x => x.DriverMethodOfComsuption)
-            .WithMany().HasForeignKey(x => x.DriverMethodOfComsuptionId),
+                .WithMany(d => d.Drivers)
+                .UsingEntity<EmployeeConsumptionLimits>(x => x.HasOne(x => x.DriverMethodOfComsuption)
+                .WithMany().HasForeignKey(x => x.DriverMethodOfComsuptionId),
             x => x.HasOne(x => x.Driver)
-            .WithMany()
-            .HasForeignKey(x => x.DriverId));
+                .WithMany()
+                .HasForeignKey(x => x.DriverId));
+
+            entity.HasOne(r => r.Company)
+                .WithMany(x => x.Drivers)
+                .HasForeignKey(x => x.CompanyId);
 
             entity.HasOne(x => x.BranchOffice)
-            .WithMany(x => x.Drivers)
-            .HasForeignKey(x => x.BranchOfficeId);
+                .WithMany(x => x.Drivers)
+                .HasForeignKey(x => x.BranchOfficeId);
         });
         modelBuilder.Entity<EmployeeConsumptionLimits>(entity =>
         {

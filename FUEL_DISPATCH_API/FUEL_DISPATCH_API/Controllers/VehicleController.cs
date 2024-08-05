@@ -56,11 +56,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Vehicle>> UpdateVehicle(int id, [FromBody] Vehicle vehicle)
         {
-            var result = _vehicleValidator.Validate(vehicle);
-            if (!result.IsValid)
-            {
-                return ValidationProblem(ModelStateResult.GetModelStateDic(result));
-            }
+            //var result = _vehicleValidator.Validate(vehicle);
+            //if (!result.IsValid)
+            //{
+            //    return ValidationProblem(ModelStateResult.GetModelStateDic(result));
+            //}
             vehicle.UpdatedAt = DateTime.Now;
             vehicle.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return Ok(_vehicleServices.Update(x => x.Id == id, vehicle));

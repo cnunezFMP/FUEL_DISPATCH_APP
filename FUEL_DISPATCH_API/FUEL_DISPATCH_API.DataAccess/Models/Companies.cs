@@ -40,5 +40,6 @@ public partial class Companies
     [JsonIgnore] public virtual ICollection<User>? Users { get; set; } = new List<User>();
     [JsonIgnore] public virtual ICollection<WareHouse>? WareHouses { get; set; } = new List<WareHouse>();
     [JsonIgnore] public virtual ICollection<UsersCompanies>? UsersCompanies { get; set; } = new List<UsersCompanies>();
+    [JsonIgnore] public virtual ICollection<Driver> Drivers { get; set; } = new List<Driver>();
     [JsonIgnore] public virtual ICollection<BranchOffices>? BranchOffices { get; set; } = new List<BranchOffices>();
 }

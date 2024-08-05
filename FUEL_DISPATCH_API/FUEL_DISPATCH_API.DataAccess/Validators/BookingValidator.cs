@@ -13,7 +13,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             RuleFor(x => x)
                 .Must(bookingServices.VerifyDisponibility)
                 .WithMessage("The vehicle is already reserved for these dates. ");
-            RuleFor(x => x.DriverId)
+            RuleFor(x => x)
                 .NotEmpty()
                 .NotNull()
                 .Must(bookingServices.CheckDriver)

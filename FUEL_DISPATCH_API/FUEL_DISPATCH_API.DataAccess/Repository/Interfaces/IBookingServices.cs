@@ -10,9 +10,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
     public interface IBookingServices : IGenericInterface<Booking>
     {
+        
         bool VerifyDisponibility(Booking booking);
         bool CheckVehicle(Booking booking);
-        bool CheckDriver(int driverId);
+        bool CheckDriver(Booking driverId);
         bool VehicleHasDriverAssigned(Booking booking);
     }
 }

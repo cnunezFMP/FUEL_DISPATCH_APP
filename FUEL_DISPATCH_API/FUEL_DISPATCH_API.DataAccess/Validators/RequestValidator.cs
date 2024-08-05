@@ -1,15 +1,14 @@
 ﻿using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.Utils.Constants;
 
 namespace FUEL_DISPATCH_API.DataAccess.Validators
 {
     public class RequestValidator : AbstractValidator<WareHouseMovementRequest>
     {
         // DONE: Hacer las validaciones para las entidades en los servicios de Request.
-        public RequestValidator(IBookingServices bookingServices,
-            IWareHouseMovementServices wareHouseMovementServices,
-            IRequestServices requestServices)
+        public RequestValidator(IRequestServices requestServices)
         {
             RuleSet("WareHouses", () =>
             {
@@ -23,18 +22,25 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
                 .NotEqual(0)
                 .When(x => x.Type is MovementsTypesEnum.Transferencia);
             });
-            RuleFor(x => x.DriverId)
-                .Must(bookingServices.CheckDriver)
+
+            RuleFor(x => x)
+                .Must(requestServices.CheckDriver)
                 .WithMessage("Drive doesn't exist or is unavailable. "); ;
 
-            RuleFor(x => x.VehicleId)
-                .Must(wareHouseMovementServices.CheckVehicle)
+            // DONE: Hacer nativo el servicio. 
+            RuleFor(x => x)
+                .Must(x => requestServices.CheckVehicle(x))
                 .WithMessage("The vehicle is inactive or unavailable. ");
 
             RuleFor(x => x)
                 .Must(requestServices.CheckIfWareHousesHasActiveStatus)
                 .WithMessage("WareHouse in not active. ");
 
+            RuleFor(x => x.Qty).Must(x => x > ValidationConstants.ZeroGallons);
+
+            RuleFor(x => x)
+                .Must(requestServices.CheckVehicle)
+                .WithMessage("The vehicle may be inactive or unavailable. ");
         }
     }
 }

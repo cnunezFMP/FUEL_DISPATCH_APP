@@ -6,3 +6,5 @@
 // NOTE: No la añadi, pero verifico que no se pueda repetir el mismo usuario en la misma sucursal.
 // DONE: Publicar los cambios en el server.
 // DONE: Arreglar el scrapper de los vehiculos. 
+// DONE: Verificar la compañia y sucursal en EmployeeConsumptionLimits. (Si no lo estoy haciendo)
+// TODO: Programar el saldo de los empleados.
