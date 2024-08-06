@@ -20,6 +20,6 @@ namespace FUEL_DISPATCH_API.Utils.Constants
         public const string CanceledStatus = "Canceled";
         public const int CreditCardMethod = 1;
         public const int GallonsMethod = 2;
-        public const int TickecMethod = 3;
+        public const int TicketMethod = 3;
     }
 }

@@ -13,14 +13,21 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     public class ZoneServices : GenericRepository<Zone>, IZoneServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public ZoneServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor) : base(dbContext, httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _DBContext = dbContext;
         }
 
         public bool ZoneCodeMustBeUnique(Zone zone)
         {
-            return !_DBContext.Zone.Any(x => x.Code == zone.Code);
+            string? companyId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+
+
+            return !_DBContext.Zone.Any(x => x.Code == zone.Code &&
+            x.CompanyId == int.Parse(companyId));
         }
     }
 }

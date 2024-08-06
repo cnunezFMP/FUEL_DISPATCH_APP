@@ -2,6 +2,7 @@
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.DataAccess.Services;
 using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
@@ -11,7 +12,7 @@ using System.Security.Claims;
 namespace FUEL_DISPATCH_API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]"), Authorize]
     public class WareHouseController : ControllerBase
     {
         private readonly IWareHouseServices _wareHouseServices;
@@ -22,8 +23,8 @@ namespace FUEL_DISPATCH_API.Controllers
             _wareHouseServices = wareHouseServices;
             _wareHouseValidator = wareHouseValidator;
         }
-        [HttpGet, Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<Paging<WareHouse>>> GetWareHouses([FromQuery] GridifyQuery query)
+        [HttpGet, Authorize]
+        public async Task<ActionResult<ResultPattern<Paging<WareHouse>>>> GetWareHouses([FromQuery] GridifyQuery query)
         {
             return Ok(_wareHouseServices.GetAll(query));
         }

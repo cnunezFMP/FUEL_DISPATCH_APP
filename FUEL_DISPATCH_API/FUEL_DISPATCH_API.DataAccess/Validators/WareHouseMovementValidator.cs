@@ -8,11 +8,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
     {
         public WareHouseMovementValidator(IWareHouseMovementServices wareHouseMovementServices)
         {
-            RuleFor(x => x.RoadId)
+           /* RuleFor(x => x.RoadId)
                 .NotEmpty()
                 .NotNull()
                 .NotEqual(0)
-                .When(x => x.Type == MovementsTypesEnum.Salida);
+                .When(x => x.Type == MovementsTypesEnum.Salida);*/
             RuleFor(x => x.DispenserId)
                 .NotEmpty()
                 .NotNull()
@@ -35,12 +35,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
                 .NotEqual(0)
                 .When(x => x.Type == MovementsTypesEnum.Salida);
 
-            RuleFor(x => x.Amount)
-                .NotNull()
-                .NotEqual(0)
-                .NotEmpty()
-                .When(x => x.Type == MovementsTypesEnum.Salida &&
-                x.DriverId.HasValue);
+           
 
             RuleFor(x => x.VehicleId)
                 .NotEmpty()

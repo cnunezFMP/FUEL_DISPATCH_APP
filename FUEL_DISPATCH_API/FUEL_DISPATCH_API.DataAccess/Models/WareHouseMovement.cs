@@ -21,9 +21,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public int? FuelMethodOfComsuptionId { get; set; }
         public string? CreatedBy { get; set; }
         public int? DriverId { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
         public string? UpdatedBy { get; set; }
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
         [JsonIgnore] public virtual BranchOffices? BranchOffice { get; set; }
         [JsonIgnore] public virtual Vehicle? Vehicle { get; set; }
         [JsonIgnore] public virtual Driver? Driver { get; set; }

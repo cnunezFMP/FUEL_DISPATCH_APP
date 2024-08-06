@@ -16,11 +16,13 @@ namespace FUEL_DISPATCH_API.Controllers
     public class EmployeeConsumptionLimitsController : ControllerBase
     {
         private readonly IEmployeeComsuptionLimitsServices _employeeComsuptionLimitsServices;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IValidator<EmployeeConsumptionLimits> _validator;
 
-        public EmployeeConsumptionLimitsController(IEmployeeComsuptionLimitsServices employeeComsuptionLimitsServices, IValidator<EmployeeConsumptionLimits> validator)
+        public EmployeeConsumptionLimitsController(IEmployeeComsuptionLimitsServices employeeComsuptionLimitsServices, IValidator<EmployeeConsumptionLimits> validator, IHttpContextAccessor httpContextAccessor)
         {
             _employeeComsuptionLimitsServices = employeeComsuptionLimitsServices;
+            _httpContextAccessor = new HttpContextAccessor();
             _validator = validator;
         }
         [HttpGet, Authorize(Roles = "Administrator")]
@@ -31,7 +33,10 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpDelete("{driverId:int}, {methodId:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<DriverMethodOfComsuption>> DeleteUserCompany(int driverId, int methodId)
         {
-            Func<EmployeeConsumptionLimits, bool> predicate = x => x.DriverId == driverId && x.DriverMethodOfComsuptionId == methodId;
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            Func<EmployeeConsumptionLimits, bool> predicate = x => x.DriverId == driverId && (int)x.DriverMethodOfComsuptionId == methodId;
             return Ok(_employeeComsuptionLimitsServices.Delete(predicate));
         }
         /// <summary>
@@ -65,11 +70,7 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{driverId:int}, {methodId:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<EmployeeConsumptionLimits>> UpdateUserMethod(int driverId, int methodId, EmployeeConsumptionLimits employeeConsumptionLimit)
         {
-            var validationResult = _validator.Validate(employeeConsumptionLimit);
-            if (!validationResult.IsValid)
-            {
-                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            }
+            // TODO: Ver si necesito validar la compañia y la sucursal. Y ver como hacerlo.
             Func<EmployeeConsumptionLimits, bool> predicate = x => x.DriverId == driverId && x.DriverMethodOfComsuptionId == methodId;
             employeeConsumptionLimit.UpdatedAt = DateTime.Now;
             employeeConsumptionLimit.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;

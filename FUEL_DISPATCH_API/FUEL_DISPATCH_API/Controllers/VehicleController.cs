@@ -31,10 +31,7 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{vehicleId:int}/WareHouseMovement"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<Vehicle>>> GetVehicleWareHouseMovements(int vehicleId)
         {
-            string companyId, branchId;
-            companyId = HttpContext.Items["CompanyId"] as string;
-            branchId = HttpContext.Items["BranchOfficeId"] as string;
-            return Ok(_vehicleServices.GetVehicleDispatches(vehicleId, branchId, companyId));
+            return Ok(_vehicleServices.GetVehicleDispatches(vehicleId));
         }
         [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Vehicle>> GetVehicle(int id)

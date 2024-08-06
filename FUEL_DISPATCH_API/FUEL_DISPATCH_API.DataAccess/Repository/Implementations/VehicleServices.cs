@@ -21,6 +21,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public override ResultPattern<Vehicle> Post(Vehicle entity)
         {
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
             if (CheckIfMeasureExists(entity))
                 throw new NotFoundException("The measure doesn't exists. ");
 
@@ -32,35 +35,17 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             if (CheckIfGenerationExists(entity))
                 throw new NotFoundException("Generation not found. ");
-
             if (CheckIfModEngineExists(entity))
                 throw new NotFoundException("Generation not found. ");
-
             DriverIdHasValue(entity);
-
+            entity.CompanyId = int.Parse(companyId);
+            entity.BranchOfficeId = int.Parse(branchId);
             _DBContext.Vehicle.Add(entity);
             _DBContext.SaveChanges();
-            /*if (DriverIdHasValue(entity))
-                CheckAndUpdateDriver(entity);*/
             return ResultPattern<Vehicle>.Success(entity, StatusCodes.Status201Created, "Vehicle created successfully. ");
         }
         public bool DriverIdHasValue(Vehicle entity)
             => _DBContext.Driver.Any(x => x.Id == entity.DriverId);
-        /*public bool CheckAndUpdateDriver(Vehicle entity)
-        {
-            var driver = _DBContext.Driver.FirstOrDefault(x => x.Id == entity.DriverId);
-
-            if (driver!.VehicleId!.HasValue)
-                throw new BadRequestException("This driver has vehicle assigned. ");
-
-            if (driver!.Status == ValidationConstants.InactiveStatus)
-                throw new BadRequestException("This driver is inactive. ");
-
-            driver.VehicleId = entity.Id;
-            _DBContext.Driver.Update(driver);
-            _DBContext.SaveChanges();
-            return true;
-        }*/
         public bool CheckIfMakeExists(Vehicle vehicle)
            => !_DBContext.Make.Any(x => x.Id == vehicle.MakeId);
         public bool CheckIfModelExists(Vehicle vehicle)
@@ -70,25 +55,33 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         public bool CheckIfModEngineExists(Vehicle vehicle)
             => !_DBContext.ModEngine.Any(x => x.Id == vehicle.ModEngineId);
         public bool CheckIfMeasureExists(Vehicle vehicle)
-            => !_DBContext.Measure.Any(x => x.Id == vehicle.OdometerMeasureId);
+            => !_DBContext.Measure.Any(x => x.Id == (int)vehicle.OdometerMeasureId);
         public bool FichaMustBeUnique(Vehicle vehicleToken)
         {
             string? companyId, branchId;
-            new GetUserCompanyAndBranchClass(_httpContextAccessor).GetUserCompanyAndBranch(out companyId, out branchId);
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
             return !_DBContext.Vehicle
                 .Any(x => x.Ficha == vehicleToken.Ficha &&
                 x.CompanyId == Convert.ToInt32(companyId) &&
                 x.BranchOfficeId == Convert.ToInt32(branchId));
         }
         // DONE: Implementar esto en el controlador de Vehicle
-        public ResultPattern<List<WareHouseMovement>> GetVehicleDispatches(int vehicleId, string? branchId, string? companyId)
+        public ResultPattern<List<WareHouseMovement>> GetVehicleDispatches(int vehicleId)
         {
-            var driverDispatches = _DBContext.WareHouseMovement
-                .AsNoTracking()
-                .Where(x => x.VehicleId == vehicleId
-                && x.BranchOfficeId == int.Parse(branchId)
-                && x.BranchOffice!.CompanyId == int.Parse(companyId))
-                .ToList();
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            var driverDispatches = (from t0 in _DBContext.WareHouseMovement
+                                    join t1 in _DBContext.BranchOffices on t0.BranchOfficeId equals int.Parse(branchId)
+                                    join t2 in _DBContext.Companies on t1.CompanyId equals int.Parse(companyId)
+                                    where t0.VehicleId == vehicleId
+                                    select t0)
+                                    .ToList();
+
+
 
             if (!driverDispatches.Any())
                 throw new BadRequestException("This vehicle has no movements or, the vehicle doesn't exist. ");

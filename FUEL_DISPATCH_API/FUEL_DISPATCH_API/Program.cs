@@ -6,6 +6,7 @@ using FUEL_DISPATCH_API.DataAccess.DTOs;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.DataAccess.Services;
 using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Middlewares;
 using FUEL_DISPATCH_API.Swagger;
@@ -33,7 +34,10 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerExamplesFromAssemblyOf<UserSwaggerExample>();
+
+builder.Services.AddSwaggerExamplesFromAssemblyOf<UserSwaggerExample>()
+                .AddSwaggerExamplesFromAssemblyOf<ArticleSwaggerExample>();
+
 builder.Services.AddSwaggerGen(
     info =>
 {
@@ -146,6 +150,7 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IDriversServices, DriversServices>()
                 .AddScoped<IUsersAuth, UsersAuth>()
                 .AddScoped<IUserServices, UsersServices>()
+                .AddScoped<ISAPService, SAPService>()
                 .AddTransient<IEmailSender, EmailSender>();
 #endregion
 // Ignore cycles in the object that is actually serializing.

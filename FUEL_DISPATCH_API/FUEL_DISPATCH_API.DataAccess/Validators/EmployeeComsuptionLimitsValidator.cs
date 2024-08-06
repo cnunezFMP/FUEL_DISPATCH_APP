@@ -10,12 +10,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
         {
             RuleSet("InPost", () =>
             {
-                RuleFor(x => x.DriverId & x.DriverMethodOfComsuptionId).Must((x, _) =>
+                RuleFor(x => x.DriverId & (int)x.DriverMethodOfComsuptionId).Must((x, _) =>
                 {
                     return employeeComsuptionLimitsServices.DriverHasTheMethod
                     (
                         x.DriverId!,
-                        x.DriverMethodOfComsuptionId!
+                        (int)x.DriverMethodOfComsuptionId!
                     );
                 }).WithMessage("This driver has this method assigned. ");
             });

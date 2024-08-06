@@ -20,8 +20,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
         public ResultPattern<List<vw_ActualStock>> GetWareHouseArticles(int wareHouseId, int? articleId)
         {
-            var wareHouse = _DBContext.WareHouse.Find(wareHouseId)
-                ?? throw new NotFoundException("This warehouse doesn't exist. ");
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            var wareHouse = _DBContext.WareHouse.FirstOrDefault(x => x.Id == wareHouseId &&
+            x.CompanyId == int.Parse(companyId) &&
+            x.BranchOfficeId == int.Parse(branchId))
+                ?? throw new NotFoundException("No warehouse found. ");
 
             if (articleId.HasValue)
             {

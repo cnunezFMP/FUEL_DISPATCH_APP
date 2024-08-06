@@ -13,6 +13,5 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
         bool WareHouseExists(WareHouse wareHouse);
         bool BranchOfficeExist(WareHouse wareHouse);
         bool SetWareHouseDir(WareHouse wareHouse);
-        bool SetCompanyId(WareHouse wareHouse);
     }
 }

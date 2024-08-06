@@ -15,7 +15,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
                 .Must((island, _) =>
             {
                 return !branchIslandServices.BranchIslandCodeMustBeUnique(island);
-            });
+            }).WithMessage("A branch island with this code already exist. ");
         }
     }
 }

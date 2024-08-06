@@ -7,7 +7,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
     public interface IVehiclesServices : IGenericInterface<Vehicle>
     {
         bool DriverIdHasValue(Vehicle entity);
-        ResultPattern<List<WareHouseMovement>> GetVehicleDispatches(int vehicleId, string? branchId, string? companyId);
+        ResultPattern<List<WareHouseMovement>> GetVehicleDispatches(int vehicleId);
         bool CheckIfMakeExists(Vehicle vehicle);
         bool CheckIfModelExists(Vehicle vehicle);
         bool CheckIfGenerationExists(Vehicle vehicle);

@@ -20,16 +20,19 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         // DONE: Hacer este servicio para Booking. 
         public bool CheckDriver(Booking book)
         {
-            string? branchOfficeId = _httpContextAccessor.HttpContext?.User.FindFirst("BranchOfficeId")?.Value;
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
             var driverForBook = _DBContext.Driver
                 .AsNoTrackingWithIdentityResolution()
-                .Where(d => d.BranchOfficeId == int.Parse(branchOfficeId))
-                .FirstOrDefault(d => d.Id == book.DriverId)
+                .FirstOrDefault(d => d.Id == book.DriverId &&
+                d.BranchOfficeId == int.Parse(branchId) &&
+                d.CompanyId == int.Parse(companyId))
                 ?? throw new NotFoundException("No driver found. ");
 
-            return (driverForBook!.Status is not ValidationConstants.InactiveStatus
-                && driverForBook!.Status is not ValidationConstants.NotAvailableStatus);
+            return (driverForBook!.Status is not ValidationConstants.InactiveStatus &&
+                    driverForBook!.Status is not ValidationConstants.NotAvailableStatus);
         }
         public bool CheckVehicle(Booking book)
         {
@@ -50,13 +53,26 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool VerifyDisponibility(Booking booking)
             => !_DBContext.Booking.Any(r => r.VehicleId == booking.VehicleId
-                       && r.Status != ValidationConstants.CanceledStatus
+                       && (r.Status != ValidationConstants.CanceledStatus
+                       && r.Status != ValidationConstants.RejectedStatus
+                       && r.Status != ValidationConstants.PendingStatus
+                       && r.Status != ValidationConstants.CompletedStatus)
                        && (booking.SpecificDate <= r.ToSpecificDate
                        && booking.ToSpecificDate >= r.SpecificDate)
                        && r.SpecificDate != booking.SpecificDate);
         public bool VehicleHasDriverAssigned(Booking booking)
         {
-            var vehicleForBook = _DBContext.Vehicle.FirstOrDefault(x => x.Id == booking.VehicleId);
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            var vehicleForBook = _DBContext.Vehicle
+                .FirstOrDefault(x => x.Id == booking.VehicleId &&
+                x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchId)) ??
+                throw new NotFoundException("No vehicle found. ");
+
+
             return !vehicleForBook!.DriverId!.HasValue;
         }
     }

@@ -47,9 +47,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                 var entitiesByCompAndBranch = _DBContext.Set<T>()
                     .AsNoTrackingWithIdentityResolution()
                     .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId!) && EF.Property<int>(x, "BranchOfficeId") == int.Parse(branchId!))
-                    .Gridify(query);
+                    .ApplyFilteringAndOrdering(query);
 
-                return ResultPattern<Paging<T>>.Success(entitiesByCompAndBranch,
+                var responseComBr = new Paging<T>
+                {
+                    Data = entitiesByCompAndBranch,
+                    Count = entitiesByCompAndBranch.Count()
+                };
+
+                return ResultPattern<Paging<T>>.Success(responseComBr,
                                        StatusCodes.Status200OK,
                                        AppConstants.DATA_OBTAINED_MESSAGE);
             }
@@ -59,9 +65,16 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                 var entitiesComp = _DBContext.Set<T>()
                     .AsNoTrackingWithIdentityResolution()
                     .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId!))
-                    .Gridify(query);
+                    .ApplyFilteringAndOrdering(query);
 
-                return ResultPattern<Paging<T>>.Success(entitiesComp,
+
+                var responseComp = new Paging<T>
+                {
+                    Data = entitiesComp,
+                    Count = entitiesComp.Count()
+                };
+
+                return ResultPattern<Paging<T>>.Success(responseComp,
                     StatusCodes.Status200OK,
                     AppConstants.DATA_OBTAINED_MESSAGE);
             }
@@ -71,9 +84,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                 var entitiesBranch = _DBContext.Set<T>()
                     .AsNoTrackingWithIdentityResolution()
                     .Where(x => EF.Property<int>(x, "BranchOfficeId") == int.Parse(branchId!))
-                    .Gridify(query);
+                    .ApplyFilteringAndOrdering(query);
 
-                return ResultPattern<Paging<T>>.Success(entitiesBranch,
+                var responseBran = new Paging<T>
+                {
+                    Data = entitiesBranch,
+                    Count = entitiesBranch.Count()
+                };
+
+                return ResultPattern<Paging<T>>.Success(responseBran,
                     StatusCodes.Status200OK,
                     AppConstants.DATA_OBTAINED_MESSAGE);
             }
@@ -86,9 +105,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                 // Retornar todo
                 var entities = _DBContext.Set<T>()
                     .AsNoTrackingWithIdentityResolution()
-                    .Gridify(query);
+                    .ApplyFilteringAndOrdering(query);
 
-                return ResultPattern<Paging<T>>.Success(entities,
+                var response = new Paging<T>
+                {
+                    Data = entities,
+                    Count = entities.Count()
+                };  
+
+                return ResultPattern<Paging<T>>.Success(response,
                     StatusCodes.Status200OK,
                     AppConstants.DATA_OBTAINED_MESSAGE);
             }

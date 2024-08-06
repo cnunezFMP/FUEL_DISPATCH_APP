@@ -15,7 +15,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
         {
             RuleFor(x => x.APoint).NotEmpty().NotNull();
             RuleFor(x => x.BPoint).NotEmpty().NotNull();
-            RuleFor(x => x.Code).NotEmpty().NotNull().Must((x, _) => roadServices.RoadCodeMustBeUnique(x))
+            RuleFor(x => x)
+                .NotEmpty()
+                .NotNull()
+                .Must(roadServices.RoadCodeMustBeUnique)
                 .WithMessage("Road with same code already exists. ");
         }
     }

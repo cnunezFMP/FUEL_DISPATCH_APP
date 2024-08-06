@@ -89,6 +89,13 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasKey(e => e.Id);
             entity.ToTable("Companies");
             entity.HasMany(x => x.BranchOffices).WithOne(x => x.Company).HasForeignKey(x => x.CompanyId);
+
+            entity.HasOne(x => x.CompanySAPParams)
+                  .WithOne()
+                  .HasForeignKey<CompanySAPParams>(x => x.CompanyId);
+
+            entity.Navigation(x => x.CompanySAPParams)
+                  .AutoInclude();
         });
         modelBuilder.Entity<ComsuptionByDay>(entity =>
         {
@@ -213,7 +220,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Url).HasMaxLength(2000);
 
-            entity.HasOne(d => d.Model).WithMany(p => p.Generations)
+            entity.HasOne(d => d.Model)
+                .WithMany(p => p.Generations)
                 .HasForeignKey(d => d.ModelId);
         });
         modelBuilder.Entity<Make>(entity =>
@@ -221,6 +229,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasKey(e => e.Id);
 
             entity.ToTable("Make");
+
         });
         modelBuilder.Entity<OdometerMeasure>(entity =>
         {
@@ -251,8 +260,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
             entity.ToTable("ModEngine");
 
-            entity.HasOne(d => d.Generation).WithMany(p => p.ModEngines)
-                .HasForeignKey(d => d.GenerationId);
+           
         });
         modelBuilder.Entity<Model>(entity =>
         {
@@ -260,7 +268,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
             entity.ToTable("Model");
 
-            entity.HasOne(d => d.Make).WithMany(p => p.Models)
+            entity.HasOne(d => d.Make)
+                .WithMany(p => p.Models)
                 .HasForeignKey(d => d.MakeId);
         });
         modelBuilder.Entity<Road>(entity =>
@@ -431,7 +440,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         modelBuilder.Entity<Vehicle>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.HasIndex(e => e.Ficha, "U_VToken").IsUnique();
+            entity.HasIndex(e => e.Ficha, "U_VToken")
+                   .IsUnique();
             entity.Property(e => e.AverageConsumption).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.FuelTankCapacity).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.Color)
@@ -454,18 +464,22 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+
             entity.HasOne(d => d.Generation)
-            .WithMany(d => d.Vehicles)
-            .HasForeignKey(d => d.GenerationId);
+                .WithMany(d => d.Vehicles)
+                .HasForeignKey(d => d.GenerationId);
 
-
-            entity.HasOne(d => d.Driver).WithMany(p => p.Vehicles)
+            entity.HasOne(d => d.Driver)
+                .WithMany(p => p.Vehicles)
                 .HasForeignKey(d => d.DriverId);
-            entity.HasOne(d => d.Make).WithMany(p => p.Vehicles)
+
+            entity.HasOne(d => d.Make)
+                .WithMany(p => p.Vehicles)
                 .HasForeignKey(d => d.MakeId);
 
             entity.HasOne(d => d.Measure).WithMany(p => p.Vehicle)
                 .HasForeignKey(d => d.OdometerMeasureId);
+
 
             entity.HasOne(d => d.ModEngine)
                 .WithMany(p => p.Vehicles)
@@ -484,6 +498,12 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(d => d.BranchOffice)
                 .WithMany(x => x.Vehicles)
                 .HasForeignKey(x => x.BranchOfficeId);
+
+            entity.Navigation(x => x.Driver).AutoInclude();
+            entity.Navigation(x => x.Generation).AutoInclude();
+            entity.Navigation(x => x.Make).AutoInclude();
+            entity.Navigation(x => x.ModEngine).AutoInclude();
+            entity.Navigation(x => x.Model).AutoInclude();
         });
         modelBuilder.Entity<Zone>(entity =>
         {
@@ -503,6 +523,14 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .WithMany(x => x.Zones)
             .HasForeignKey(x => x.CompanyId);
         });
+
+        modelBuilder.Entity<CompanySAPParams>(entity =>
+        {
+            entity.ToTable("CompanySAPParams");
+
+            entity.HasKey(x => x.CompanyId);
+        });
+
         OnModelCreatingGeneratedProcedures(modelBuilder);
         OnModelCreatingGeneratedFunctions(modelBuilder);
         OnModelCreatingPartial(modelBuilder);

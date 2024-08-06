@@ -10,7 +10,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
         {
             RuleFor(x => x.Code).NotNull().NotEmpty().Must((dispenser, _) =>
             {
-                return !dispenserServices.DispenserCodeMustBeUnique(dispenser);
+                return dispenserServices.DispenserCodeMustBeUnique(dispenser);
             }).WithMessage("Dispenser with this code already exists. ");
         }
     }

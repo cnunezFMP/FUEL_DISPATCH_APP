@@ -7,12 +7,15 @@ using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Twilio.TwiML.Voice;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class DriversServices : GenericRepository<Driver>, IDriversServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEmailSender _emailSender;
+
         public DriversServices(FUEL_DISPATCH_DBContext dBContext, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
             : base(dBContext, httpContextAccessor)
         {
@@ -34,35 +37,41 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 "Driver added successfully. ");
         }
         public bool CheckIfIdIsUnique(Driver entity)
-            => !_DBContext.Driver.Any(x => x.Identification == entity.Identification);
+        {
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            return !_DBContext.Driver.Any(x => x.Identification == entity.Identification &&
+            x.CompanyId == int.Parse(companyId) &&
+            x.BranchOfficeId == int.Parse(branchId));
+        }
+
         // DONE: Chequear esta validacion. 
         public bool IsEmailUnique(Driver driver)
-            => !_DBContext.Driver.Any(x => x.Email == driver.Email);
-
-        /*public bool VehicleIdHasValue(Driver entity)
-            => _DBContext.Vehicle.Any(x => x.Id == entity.VehicleId);
-        public bool CheckAndUpdateDriver(Driver entity)
         {
-            var vehicle = _DBContext.Vehicle.FirstOrDefault(x => x.Id == entity.VehicleId);
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
-            if (vehicle!.DriverId!.HasValue)
-                throw new BadRequestException("This vehicle has driver assigned. ");
+            return !_DBContext.Driver.Any(x => x.Email == driver.Email &&
+            x.CompanyId == int.Parse(companyId) &&
+            x.BranchOfficeId == int.Parse(branchId));
+        }
 
-            if (vehicle!.Status == ValidationConstants.InactiveStatus)
-                throw new BadRequestException("This vehicle is inactive. ");
-
-            vehicle.DriverId = entity.Id;
-            _DBContext.Vehicle.Update(vehicle);
-            _DBContext.SaveChanges();
-            return true;
-        }*/
         // DONE: Implementar esta funcion en el controlador de Driver
         public ResultPattern<List<WareHouseMovement>> GetDriverDispatches(int driverId)
         {
-            var driverDispatches = _DBContext.WareHouseMovement
-                .AsNoTracking()
-                .Where(x => x.DriverId == driverId)
-                .ToList();
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            var driverDispatches = (from t0 in _DBContext.WareHouseMovement
+                                    join t1 in _DBContext.BranchOffices on t0.BranchOfficeId equals int.Parse(branchId)
+                                    join t2 in _DBContext.Companies on t1.CompanyId equals int.Parse(companyId)
+                                    where t0.DriverId == driverId
+                                    select t0)
+                                   .AsNoTracking()
+                                   .ToList();
 
             if (!driverDispatches.Any())
                 throw new BadRequestException("This driver don't has movements registered. ");

@@ -8,3 +8,5 @@
 // DONE: Arreglar el scrapper de los vehiculos. 
 // DONE: Verificar la compañia y sucursal en EmployeeConsumptionLimits. (Si no lo estoy haciendo)
 // TODO: Programar el saldo de los empleados.
+// TODO: Poner BranchId y CompanyId en las entidades que lo requieran mediante el middleware.
+// TODO: Chequear las validaciones en los PUT.

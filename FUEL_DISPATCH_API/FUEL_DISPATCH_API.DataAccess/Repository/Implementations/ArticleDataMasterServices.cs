@@ -17,17 +17,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
         }
-        /*public ResultPattern<ArticleDataMaster> GetByCode(string code)
-        {
-            string? companyId, branchId;
-            new GetUserCompanyAndBranchClass(_httpContextAccessor).GetUserCompanyAndBranch(out companyId, out branchId);
-            var article = _DBContext.ArticleDataMaster
-                .FirstOrDefault(x => x.ArticleNumber == code &&
-                x.CompanyId == Convert.ToInt32(companyId))
-                ?? throw new NotFoundException("No article find for this code. ");
-
-            return ResultPattern<ArticleDataMaster>.Success(article, StatusCodes.Status200OK, "Article obtained succesfully. ");
-        }*/
 
         public bool IsArticleUnique(ArticleDataMaster articleDataMaster)
         {
@@ -40,8 +29,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
         public ResultPattern<ArticleDataMaster> GetByCode(string code)
         {
-            string? companyId, branchId;
-            new GetUserCompanyAndBranchClass(_httpContextAccessor).GetUserCompanyAndBranch(out companyId, out branchId);
+            string? companyId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
 
             var article = _DBContext.ArticleDataMaster
                 .FirstOrDefault(x => x.ArticleNumber == code

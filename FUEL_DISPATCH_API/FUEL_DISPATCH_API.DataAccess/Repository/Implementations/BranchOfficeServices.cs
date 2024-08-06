@@ -21,6 +21,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext = dbContext;
         }
         public bool BranchCodeMustBeUnique(BranchOffices branchOffice)
-            => _DBContext.Road.Any(x => x.Code == branchOffice.Code);
+        {
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            return !_DBContext.BranchOffices.Any(x => x.Code == branchOffice.Code &&
+            x.CompanyId == int.Parse(companyId));
+        }
+
     }
 }

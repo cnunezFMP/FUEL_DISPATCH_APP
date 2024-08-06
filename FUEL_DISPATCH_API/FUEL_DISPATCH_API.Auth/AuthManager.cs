@@ -27,14 +27,14 @@ public class AuthManager
         {
 
             var companyId = _dbContext.UsersCompanies
-                            .Where(uc => uc.UserId == credenciales.Id)
-                            .Select(uc => uc.CompanyId)
-                            .FirstOrDefault();
+                           .Where(uc => uc.UserId == credenciales.Id)
+                           .Select(uc => uc.CompanyId)
+                           .FirstOrDefault();
 
             var branchId = _dbContext.UsersBranchOffices
-                            .Where(uc => uc.UserId == credenciales.Id)
-                            .Select(uc => uc.BranchOfficeId)
-                            .FirstOrDefault();
+                           .Where(uc => uc.UserId == credenciales.Id)
+                           .Select(uc => uc.BranchOfficeId)
+                           .FirstOrDefault();
 
             var userFullName = credenciales.FullName;
 
