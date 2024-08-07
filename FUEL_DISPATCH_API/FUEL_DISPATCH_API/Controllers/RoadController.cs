@@ -37,11 +37,10 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Road>> PostRoad([FromBody] Road road)
         {
-            //var validationResult = _roadValidator.Validate(road);
-            //if (!validationResult.IsValid)
-            //{
-            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            //}
+            var validationResult = _roadValidator.Validate(road);
+            if (!validationResult.IsValid)
+                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+
             road.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             road.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return CreatedAtAction(nameof(GetRoad), new { id = road.Id }, _roadServices.Post(road));

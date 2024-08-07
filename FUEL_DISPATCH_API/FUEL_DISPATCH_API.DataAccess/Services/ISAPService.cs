@@ -5,14 +5,8 @@ using FUEL_DISPATCH_API.Utils.Exceptions;
 using Microsoft.AspNetCore.Http;
 using RestSharp;
 using RestSharp.Serializers.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace FUEL_DISPATCH_API.DataAccess.Services
 {
@@ -23,27 +17,26 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
 
     public class SAPService : ISAPService
     {
-        private static JsonSerializerOptions JsonSerializerOptions => new()
+        private static JsonSerializerOptions JsonSerializerOptions
+            => new()
         {
             PropertyNamingPolicy = null,
             PropertyNameCaseInsensitive = true,
             ReferenceHandler = ReferenceHandler.IgnoreCycles,
             NumberHandling = JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString
         };
-
         private RestClient? _restClient;
-
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICompaniesServices _companiesService;
         private readonly FUEL_DISPATCH_DBContext dbContext;
-
-        public SAPService(IHttpContextAccessor contextAccessor, ICompaniesServices companiesServices, FUEL_DISPATCH_DBContext dbContext)
+        public SAPService(IHttpContextAccessor contextAccessor,
+                          ICompaniesServices companiesServices,
+                          FUEL_DISPATCH_DBContext dbContext)
         {
             _httpContextAccessor = contextAccessor;
             _companiesService = companiesServices;
             this.dbContext = dbContext;
         }
-
         private async Task<LoginResponse> Login(CompanySAPParams sapParams)
         {
             _restClient ??= new RestClient(sapParams.ServiceLayerURL, c => c.RemoteCertificateValidationCallback = (a, b, c, d) => true, configureSerialization: s => s.UseSystemTextJson(JsonSerializerOptions));
@@ -69,7 +62,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
 
             throw new BadRequestException(errorResponse.Error?.Message?.Value ?? "Invalid Response");
         }
-
         public async Task PostGenExit(WareHouseMovement whsMovement)
         {
             var companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString()

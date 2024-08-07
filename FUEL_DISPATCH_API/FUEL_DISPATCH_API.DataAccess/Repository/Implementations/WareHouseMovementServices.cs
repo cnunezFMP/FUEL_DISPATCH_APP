@@ -52,12 +52,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext.WareHouseMovement.Add(wareHouseMovement);
             _DBContext.SaveChanges();
 
-
             // SAP POST
             //if (wareHouseMovement.Type is MovementsTypesEnum.Salida)
             //    PostSAP(wareHouseMovement).Wait();
 
-            return ResultPattern<WareHouseMovement>.Success(wareHouseMovement, StatusCodes.Status201Created, "Registered dispatch. ");
+
+            return ResultPattern<WareHouseMovement>.Success(wareHouseMovement, 
+                StatusCodes.Status201Created, 
+                "Registered dispatch. ");
         }
         #region Logic
         public bool SetDriverIdByVehicle(WareHouseMovement wareHouseMovement)
@@ -100,11 +102,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 .FirstOrDefault(v => v.Id == wareHouseMovement.VehicleId)
                 ?? throw new NotFoundException("No vehicle found. ");
 
-            if (vehicleForDispatch!.WareHouseMovements.Any())
-            {
-                if (CheckPreviousVehicleDispatch(wareHouseMovement))
-                    throw new BadRequestException("The odometer is equal or less than the previous dispatch.");
-            }
+            //if (vehicleForDispatch!.WareHouseMovements.Any())
+            //{
+            //    if (CheckPreviousVehicleDispatch(wareHouseMovement))
+            //        throw new BadRequestException("The odometer is equal or less than the previous dispatch.");
+            //}
             return false;
         }
         public bool QtyCantBeZero(WareHouseMovement wareHouseMovement)
