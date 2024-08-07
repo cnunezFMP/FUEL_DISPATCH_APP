@@ -57,11 +57,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<EmployeeConsumptionLimits>> SetEmployeLimitAndMethod([FromBody] EmployeeConsumptionLimits employeeConsumption)
         {
-            var validationResult = _validator.Validate(employeeConsumption, options => options.IncludeRuleSets("InPost"));
-            if (!validationResult.IsValid)
-            {
-                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            }
+            //var validationResult = _validator.Validate(employeeConsumption, options => options.IncludeRuleSets("InPost"));
+            //if (!validationResult.IsValid)
+            //{
+            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            //}
             employeeConsumption.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             employeeConsumption.CreatedAt = DateTime.Now;
             return Ok(_employeeComsuptionLimitsServices.Post(employeeConsumption));

@@ -67,11 +67,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Driver>> PostDriver([FromBody] Driver driver)
         {
-            var validationResult = _driverValidator.Validate(driver);
-            if (!validationResult.IsValid)
-            {
-                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            }
+            //var validationResult = _driverValidator.Validate(driver);
+            //if (!validationResult.IsValid)
+            //{
+            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            //}
             driver.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             driver.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return CreatedAtAction(nameof(GetDriver), new { id = driver.Id }, _driverServices.Post(driver));

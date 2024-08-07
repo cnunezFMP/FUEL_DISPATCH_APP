@@ -37,11 +37,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<BranchIsland>> PostBranchIsland([FromBody] BranchIsland branchIsland)
         {
-            var validationResult = _branchIslandValidator.Validate(branchIsland);
-            if (!validationResult.IsValid)
-            {
-                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            }
+            //var validationResult = _branchIslandValidator.Validate(branchIsland);
+            //if (!validationResult.IsValid)
+            //{
+            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            //}
             branchIsland.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             branchIsland.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return CreatedAtAction(nameof(GetBranchIsland), new { id = branchIsland.Id }, _branchIslandServices.Post(branchIsland));

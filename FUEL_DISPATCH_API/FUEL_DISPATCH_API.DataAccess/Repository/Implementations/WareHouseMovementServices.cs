@@ -16,7 +16,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ISAPService sapService;
 
-        public WareHouseMovementServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor, ISAPService sapService)
+        public WareHouseMovementServices(FUEL_DISPATCH_DBContext dbContext,
+            IHttpContextAccessor httpContextAccessor, ISAPService sapService)
             : base(dbContext, httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -45,14 +46,16 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             {
                 CalculateAmountForDispatch(wareHouseMovement);
             }
-            NoEnoughAmount(wareHouseMovement);
+            // NoEnoughAmount(wareHouseMovement);
             UpdateVehicleOdometer(wareHouseMovement);
             wareHouseMovement.BranchOfficeId = int.Parse(branchId);
             _DBContext.WareHouseMovement.Add(wareHouseMovement);
             _DBContext.SaveChanges();
 
-            if (wareHouseMovement.Type is MovementsTypesEnum.Salida)
-                PostSAP(wareHouseMovement).Wait();
+
+            // SAP POST
+            //if (wareHouseMovement.Type is MovementsTypesEnum.Salida)
+            //    PostSAP(wareHouseMovement).Wait();
 
             return ResultPattern<WareHouseMovement>.Success(wareHouseMovement, StatusCodes.Status201Created, "Registered dispatch. ");
         }

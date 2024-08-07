@@ -36,11 +36,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<WareHouse>> PostWareHouse([FromBody] WareHouse warehouse)
         {
-            var validationResult = _wareHouseValidator.Validate(warehouse);
-            if (!validationResult.IsValid)
-            {
-                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            }
+            //var validationResult = _wareHouseValidator.Validate(warehouse);
+            //if (!validationResult.IsValid)
+            //{
+            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            //}
             warehouse.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             warehouse.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return CreatedAtAction(nameof(GetWareHouse), new { id = warehouse.Id }, _wareHouseServices.Post(warehouse));

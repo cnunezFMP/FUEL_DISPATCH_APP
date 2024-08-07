@@ -39,11 +39,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Dispenser>> PostDispenser([FromBody] Dispenser dispenser)
         {
-            var validationResult = _dispenserValidator.Validate(dispenser);
-            if (!validationResult.IsValid)
-            {
-                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            }
+            //var validationResult = _dispenserValidator.Validate(dispenser);
+            //if (!validationResult.IsValid)
+            //{
+            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            //}
             dispenser.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             dispenser.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return CreatedAtAction(nameof(GetDispenser), new { id = dispenser.Id }, _dispenserServices.Post(dispenser));

@@ -36,11 +36,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<BranchOffices>> PostBranchOffice([FromBody] BranchOffices branchOffice)
         {
-            var validationResult = _branchOfficeValidator.Validate(branchOffice);
-            if (!validationResult.IsValid)
-            {
-                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            }
+            //var validationResult = _branchOfficeValidator.Validate(branchOffice);
+            //if (!validationResult.IsValid)
+            //{
+            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            //}
             branchOffice.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             branchOffice.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             // DONE: Fix this, currently throws exception 'InvalidOperationException: No route matches the supplied values.'

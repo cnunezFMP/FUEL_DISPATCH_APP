@@ -8,11 +8,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
     {
         public WareHouseMovementValidator(IWareHouseMovementServices wareHouseMovementServices)
         {
-           /* RuleFor(x => x.RoadId)
-                .NotEmpty()
-                .NotNull()
-                .NotEqual(0)
-                .When(x => x.Type == MovementsTypesEnum.Salida);*/
+            /* RuleFor(x => x.RoadId)
+                 .NotEmpty()
+                 .NotNull()
+                 .NotEqual(0)
+                 .When(x => x.Type == MovementsTypesEnum.Salida);*/
             RuleFor(x => x.DispenserId)
                 .NotEmpty()
                 .NotNull()
@@ -35,19 +35,17 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
                 .NotEqual(0)
                 .When(x => x.Type == MovementsTypesEnum.Salida);
 
-           
-
             RuleFor(x => x.VehicleId)
                 .NotEmpty()
                 .NotNull()
                 .NotEqual(0)
                 .When(x => x.Type == MovementsTypesEnum.Salida);
 
-            RuleFor(x => x.FuelMethodOfComsuptionId)
-                .NotEmpty()
-                .NotNull()
-                .NotEqual(0)
-                .When(x => x.Type == MovementsTypesEnum.Salida && x.DriverId.HasValue);
+            //RuleFor(x => x.FuelMethodOfComsuptionId)
+            //    .NotEmpty()
+            //    .NotNull()
+            //    .NotEqual(0)
+            //    .When(x => x.Type == MovementsTypesEnum.Salida && x.DriverId.HasValue);
             RuleFor(x => x).Must(x =>
             {
                 // DONE: Corregir(CheckVehicle). Pasar el objeto, y no el VehicleId.
@@ -100,7 +98,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
                 return !wareHouseMovementServices.WillStockFallMaximun(wareHouseMovement);
             }).When(x => x.Type is MovementsTypesEnum.Entrada ||
             x.Type is MovementsTypesEnum.Transferencia).WithMessage("The input quantity will exceed the maximum warehouse quantity. ");
-            
+
 
         }
     }

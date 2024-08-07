@@ -146,6 +146,11 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(e => e.ArticleDataMaster)
             .WithMany(e => e.WareHouseMovements)
             .HasForeignKey(f => f.ItemId);
+
+            entity.Navigation(x => x.Vehicle).AutoInclude();
+            entity.Navigation(x => x.Dispenser).AutoInclude();
+            entity.Navigation(x => x.WareHouse).AutoInclude();
+            entity.Navigation(x => x.ArticleDataMaster).AutoInclude();
         });
         modelBuilder.Entity<WareHouse>(entity =>
         {
@@ -260,7 +265,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
             entity.ToTable("ModEngine");
 
-           
+
         });
         modelBuilder.Entity<Model>(entity =>
         {

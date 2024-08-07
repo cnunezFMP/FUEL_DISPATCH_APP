@@ -45,11 +45,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<ArticleDataMaster>> PostArticle([FromBody] ArticleDataMaster article)
         {
-            var validationResult = _validator.Validate(article);
-            if (!validationResult.IsValid)
-            {
-                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            }
+            //var validationResult = _validator.Validate(article);
+            //if (!validationResult.IsValid)
+            //{
+            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            //}
             article.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             article.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return CreatedAtAction(nameof(GetArticle), new { id = article.Id }, _articleServices.Post(article));

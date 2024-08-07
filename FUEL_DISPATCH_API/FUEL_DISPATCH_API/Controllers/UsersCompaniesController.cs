@@ -73,10 +73,10 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<UsersCompanies>> SetUsersCompany([FromBody] UsersCompanies usersCompany)
         {
-            var validationResult = _validator.Validate(usersCompany);
+            //var validationResult = _validator.Validate(usersCompany);
 
-            if (!validationResult.IsValid)
-                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            //if (!validationResult.IsValid)
+            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
 
             usersCompany.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             usersCompany.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

@@ -38,11 +38,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize(Roles = "Administrator, Dispatcher")]
         public ActionResult<ResultPattern<WareHouseMovement>> PostMovement([FromBody] WareHouseMovement wareHouseMovement)
         {
-            var validationResult = _wareHouseMovementValidator.Validate(wareHouseMovement);
-            if (!validationResult.IsValid)
-            {
-                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            }
+            //var validationResult = _wareHouseMovementValidator.Validate(wareHouseMovement);
+            //if (!validationResult.IsValid)
+            //{
+            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            //}
             wareHouseMovement.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             wareHouseMovement.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return CreatedAtAction(nameof(GetMovement), new { id = wareHouseMovement.Id }, _wareHouseMovementServices.Post(wareHouseMovement));

@@ -37,10 +37,10 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<UsersBranchOffices>> SetUsersBranchOffices([FromBody] UsersBranchOffices usersBranchOffice)
         {
-            var validationResult = _validator.Validate(usersBranchOffice);
+            //var validationResult = _validator.Validate(usersBranchOffice);
 
-            if (!validationResult.IsValid)
-                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            //if (!validationResult.IsValid)
+            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
 
             usersBranchOffice.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             usersBranchOffice.CreatedAt = DateTime.Now;
