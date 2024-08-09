@@ -28,7 +28,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<ComsuptionByMonth> ComsuptionByMonth { get; set; }
     public virtual DbSet<Dispenser> Dispenser { get; set; }
     public virtual DbSet<Driver> Driver { get; set; }
-
+    public virtual DbSet<Part> Part { get; set; }
+    public virtual DbSet<Maintenance> Maintenance { get; set; }
     public virtual DbSet<EmployeeConsumptionLimits> EmployeeConsumptionLimits { get; set; }
     public virtual DbSet<Generation> Generation { get; set; }
     public virtual DbSet<Make> Make { get; set; }
@@ -264,9 +265,17 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasKey(e => e.Id);
 
             entity.ToTable("ModEngine");
-
+        });
+        modelBuilder.Entity<Part>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.ToTable("Part");
+            entity.HasOne(x => x.Company)
+            .WithMany(x => x.Parts)
+            .HasForeignKey(x => x.CompanyId);
 
         });
+
         modelBuilder.Entity<Model>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -276,6 +285,20 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(d => d.Make)
                 .WithMany(p => p.Models)
                 .HasForeignKey(d => d.MakeId);
+        });
+        modelBuilder.Entity<Maintenance>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.ToTable("Maintenance");
+            entity.HasOne(x => x.Vehicle)
+            .WithMany(x => x.Maintenances)
+            .HasForeignKey(x => x.VehicleId);
+            entity.HasOne(x => x.Part)
+            .WithMany(x => x.Maintenances)
+            .HasForeignKey(x => x.PartId);
+            entity.HasOne(x => x.Part)
+            .WithMany(x => x.Maintenances)
+            .HasForeignKey(x => x.PartId);
         });
         modelBuilder.Entity<Road>(entity =>
         {

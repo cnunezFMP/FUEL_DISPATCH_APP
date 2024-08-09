@@ -18,17 +18,20 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
                 .NotNull()
                 .NotEqual(0)
                 .When(x => x.Type == MovementsTypesEnum.Salida);
-
             RuleFor(x => x.Odometer)
                 .NotEmpty()
                 .NotNull()
                 .NotEqual(0)
-                .When(x => x.Type == MovementsTypesEnum.Salida);
+                .Must((x, _) =>
+                {
+                    return wareHouseMovementServices.CheckPreviousVehicleDispatch(x);
+                });
             RuleFor(x => x.ToWareHouseId)
                 .NotEmpty()
                 .NotNull()
                 .NotEqual(0)
                 .When(x => x.Type == MovementsTypesEnum.Transferencia);
+
             RuleFor(x => x.DriverId)
                 .NotEmpty()
                 .NotNull()
@@ -46,12 +49,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             //    .NotNull()
             //    .NotEqual(0)
             //    .When(x => x.Type == MovementsTypesEnum.Salida && x.DriverId.HasValue);
-            RuleFor(x => x).Must(x =>
-            {
-                // DONE: Corregir(CheckVehicle). Pasar el objeto, y no el VehicleId.
-                return wareHouseMovementServices.CheckVehicle(x);
-            }).WithMessage("{PropertyName} is inactive or unavailable. ")
-              .When(x => x.VehicleId.HasValue);
+            RuleFor(x => x).Must(wareHouseMovementServices.CheckVehicle)
+                .WithMessage("{PropertyName} is inactive or unavailable. ")
+                .When(x => x.VehicleId.HasValue);
+
+
             RuleFor(x => x.Qty).Must((qty, _) =>
             {
                 return wareHouseMovementServices.QtyCantBeZero(qty);

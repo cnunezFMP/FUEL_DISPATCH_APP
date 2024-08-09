@@ -7,6 +7,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public int Id { get; set; }
         public int? VehicleId { get; set; }
         public int? RoadId { get; set; }
+        [Required] public string Dispatcher { get; set; }
         [Required] public int ItemId { get; set; }
         [Required] public int BranchOfficeId { get; set; }
         public int? DispenserId { get; set; }
@@ -25,7 +26,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
         [JsonIgnore] public virtual BranchOffices? BranchOffice { get; set; }
-         public virtual Vehicle? Vehicle { get; set; }
+        public virtual Vehicle? Vehicle { get; set; }
         [JsonIgnore] public virtual Driver? Driver { get; set; }
         [JsonIgnore] public virtual Road? Road { get; set; }
         [JsonIgnore] public virtual WareHouseMovementRequest? Request { get; set; }

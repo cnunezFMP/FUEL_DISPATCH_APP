@@ -111,7 +111,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                 {
                     Data = entities,
                     Count = entities.Count()
-                };  
+                };
 
                 return ResultPattern<Paging<T>>.Success(response,
                     StatusCodes.Status200OK,
@@ -170,6 +170,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
         // UNDONE: Buscar alguna forma de que no se actualicen las propiedades que no envio en los PUT.
         public virtual ResultPattern<T> Update(Func<T, bool> predicate, T updatedEntity)
         {
+            // TODO: Buscar el objeto por compañia y sucursal. 
             var entityToUpdate = _DBContext.Set<T>().FirstOrDefault(predicate)
                 ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
             _DBContext.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);

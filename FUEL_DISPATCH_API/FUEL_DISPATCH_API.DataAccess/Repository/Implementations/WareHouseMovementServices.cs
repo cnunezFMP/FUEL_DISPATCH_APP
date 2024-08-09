@@ -40,7 +40,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if (wareHouseMovement.VehicleId.HasValue)
             {
                 SetDriverIdByVehicle(wareHouseMovement);
-                VehicleHasMovements(wareHouseMovement);
+                // VehicleHasMovements(wareHouseMovement);
             }
             if (wareHouseMovement.Type is MovementsTypesEnum.Salida)
             {
@@ -57,8 +57,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             //    PostSAP(wareHouseMovement).Wait();
 
 
-            return ResultPattern<WareHouseMovement>.Success(wareHouseMovement, 
-                StatusCodes.Status201Created, 
+            return ResultPattern<WareHouseMovement>.Success(wareHouseMovement,
+                StatusCodes.Status201Created,
                 "Registered dispatch. ");
         }
         #region Logic
@@ -81,34 +81,34 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             }
             return false;
         }
-        public bool VehicleHasMovements(WareHouseMovement wareHouseMovement)
-        {
-            string? companyId, branchOfficeId;
-            companyId = _httpContextAccessor
-                        .HttpContext?
-                        .Items["CompanyId"]?
-                        .ToString();
+        //public bool VehicleHasMovements(WareHouseMovement wareHouseMovement)
+        //{
+        //    string? companyId, branchOfficeId;
+        //    companyId = _httpContextAccessor
+        //                .HttpContext?
+        //                .Items["CompanyId"]?
+        //                .ToString();
 
-            branchOfficeId = _httpContextAccessor
-                            .HttpContext?
-                            .Items["BranchOfficeId"]?
-                            .ToString();
+        //    branchOfficeId = _httpContextAccessor
+        //                    .HttpContext?
+        //                    .Items["BranchOfficeId"]?
+        //                    .ToString();
 
-            var vehicleForDispatch = _DBContext.Vehicle
-                .Include(x => x.WareHouseMovements)
-                .AsNoTrackingWithIdentityResolution()
-                .Where(x => x.CompanyId == int.Parse(companyId)
-                && x.BranchOfficeId == int.Parse(branchOfficeId))
-                .FirstOrDefault(v => v.Id == wareHouseMovement.VehicleId)
-                ?? throw new NotFoundException("No vehicle found. ");
+        //    var vehicleForDispatch = _DBContext.Vehicle
+        //        .Include(x => x.WareHouseMovements)
+        //        .AsNoTrackingWithIdentityResolution()
+        //        .Where(x => x.CompanyId == int.Parse(companyId)
+        //        && x.BranchOfficeId == int.Parse(branchOfficeId))
+        //        .FirstOrDefault(v => v.Id == wareHouseMovement.VehicleId)
+        //        ?? throw new NotFoundException("No vehicle found. ");
 
-            //if (vehicleForDispatch!.WareHouseMovements.Any())
-            //{
-            //    if (CheckPreviousVehicleDispatch(wareHouseMovement))
-            //        throw new BadRequestException("The odometer is equal or less than the previous dispatch.");
-            //}
-            return false;
-        }
+        //    //if (vehicleForDispatch!.WareHouseMovements.Any())
+        //    //{
+        //    //    if (CheckPreviousVehicleDispatch(wareHouseMovement))
+        //    //        throw new BadRequestException("The odometer is equal or less than the previous dispatch.");
+        //    //}
+        //    return false;
+        //}
         public bool QtyCantBeZero(WareHouseMovement wareHouseMovement)
             => wareHouseMovement.Qty > ValidationConstants.ZeroGallons;
         public bool CheckPreviousVehicleDispatch(WareHouseMovement wareHouseMovement)
@@ -117,14 +117,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
-            var previousDispatch = _DBContext.WareHouseMovement
-                .Where(x => x.VehicleId == wareHouseMovement.VehicleId &&
+            var vehicleForDispatch = _DBContext.Vehicle
+                .Where(x => x.Id == wareHouseMovement.VehicleId &&
                 x.BranchOfficeId == int.Parse(branchOfficeId))
-                .OrderByDescending(x => x.WareHouseId)
                 .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefault();
 
-            return wareHouseMovement.Odometer > previousDispatch!.Odometer;
+            return wareHouseMovement.Odometer > vehicleForDispatch!.Odometer;
         }
         // DONE: Corregir las funciones "CheckVehicle", "CheckDriver".
         public bool CheckVehicle(WareHouseMovement wareHouseMovement)
@@ -410,7 +409,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         public bool UpdateVehicleOdometer(WareHouseMovement wareHouseMovement)
         {
             var vehicle = _DBContext.Vehicle
-                .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefault(x => x.Id == wareHouseMovement.VehicleId);
 
             vehicle!.Odometer = wareHouseMovement.Odometer;

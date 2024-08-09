@@ -50,4 +50,5 @@ public partial class Vehicle
     [JsonIgnore] public virtual ICollection<WareHouseMovementRequest> Requests { get; set; } = new List<WareHouseMovementRequest>();
 
     [JsonIgnore] public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+    [JsonIgnore] public virtual ICollection<Maintenance> Maintenances { get; set; } = new List<Maintenance>();
 }

@@ -35,7 +35,7 @@ namespace FUEL_DISPATCH_API.Controllers
         }
 
         /// <summary>
-        /// Crear un nuevo articulo en un almacen. 
+        /// Crear un nueva parte de vehiculo. 
         /// </summary>
         /// <param name="article"></param>
         /// <response code="201">Si se crea el articulo correctamente. </response>
@@ -56,7 +56,7 @@ namespace FUEL_DISPATCH_API.Controllers
         }
 
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<User>> UpdateArticle(int id, [FromBody] ArticleDataMaster article)
+        public ActionResult<ResultPattern<Part>> UpdateArticle(int id, [FromBody] ArticleDataMaster article)
         {
             //var validationResult = _validator.Validate(article);
             //if (!validationResult.IsValid)

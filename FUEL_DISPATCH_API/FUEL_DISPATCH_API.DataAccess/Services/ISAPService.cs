@@ -7,7 +7,6 @@ using RestSharp;
 using RestSharp.Serializers.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
 namespace FUEL_DISPATCH_API.DataAccess.Services
 {
     public interface ISAPService
@@ -17,8 +16,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
 
     public class SAPService : ISAPService
     {
-        private static JsonSerializerOptions JsonSerializerOptions
-            => new()
+        private static JsonSerializerOptions JsonSerializerOptions => new()
         {
             PropertyNamingPolicy = null,
             PropertyNameCaseInsensitive = true,
@@ -28,14 +26,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
         private RestClient? _restClient;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICompaniesServices _companiesService;
-        private readonly FUEL_DISPATCH_DBContext dbContext;
+        private readonly FUEL_DISPATCH_DBContext _dbContext;
         public SAPService(IHttpContextAccessor contextAccessor,
                           ICompaniesServices companiesServices,
                           FUEL_DISPATCH_DBContext dbContext)
         {
             _httpContextAccessor = contextAccessor;
             _companiesService = companiesServices;
-            this.dbContext = dbContext;
+            _dbContext = dbContext;
         }
         private async Task<LoginResponse> Login(CompanySAPParams sapParams)
         {
@@ -48,15 +46,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
                 Password = sapParams.Password,
                 UserName = sapParams.UserName
             });
-
             var response = await _restClient.ExecuteAsync<LoginResponse>(request);
-
             if (response.IsSuccessful)
             {
                 _restClient.AddDefaultHeader("Cookie", $"B1SESSION={response.Data?.SessionId}");
                 return response.Data!;
             }
-
             var errorResponse = JsonSerializer.Deserialize<ErrorResponseModel>(response.Content ?? "", JsonSerializerOptions)
                 ?? throw new BadRequestException("Invalid Response");
 
@@ -75,10 +70,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
 
             var loginResponse = await Login(company.CompanySAPParams);
 
-            var item = dbContext.ArticleDataMaster.FirstOrDefault(x => x.Id == whsMovement.ItemId && x.CompanyId == int.Parse(companyId))
+            var item = _dbContext.ArticleDataMaster.FirstOrDefault(x => x.Id == whsMovement.ItemId && x.CompanyId == int.Parse(companyId))
                 ?? throw new NotFoundException("Article not found");
 
-            var whs = dbContext.WareHouse.FirstOrDefault(x => x.Id == whsMovement.WareHouseId && x.CompanyId == int.Parse(companyId))
+            var whs = _dbContext.WareHouse.FirstOrDefault(x => x.Id == whsMovement.WareHouseId && x.CompanyId == int.Parse(companyId))
                 ?? throw new NotFoundException("Warehouse not found");
 
             var request = new RestRequest("/InventoryGenExits", Method.Post)
