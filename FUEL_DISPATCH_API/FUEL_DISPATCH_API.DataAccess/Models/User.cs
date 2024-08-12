@@ -4,20 +4,20 @@ using System.Text.Json.Serialization;
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 public partial class User
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
    
     public string? Email { get; set; }
-    [Required] public string FullName { get; set; } = null!;
+    [Required] public string? FullName { get; set; } = null!;
 
-    [Required] public string Username { get; set; } = null!;
+    [Required] public string? Username { get; set; } = null!;
     // TODO: Dto para para cambiar la "Password".
-    [Required, JsonIgnore] public string Password { get; set; } = null!;
+    [Required, JsonIgnore] public string? Password { get; set; } = null!;
 
-    [Required] public string PhoneNumber { get; set; } = null!;
+    [Required] public string? PhoneNumber { get; set; } = null!;
 
-    [Required] public DateTime BirthDate { get; set; }
+    [Required] public DateTime? BirthDate { get; set; }
 
-    public string FullDirection { get; set; } = null!;
+    public string? FullDirection { get; set; } = null!;
 
     public string? CreatedBy { get; set; }
     public DateTime? CreatedAt { get; set; }

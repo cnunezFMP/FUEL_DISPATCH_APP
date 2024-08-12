@@ -2,6 +2,7 @@ using FluentValidation;
 using FMP_DISPATCH_API.Services.Emails;
 using FUEL_DISPATCH_API.Auth;
 using FUEL_DISPATCH_API.Auth.AuthRepository;
+using FUEL_DISPATCH_API.Builders;
 using FUEL_DISPATCH_API.DataAccess.DTOs;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
@@ -11,13 +12,18 @@ using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Middlewares;
 using FUEL_DISPATCH_API.Swagger;
 using FUEL_DISPATCH_API.Swagger.SwaggerExamples;
+using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Console;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 const string swaggerTitle = "FUEL_DISPATCH_API";
@@ -86,6 +92,25 @@ builder.Services.AddAuthentication(config =>
 })
     .AddJwtBearer(config =>
     {
+        // Other configs...
+        config.Events = new JwtBearerEvents
+        {
+            OnChallenge = async context =>
+            {
+                // Call this to skip the default logic and avoid using the default response
+                context.HandleResponse();
+                // Write to the response in any way you wishS
+                // DONE: Ver si puedo enviar un JSON como respuesta.
+                var unauthorizedObj = new
+                {
+                    Title = "User not authenticated. ",
+                    Description = "You are not authorized to perform this action. Please log in to get access.",
+                    Status = StatusCodes.Status401Unauthorized,
+                };
+                await context.Response.WriteAsJsonAsync(unauthorizedObj);
+            }
+        };
+
         config.RequireHttpsMetadata = false;
         config.SaveToken = true;
         config.TokenValidationParameters = new TokenValidationParameters()
@@ -96,6 +121,7 @@ builder.Services.AddAuthentication(config =>
             ValidateAudience = false,
         };
     });
+
 #region ServicesContainers
 builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IValidator<Vehicle>, VehiclesValidator>()
@@ -156,7 +182,9 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddTransient<IEmailSender, EmailSender>();
 #endregion
 // Ignore cycles in the object that is actually serializing.
-builder.Services.AddControllers().AddJsonOptions(option =>
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(option =>
 {
     option.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
@@ -172,6 +200,7 @@ builder.Services.AddCors((options) =>
 });
 var app = builder.Build();
 app.UseExceptionHandler();
+app.UseMiddleware<UnauthorizedMiddleware>();
 # region AuthMiddlewareInLine
 /*app.Use(async (context, next) =>
 {
@@ -212,6 +241,7 @@ app.UseReDoc(c =>
     c.HeadContent = "<img src=\"https://www.fmp.com.do/images/logo/Logo3.png\" alt=\"FMP Logo\">";
 });
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

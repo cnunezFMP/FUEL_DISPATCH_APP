@@ -6,14 +6,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
     public class WareHouseMovementRequest
     {
 
-        public int Id { get; set; } // Primary Key with IDENTITY
-        [Required] public int WareHouseId { get; set; }
+        public int? Id { get; set; } // Primary Key with IDENTITY
+        [Required] public int? WareHouseId { get; set; }
         public int? ToWareHouseId { get; set; }
         public int? DriverId { get; set; }
         [Required] public MovementsTypesEnum? Type { get; set; }   // Salida o Transferencia.
         public int? VehicleId { get; set; }
-        public string Status { get; set; } = ValidationConstants.PendingStatus;
-        [Required] public decimal Qty { get; set; } // Quantity (decimal for precision)
+        public string? Status { get; set; } = ValidationConstants.PendingStatus;
+        [Required] public decimal? Qty { get; set; } // Quantity (decimal for precision)
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public string? UpdatedBy { get; set; }

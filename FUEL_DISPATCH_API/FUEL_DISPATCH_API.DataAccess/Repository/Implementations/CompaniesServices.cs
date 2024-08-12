@@ -5,8 +5,6 @@ using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class CompaniesServices : GenericRepository<Companies>, ICompaniesServices
@@ -17,25 +15,26 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             _DBContext = dbContext;
         }
-        public ResultPattern<List<BranchOffices>> GetCompanyBranchOfficess(int companyId)
+        public ResultPattern<ICollection<BranchOffices>> GetCompanyBranchOfficess(int companyId)
         {
-            // TODO: Buscar porque esta forma no funciona
-            //var company = _DBContext
-            //    .Companies
-            //    .FirstOrDefault(x => x.Id == companyId)
-            //    ?? throw new NotFoundException("This company doesn't exist. ");
+            // DONE: Buscar porque esta forma no funciona
+            var company = _DBContext
+                .Companies
+                .Include(x => x.BranchOffices)
+                .FirstOrDefault(x => x.Id == companyId)
+                ?? throw new NotFoundException("This company doesn't exist. ");
 
-            //if (!company.BranchOffices!.Any())
-            //    throw new BadRequestException("This company don't have branch offices. ");
+            if (!company.BranchOffices!.Any())
+                throw new BadRequestException("This company don't have branch offices. ");
 
-            //return ResultPattern<List<BranchOffices>>.Success
-            //(
-            //    company.BranchOfficess,
-            //    StatusCodes.Status200OK,
-            //    "All company branch offices obtained. "
-            //);
+            return ResultPattern<ICollection<BranchOffices>>.Success
+            (
+                company.BranchOffices!,
+                StatusCodes.Status200OK,
+                "All company branch offices obtained. "
+            );
 
-            var companyBranchOffices = _DBContext.BranchOffices
+            /*var companyBranchOffices = _DBContext.BranchOffices
                 .AsNoTracking()
                 .Where(x => x.CompanyId == companyId)
                 .ToList();
@@ -48,7 +47,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 companyBranchOffices,
                 StatusCodes.Status200OK,
                 "All company branch offices obtained. "
-            );
+            );*/
         }
         //public ResultPattern<Companies> GetCompanyByRnc(string companyRNC)
         //{

@@ -8,7 +8,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models;
 
 public partial class Role
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
     public string? RolName { get; set; }
 
     public string? CreatedBy { get; set; }

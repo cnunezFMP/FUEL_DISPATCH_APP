@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -8,8 +9,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
 {
     public class UsersCompanies
     {
-        public int UserId { get; set; }
-        public int CompanyId { get; set; }
+        [Required] public int UserId { get; set; }
+        [Required] public int CompanyId { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
         public string? UpdatedBy { get; set; }

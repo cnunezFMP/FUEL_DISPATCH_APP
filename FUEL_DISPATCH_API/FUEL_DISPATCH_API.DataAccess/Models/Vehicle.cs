@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 public partial class Vehicle
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
     public string? Ficha { get; set; }
     [Required] public int? MakeId { get; set; }
     [Required] public int? ModelId { get; set; }
@@ -13,7 +13,6 @@ public partial class Vehicle
     [Required] public int? ModEngineId { get; set; }
     public int? DriverId { get; set; }
     public string? Status { get; set; }
-
     public string? CreatedBy { get; set; }
     [Required] public int CompanyId { get; set; }
     [Required] public int BranchOfficeId { get; set; }

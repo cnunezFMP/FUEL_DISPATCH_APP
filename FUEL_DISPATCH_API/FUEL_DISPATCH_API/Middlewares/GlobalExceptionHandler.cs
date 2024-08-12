@@ -8,7 +8,10 @@ namespace FUEL_DISPATCH_API.Middlewares
 {
     public class GlobalExceptionHandler : IExceptionHandler
     {
-        public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
+        public async ValueTask<bool> TryHandleAsync(
+            HttpContext httpContext,
+            Exception exception,
+            CancellationToken cancellationToken)
         {
             ProblemDetails problemDetails = new();
             var exType = exception.GetType();

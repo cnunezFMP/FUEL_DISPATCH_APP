@@ -8,6 +8,7 @@ namespace FUEL_DISPATCH_API.Utils.Exceptions
 {
     public class UnauthorizedException : Exception
     {
-        public UnauthorizedException(string msg) : base(msg) { }
+        public UnauthorizedException(string msg) 
+            : base(msg) { }
     }
 }

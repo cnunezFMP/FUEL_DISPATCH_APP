@@ -6,7 +6,7 @@
     <members>
         <member name="M:FUEL_DISPATCH_API.Controllers.ArticlesController.PostArticle(FUEL_DISPATCH_API.DataAccess.Models.ArticleDataMaster)">
             <summary>
-            Crear un nuevo articulo en un almacen. 
+            Crear un nueva parte de vehiculo. 
             </summary>
             <param name="article"></param>
             <response code="201">Si se crea el articulo correctamente. </response>
@@ -71,6 +71,16 @@
             }
             </remarks>
             <param name="employeeConsumption"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FUEL_DISPATCH_API.Controllers.PartController.PostPart(FUEL_DISPATCH_API.DataAccess.Models.Part)">
+            <summary>
+            Crear un nuevo articulo en un almacen. 
+            </summary>
+            <param name="part"></param>
+            <response code="201">Si se crea el articulo correctamente. </response>
+            <response code="400">Si se intenta agregar un articulo con el codigo de una ya existente. </response>
+            <response code="400">Si se envia el numero de articulo nulo. </response>
             <returns></returns>
         </member>
         <member name="M:FUEL_DISPATCH_API.Controllers.UsersCompaniesController.UpdateUserCompany(System.Int32,System.Int32,FUEL_DISPATCH_API.DataAccess.Models.UsersCompanies)">

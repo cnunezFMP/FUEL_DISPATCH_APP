@@ -8,7 +8,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models;
 
 public partial class ModEngine
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
 
     public string? Name { get; set; }
 
@@ -18,6 +18,6 @@ public partial class ModEngine
 
     public int? GenerationId { get; set; }
 
-    public virtual Generation? Generation { get; set; }
+    [JsonIgnore] public virtual Generation? Generation { get; set; }
     [JsonIgnore] public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
 }

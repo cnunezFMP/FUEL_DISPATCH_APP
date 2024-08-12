@@ -22,9 +22,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<Companies> Companies { get; set; }
 
     public virtual DbSet<UsersCompanies> UsersCompanies { get; set; }
-
     public virtual DbSet<ComsuptionByDay> ComsuptionByDay { get; set; }
-
     public virtual DbSet<ComsuptionByMonth> ComsuptionByMonth { get; set; }
     public virtual DbSet<Dispenser> Dispenser { get; set; }
     public virtual DbSet<Driver> Driver { get; set; }

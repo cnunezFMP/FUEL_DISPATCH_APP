@@ -1,4 +1,7 @@
-﻿namespace FUEL_DISPATCH_API.Middlewares
+﻿using FUEL_DISPATCH_API.Utils.Exceptions;
+using System.Security.Cryptography;
+
+namespace FUEL_DISPATCH_API.Middlewares
 {
     public class AuthMiddleware
     {
@@ -9,9 +12,13 @@
         }
         public async Task InvokeAsync(HttpContext context)
         {
-            // INPROGRESS: Validar los tokens. 
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last() ?? "";
-
+            // DONE: Validar los tokens. 
+            var token = context.Request
+                .Headers["Authorization"]
+                .FirstOrDefault()?
+                .Split(" ")
+                .Last() ??
+                " ";
             var user = context.User;
             if (user.Identity?.IsAuthenticated ??
                 false)

@@ -5,8 +5,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
 {
     public class Part
     {
-        public int Id { get; set; }
-        [Required] public string Name { get; set; }
+        public int? Id { get; set; }
+        [Required] public string? Name { get; set; }
         public string? Description { get; set; }
         public string? Code { get; set; }
 
@@ -14,9 +14,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public string? Model { get; set; }
         public string? CreatedBy { get; set; }
         public string? Manufacturer { get; set; }
-        [Required] public int CompanyId { get; set; }
-        [Required] public decimal MaintenanceOdometerInt { get; set; }
-        [Required] public int MaintenanceMonthsInt { get; set; }
+        [Required] public int? CompanyId { get; set; }
+        [Required] public decimal? MaintenanceOdometerInt { get; set; }
+        [Required] public int? MaintenanceMonthsInt { get; set; }
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;

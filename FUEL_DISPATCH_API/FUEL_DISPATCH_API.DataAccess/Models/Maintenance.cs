@@ -7,20 +7,18 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
     public class Maintenance
     {
         public int? Id { get; set; }
-        [Required] public int VehicleId { get; set; }
-        [Required] public int PartId { get; set; }
-
+        [Required] public int? VehicleId { get; set; }
+        [Required] public int? PartId { get; set; }
         public decimal? CurrentOdometer { get; set; } // Se asignara con el odometer del vehiculo
         [Required] public string? Code { get; set; }
         public decimal? OdometerUpcomingMaintenance { get; set; }
         public string? Status { get; set; } = ValidationConstants.PendingStatus;
         public DateTime? NextMaintenanceDate { get; set; }
         public string? Technician { get; set; }
-
         public string? CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
         public string? UpdatedBy { get; set; }
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
         [JsonIgnore] public virtual Vehicle? Vehicle { get; set; }
         [JsonIgnore] public virtual Part? Part { get; set; }
     }

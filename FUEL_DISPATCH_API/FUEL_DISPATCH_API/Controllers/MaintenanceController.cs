@@ -17,17 +17,17 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             _maintenanceServices = maintenanceServices;
         }
-        [HttpGet]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Maintenance>>> GetMaintenances([FromQuery] GridifyQuery query)
         {
             return Ok(_maintenanceServices.GetAll(query));
         }
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Maintenance>> GetMaintenance(int id)
         {
             return Ok(_maintenanceServices.Get(x => x.Id == id));
         }
-        [HttpPost]
+        [HttpPost, Authorize]
         public ActionResult<ResultPattern<Maintenance>> PostMaintenance([FromBody] Maintenance maintenance)
         {
             _maintenanceServices.SetCurrentOdometerByVehicle(maintenance);
@@ -37,7 +37,7 @@ namespace FUEL_DISPATCH_API.Controllers
             maintenance.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return Created(string.Empty, _maintenanceServices.Post(maintenance));
         }
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Maintenance>> UpdateMaintenance(int id, [FromBody] Maintenance maintenance)
         {
             maintenance.UpdatedAt = DateTime.Now;

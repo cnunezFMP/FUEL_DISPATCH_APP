@@ -11,10 +11,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
 {
     public class Booking
     {
-        public int Id { get; set; }
-        [Required] public int VehicleId { get; set; }
-        [Required] public int DriverId { get; set; }
-        [Required] public DateTime SpecificDate { get; set; }
+        public int? Id { get; set; }
+        [Required] public int? VehicleId { get; set; }
+        [Required] public int? DriverId { get; set; }
+        [Required] public DateTime? SpecificDate { get; set; }
         public DateTime? ToSpecificDate { get; set; }
         [Required] public DateTime? PickUpDate { get; set; }
         public string? Status { get; set; }

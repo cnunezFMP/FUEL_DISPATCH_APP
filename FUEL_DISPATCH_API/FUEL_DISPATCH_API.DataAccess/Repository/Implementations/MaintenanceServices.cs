@@ -3,8 +3,6 @@ using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Identity.Client;
-using System.Reflection;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class MaintenanceServices : GenericRepository<Maintenance>, IMaintenanceServices
@@ -36,9 +34,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool SetNextMaintenanceDate(Maintenance maintenance)
         {
-            string? companyId, branchId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString() ??
-                throw new BadRequestException("Invalid company. ");
+            string? companyId;
+            companyId = _httpContextAccessor
+                .HttpContext?
+                .Items["CompanyId"]?
+                .ToString() ??
+           throw new BadRequestException("Invalid company. ");
 
             var part = _DBContext.Part
                 .FirstOrDefault(x => x.Id == maintenance.PartId &&

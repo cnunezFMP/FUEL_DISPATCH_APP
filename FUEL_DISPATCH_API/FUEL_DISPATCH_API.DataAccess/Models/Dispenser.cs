@@ -8,10 +8,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Models;
 
 public partial class Dispenser
 {
-    public int Id { get; set; }
-    [Required] public string Code { get; set; }
-    public string Status { get; set; } = ValidationConstants.ActiveStatus;
-    [Required] public int BranchIslandId { get; set; }
+    public int? Id { get; set; }
+    [Required] public string? Code { get; set; }
+    public string? Status { get; set; } = ValidationConstants.ActiveStatus;
+    [Required] public int? BranchIslandId { get; set; }
     public string? CreatedBy { get; set; }
 
     public DateTime? CreatedAt { get; set; } = DateTime.Now;

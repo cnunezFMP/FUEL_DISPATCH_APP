@@ -8,7 +8,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models;
 
 public partial class DriverMethodOfComsuption
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
 
     public string? MethodName { get; set; }
 

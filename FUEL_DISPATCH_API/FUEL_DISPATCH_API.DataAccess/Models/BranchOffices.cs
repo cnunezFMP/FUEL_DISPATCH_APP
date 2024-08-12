@@ -12,26 +12,21 @@ public partial class BranchOffices
     [Required] public string? Code { get; set; }
     [JsonIgnore] public virtual Companies? Company { get; set; }
 
-    [Required] public int CompanyId { get; set; }
+    [Required] public int? CompanyId { get; set; }
 
     public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
     public string? CreatedBy { get; set; }
-
     [Required] public string? Email { get; set; }
     public string? Email2 { get; set; }
-
-    [Required] public string FullLocation { get; set; }
-
-    public int Id { get; set; }
-    [Required] public string Name { get; set; }
-
-    [Phone, Required] public string Phone { get; set; }
-
+    [Required] public string? FullLocation { get; set; }
+    public int? Id { get; set; }
+    [Required] public string? Name { get; set; }
+    [Phone, Required] public string? Phone { get; set; }
     [Phone] public string? Phone2 { get; set; }
 
-    [Required] public string Representative { get; set; }
-    public string Status { get; set; } = ValidationConstants.ActiveStatus;
+    [Required] public string? Representative { get; set; }
+    public string? Status { get; set; } = ValidationConstants.ActiveStatus;
     public DateTime? UpdatedAt { get; set; } = DateTime.Now;
     public string? UpdatedBy { get; set; }
     [JsonIgnore] public virtual ICollection<UsersBranchOffices> UsersBranchOffices { get; set; } = new List<UsersBranchOffices>();

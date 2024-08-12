@@ -21,17 +21,17 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
 
         public string? FullDirection { get; set; }
 
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
-        [Required] public decimal MaxCapacity { get; set; }
+        [Required] public decimal? MaxCapacity { get; set; }
 
-        [Required] public decimal MinCapacity { get; set; }
+        [Required] public decimal? MinCapacity { get; set; }
 
         [Required] public string? Name { get; set; }
 
         [Required] public string? Representative { get; set; }
 
-        public string Status { get; set; } = ValidationConstants.ActiveStatus;
+        public string? Status { get; set; } = ValidationConstants.ActiveStatus;
 
 
         [JsonIgnore] public virtual ICollection<Stock>? Stocks { get; set; } = new List<Stock>();
