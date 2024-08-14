@@ -1,8 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FUEL_DISPATCH_API.DataAccess.ValueGenerators;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-
 namespace FUEL_DISPATCH_API.DataAccess.Models;
-
 public partial class FUEL_DISPATCH_DBContext : DbContext
 {
     public FUEL_DISPATCH_DBContext(DbContextOptions<FUEL_DISPATCH_DBContext> options)
@@ -18,9 +17,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<CalculatedComsuption> CalculatedComsuption { get; set; }
     public virtual DbSet<vw_ActualStock> vw_ActualStock { get; set; }
     public virtual DbSet<vw_WareHouseHistory> Vw_WareHouseHistories { get; set; }
-
     public virtual DbSet<Companies> Companies { get; set; }
-
     public virtual DbSet<UsersCompanies> UsersCompanies { get; set; }
     public virtual DbSet<ComsuptionByDay> ComsuptionByDay { get; set; }
     public virtual DbSet<ComsuptionByMonth> ComsuptionByMonth { get; set; }
@@ -59,13 +56,46 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         modelBuilder.Entity<ArticleDataMaster>(entity =>
         {
             entity.HasKey(e => e.Id);
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
+
             entity.ToTable("ArticleDataMaster");
-            entity.HasOne(x => x.Company).WithMany(x => x.Articles).HasForeignKey(x => x.CompanyId);
+            entity.HasOne(x => x.Company)
+            .WithMany(x => x.Articles)
+                    .HasForeignKey(x => x.CompanyId);
         });
         modelBuilder.Entity<BranchOffices>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.ToTable("BranchOffices");
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
             entity.HasOne(d => d.Company).WithMany(p => p.BranchOffices)
                 .HasForeignKey(d => d.CompanyId);
         });
@@ -87,7 +117,24 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.ToTable("Companies");
-            entity.HasMany(x => x.BranchOffices).WithOne(x => x.Company).HasForeignKey(x => x.CompanyId);
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
+            entity.HasMany(x => x.BranchOffices)
+            .WithOne(x => x.Company)
+            .HasForeignKey(x => x.CompanyId);
 
             entity.HasOne(x => x.CompanySAPParams)
                   .WithOne()
@@ -115,6 +162,21 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         modelBuilder.Entity<Booking>(entity =>
         {
             entity.HasKey(x => x.Id);
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
             entity.HasOne(x => x.Vehicle).WithMany(x => x.Bookings).HasForeignKey(x => x.VehicleId).OnDelete(DeleteBehavior.ClientCascade);
             entity.HasOne(x => x.Driver).WithMany(x => x.Bookings).HasForeignKey(x => x.DriverId).OnDelete(DeleteBehavior.ClientCascade);
         });
@@ -127,6 +189,21 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
                     entity =>
                     entity.HasTrigger("trg_UpdateStock")
                 );
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
             entity.Property(x => x.Type).HasConversion<EnumToStringConverter<MovementsTypesEnum>>();
             entity.HasOne(e => e.Vehicle).WithMany(e => e.WareHouseMovements).HasForeignKey(e => e.VehicleId);
             entity.HasOne(d => d.Driver).WithMany(p => p.WareHouseMovements).HasForeignKey(d => d.DriverId);
@@ -137,6 +214,9 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(e => e.WareHouse)
             .WithMany(e => e.WareHouseMovements)
             .HasForeignKey(f => f.WareHouseId);
+
+            entity.HasOne(e => e.Company)
+            .WithMany(e => e.WareHouseMovements);
 
             entity.HasOne(e => e.ToWareHouse)
             .WithMany(e => e.ToWareHouseMovements)
@@ -155,12 +235,42 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.ToTable("WareHouse");
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
             entity.HasOne(x => x.Company).WithMany(x => x.WareHouses).HasForeignKey(x => x.CompanyId);
             entity.HasOne(e => e.BranchOffice).WithMany(e => e.WareHouses).HasForeignKey(e => e.BranchOfficeId);
         });
         modelBuilder.Entity<BranchIsland>(entity =>
         {
             entity.HasKey(e => e.Id);
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
             entity.ToTable("BranchIsland");
             entity.HasOne(e => e.BranchOffice)
             .WithMany(e =>
@@ -172,6 +282,21 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.ToTable("Dispenser");
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
             entity.HasOne(e => e.BranchIsland)
             .WithMany(e => e.Dispensers)
             .HasForeignKey(e => e.BranchIslandId);
@@ -185,7 +310,21 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasKey(e => e.Id);
 
             entity.ToTable("Driver");
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
 
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
             entity.HasMany(r => r.DriverMethodsOfComsuption)
                 .WithMany(d => d.Drivers)
                 .UsingEntity<EmployeeConsumptionLimits>(x => x.HasOne(x => x.DriverMethodOfComsuption)
@@ -205,7 +344,21 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         modelBuilder.Entity<EmployeeConsumptionLimits>(entity =>
         {
             entity.HasKey(e => new { e.DriverId, e.DriverMethodOfComsuptionId });
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
 
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
             entity.HasOne(d => d.Driver).WithMany(p => p.EmployeeConsumptionLimits)
                 .HasForeignKey(d => d.DriverId)
                 .OnDelete(DeleteBehavior.SetNull);
@@ -244,7 +397,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         });
         modelBuilder.Entity<DriverMethodOfComsuption>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__MethodsO__3214EC076CBAB600");
+            entity.HasKey(e => e.Id);
 
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.CreatedBy)
@@ -268,6 +421,21 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.ToTable("Part");
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
             entity.HasOne(x => x.Company)
             .WithMany(x => x.Parts)
             .HasForeignKey(x => x.CompanyId);
@@ -288,6 +456,21 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.ToTable("Maintenance");
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
             entity.HasOne(x => x.Vehicle)
             .WithMany(x => x.Maintenances)
             .HasForeignKey(x => x.VehicleId);
@@ -300,11 +483,24 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         });
         modelBuilder.Entity<Road>(entity =>
         {
-            entity.HasKey(e => e.Id)
-            .HasName("PK__Roads__3214EC0750670522");
+            entity.HasKey(e => e.Id);
 
             entity.ToTable("Road");
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
 
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
             entity.HasOne(x => x.Company)
             .WithMany(x => x.Roads)
             .HasForeignKey(x => x.CompanyId);
@@ -317,6 +513,21 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.ToTable("WareHouseMovementRequest");
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
             entity.HasOne(e => e.Vehicle).WithMany(e => e.Requests).HasForeignKey(e => e.VehicleId);
             entity.HasOne(e => e.Driver).WithMany(e => e.Requests).HasForeignKey(e => e.DriverId);
             entity.Property(x => x.Type).HasConversion<EnumToStringConverter<MovementsTypesEnum>>();
@@ -330,7 +541,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         });
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC07B8463FF4");
+            entity.HasKey(e => e.Id);
 
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.CreatedBy)
@@ -356,7 +567,21 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasKey(e => e.Id);
 
             entity.HasIndex(e => e.Username, "U_Username").IsUnique();
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
 
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
             entity.Property(e => e.BirthDate).HasColumnType("datetime");
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.CreatedBy)
@@ -426,15 +651,40 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             // entity.HasKey(e => new { e.UserId, e.CompanyId });
             entity.HasOne(e => e.User).WithMany(e => e.UsersCompanies).HasForeignKey(e => e.UserId);
             entity.HasOne(e => e.Company).WithMany(e => e.UsersCompanies).HasForeignKey(e => e.CompanyId);
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
         });
         modelBuilder.Entity<UsersBranchOffices>(entity =>
         {
 
-            /*entity.HasKey(e => new
-            {
-                e.UserId,
-                e.BranchOfficeId
-            });*/
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
             entity.HasOne(e => e.User).WithMany(e => e.UsersBranchOffices).HasForeignKey(e => e.UserId);
             entity.HasOne(e => e.BranchOffice).WithMany(e => e.UsersBranchOffices).HasForeignKey(e => e.BranchOfficeId);
 
@@ -449,6 +699,21 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.UsersRols)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
 
         });
         modelBuilder.Entity<vw_ActualStock>(entity =>
@@ -473,10 +738,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(e => e.Color)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
-            entity.Property(e => e.CreatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
             entity.Property(e => e.Plate)
                 .HasMaxLength(10)
                 .IsUnicode(false);
@@ -486,10 +747,21 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(e => e.Ficha)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
-            entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
 
             entity.HasOne(d => d.Generation)
                 .WithMany(d => d.Vehicles)
@@ -535,15 +807,23 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         {
             entity.HasKey(e => e.Id);
 
-            entity.Property(e => e.CreatedAt);
-            entity.Property(e => e.CreatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
+
             entity.Property(e => e.Status).IsUnicode(false);
-            entity.Property(e => e.UpdatedAt);
-            entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
 
             entity.HasOne(x => x.Company)
             .WithMany(x => x.Zones)

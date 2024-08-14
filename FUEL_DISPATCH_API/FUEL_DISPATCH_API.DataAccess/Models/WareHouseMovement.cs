@@ -9,10 +9,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public int? RoadId { get; set; }
         [Required] public string? Dispatcher { get; set; }
         [Required] public int? ItemId { get; set; }
+        [Required] public int? CompanyId { get; set; }
         [Required] public int? BranchOfficeId { get; set; }
         public int? DispenserId { get; set; }
         [Required] public MovementsTypesEnum Type { get; set; }
-        [Required] public decimal? Qty { get; set; }
+        [Required] public decimal Qty { get; set; }
         public decimal? Amount { get; set; }
         public decimal? Odometer { get; set; }
         [Required] public int? WareHouseId { get; set; }
@@ -22,10 +23,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public int? FuelMethodOfComsuptionId { get; set; }
         public string? CreatedBy { get; set; }
         public int? DriverId { get; set; }
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? CreatedAt { get; set; }
         public string? UpdatedBy { get; set; }
-        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; }
         [JsonIgnore] public virtual BranchOffices? BranchOffice { get; set; }
+        [JsonIgnore] public virtual Companies? Company { get; set; }
         public virtual Vehicle? Vehicle { get; set; }
         [JsonIgnore] public virtual Driver? Driver { get; set; }
         [JsonIgnore] public virtual Road? Road { get; set; }

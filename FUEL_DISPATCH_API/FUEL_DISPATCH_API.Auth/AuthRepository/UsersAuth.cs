@@ -73,12 +73,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if (driver!.Status is ValidationConstants.InactiveStatus)
                 throw new BadRequestException("This driver is Inactive. ");
 
-            user.FullName = driver.FullName!;
-            user.Email = driver.Email;
-            user.PhoneNumber = driver.PhoneNumber!;
-            user.BirthDate = driver!.BirthDate;
-            user.FullDirection = driver.FullDirection!;
-
+            user.FullName = driver?.FullName!;
+            user.Email = driver?.Email;
+            user.PhoneNumber = driver?.PhoneNumber!;
+            user.BirthDate = driver?.BirthDate;
+            user.FullDirection = driver?.FullDirection!;
             return false;
         }
     }

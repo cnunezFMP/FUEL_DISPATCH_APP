@@ -2,7 +2,7 @@
 <Root Type="DevExpress.CodeRush.Foundation.Markers.SolutionBookmarksContainer">
   <Options Language="Neutral">
     <Items>
-      <Item Id="{7a2eda52-6adc-4d68-933d-3f455ede5c94}">
+      <Item Id="{7967ec88-d004-4fa1-b5f5-51fcd5d7d57d}">
         <Id>4</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API\Controllers\ArticlesController.cs</File>
         <Line>64</Line>
@@ -11,7 +11,7 @@
         <ViewportTopMax>2551</ViewportTopMax>
         <TopLine>27</TopLine>
       </Item>
-      <Item Id="{00ae2704-f6ee-4685-ac99-9d3f71b2fdfe}">
+      <Item Id="{7949d696-2ee7-49b9-bfa6-9c8528072e7c}">
         <Id>2</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API\Controllers\UsersCompaniesController.cs</File>
         <Line>7</Line>
@@ -20,7 +20,7 @@
         <ViewportTopMax>1176</ViewportTopMax>
         <TopLine>3</TopLine>
       </Item>
-      <Item Id="{0075d75c-5f00-4a86-95cd-88a8bc6c45a8}">
+      <Item Id="{cbcb9d8f-ff0d-4bfd-8d85-0193c6fb7aad}">
         <Id>3</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API\Controllers\ArticlesController.cs</File>
         <Line>14</Line>
@@ -29,7 +29,7 @@
         <ViewportTopMax>1796</ViewportTopMax>
         <TopLine>15</TopLine>
       </Item>
-      <Item Id="{af80f98b-121a-4893-b744-78852c355515}">
+      <Item Id="{8cea91bc-11ac-4e68-a36b-da2f47b851ef}">
         <Id>1</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API\Controllers\DriversController.cs</File>
         <Line>15</Line>
@@ -38,14 +38,14 @@
         <ViewportTopMax>2230</ViewportTopMax>
         <TopLine>14</TopLine>
       </Item>
-      <Item Id="{7971f949-1a53-4dfb-b43e-e31337df4db6}">
+      <Item Id="{4cd65aca-0e45-44ab-bad1-a16db7ff9f3e}">
         <Id>6</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API.Utils\TodoList.cs</File>
         <Line>2</Line>
         <Character>96</Character>
         <ViewportTopMax>556</ViewportTopMax>
       </Item>
-      <Item Id="{c66f6183-0ec8-4f50-a98e-71e4e98bc05d}">
+      <Item Id="{65a23958-9ce8-436a-9ec7-b61266112937}">
         <Id>5</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API.DataAccess\Repository\Implementations\ArticleDataMasterServices.cs</File>
         <Line>11</Line>

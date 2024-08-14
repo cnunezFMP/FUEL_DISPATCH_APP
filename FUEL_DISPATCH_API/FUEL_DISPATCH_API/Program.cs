@@ -2,7 +2,6 @@ using FluentValidation;
 using FMP_DISPATCH_API.Services.Emails;
 using FUEL_DISPATCH_API.Auth;
 using FUEL_DISPATCH_API.Auth.AuthRepository;
-using FUEL_DISPATCH_API.Builders;
 using FUEL_DISPATCH_API.DataAccess.DTOs;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
@@ -12,19 +11,15 @@ using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Middlewares;
 using FUEL_DISPATCH_API.Swagger;
 using FUEL_DISPATCH_API.Swagger.SwaggerExamples;
-using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.Console;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
 const string swaggerTitle = "FUEL_DISPATCH_API";
 const string swaggerVersion = "v1";
@@ -107,6 +102,7 @@ builder.Services.AddAuthentication(config =>
                     Description = "You are not authorized to perform this action. Please log in to get access.",
                     Status = StatusCodes.Status401Unauthorized,
                 };
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 await context.Response.WriteAsJsonAsync(unauthorizedObj);
             }
         };
@@ -200,7 +196,6 @@ builder.Services.AddCors((options) =>
 });
 var app = builder.Build();
 app.UseExceptionHandler();
-app.UseMiddleware<UnauthorizedMiddleware>();
 # region AuthMiddlewareInLine
 /*app.Use(async (context, next) =>
 {
@@ -222,7 +217,6 @@ app.UseMiddleware<UnauthorizedMiddleware>();
     await next();
 });*/
 #endregion
-app.UseMiddleware<AuthMiddleware>();
 app.UseCors(corsName);
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -243,5 +237,6 @@ app.UseReDoc(c =>
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<AuthMiddleware>();
 app.MapControllers();
 app.Run();

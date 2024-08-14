@@ -14,9 +14,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         [Required] public string? BarCode { get; set; }
         public string? CreatedBy { get; set; }
         [Required] public int? CompanyId { get; set; }
-        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? CreatedAt { get; set; }
         public string? UpdatedBy { get; set; }
-        public DateTime? UpdatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; }
         [JsonIgnore] public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
         [JsonIgnore] public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
         [JsonIgnore] public virtual Companies? Company { get; set; }

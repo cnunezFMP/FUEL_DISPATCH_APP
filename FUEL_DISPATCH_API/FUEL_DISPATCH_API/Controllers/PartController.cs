@@ -1,4 +1,4 @@
-﻿using FUEL_DISPATCH_API.CustomAttributes;
+﻿
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
@@ -51,7 +51,7 @@ namespace FUEL_DISPATCH_API.Controllers
             //}
             part.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             part.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return CreatedAtAction(nameof(GetPart), new { id = part.Id }, _partServices.Post(part));
+            return Created(string.Empty, _partServices.Post(part));
         }
 
         [HttpPut("{id:int}"), Authorize()]

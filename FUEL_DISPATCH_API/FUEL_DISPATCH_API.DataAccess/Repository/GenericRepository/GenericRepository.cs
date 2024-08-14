@@ -35,10 +35,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
         public virtual ResultPattern<Paging<T>> GetAll(GridifyQuery query)
         {
             string? companyId, branchId;
-            companyId = _httpContextAccesor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccesor.HttpContext?.Items["BranchOfficeId"]?.ToString();
-
-
+            companyId = _httpContextAccesor.HttpContext?
+                .Items["CompanyId"]?
+                .ToString();
+            branchId = _httpContextAccesor.HttpContext?
+                .Items["BranchOfficeId"]?
+                .ToString();
             if (branchId is not null &&
                 companyId is not null &&
                 typeof(T).GetProperty("CompanyId") is not null &&

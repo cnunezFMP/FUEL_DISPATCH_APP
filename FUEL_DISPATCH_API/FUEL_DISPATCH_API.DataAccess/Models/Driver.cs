@@ -16,11 +16,11 @@ public partial class Driver
     [Required] public DateTime? LicenceExpDate { get; set; }
     public string? Status { get; set; } = ValidationConstants.ActiveStatus;
     public string? CreatedBy { get; set; }
-    public DateTime? CreatedAt { get; set; } = DateTime.Now;
+    public DateTime? CreatedAt { get; set; }
     public string? UpdatedBy { get; set; }
-    public DateTime? UpdatedAt { get; set; } = DateTime.Now;
+    public DateTime? UpdatedAt { get; set; }
     [Required, MinLength(13), MaxLength(13)] public string? Identification { get; set; }
-    [JsonIgnore] public virtual ICollection<WareHouseMovement>? WareHouseMovements { get; set; } = new List<WareHouseMovement>();
+    [JsonIgnore] public virtual ICollection<WareHouseMovement>? WareHouseMovements { get; set; } = [];
     [JsonIgnore] public virtual ICollection<User>? User { get; set; } = new List<User>();
     [JsonIgnore] public virtual ICollection<Vehicle>? Vehicles { get; set; } = new List<Vehicle>();
     [JsonIgnore] public virtual BranchOffices? BranchOffice { get; set; }

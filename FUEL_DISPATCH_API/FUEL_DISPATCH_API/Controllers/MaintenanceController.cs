@@ -29,14 +29,7 @@ namespace FUEL_DISPATCH_API.Controllers
         }
         [HttpPost, Authorize]
         public ActionResult<ResultPattern<Maintenance>> PostMaintenance([FromBody] Maintenance maintenance)
-        {
-            _maintenanceServices.SetCurrentOdometerByVehicle(maintenance);
-            _maintenanceServices.SetNextMaintenanceDate(maintenance);
-            _maintenanceServices.SetNextMaintenanceOdometer(maintenance);
-            maintenance.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            maintenance.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return Created(string.Empty, _maintenanceServices.Post(maintenance));
-        }
+            => Created(string.Empty, _maintenanceServices.Post(maintenance));
         [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Maintenance>> UpdateMaintenance(int id, [FromBody] Maintenance maintenance)
         {

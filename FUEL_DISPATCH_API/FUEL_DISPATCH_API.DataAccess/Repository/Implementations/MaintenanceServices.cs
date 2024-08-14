@@ -2,6 +2,7 @@
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Exceptions;
+using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
@@ -16,20 +17,30 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
         }
+        public override ResultPattern<Maintenance> Post(Maintenance entity)
+        {
+            SetCurrentOdometerByVehicle(entity);
+            SetNextMaintenanceDate(entity);
+            SetNextMaintenanceOdometer(entity);
+            return base.Post(entity);
+        }
         public bool SetCurrentOdometerByVehicle(Maintenance maintenance)
         {
             string? companyId, branchId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
-
+            companyId = _httpContextAccessor.HttpContext?
+                .Items["CompanyId"]?
+                .ToString();
+            branchId = _httpContextAccessor.HttpContext?
+                .Items["BranchOfficeId"]?
+                .ToString();
             var vehicleForMaintenance = _DBContext.Vehicle
                 .FirstOrDefault(x => x.Id == maintenance.VehicleId &&
                 x.CompanyId == int.Parse(companyId) &&
-                x.BranchOfficeId == int.Parse(branchId))
-                ?? throw new NotFoundException("No vehicle find for this id. ");
+                x.BranchOfficeId == int.Parse(branchId)) ??
+                throw new NotFoundException("No vehicle find for this id. ");
 
+            maintenance.VehicleVin = vehicleForMaintenance.VIN;
             maintenance.CurrentOdometer = vehicleForMaintenance.Odometer;
-
             return true;
         }
         public bool SetNextMaintenanceDate(Maintenance maintenance)
@@ -51,16 +62,16 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool SetNextMaintenanceOdometer(Maintenance maintenance)
         {
-            string? companyId, branchId;
+            string? companyId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString() ??
                 throw new BadRequestException("Invalid company. ");
 
             var part = _DBContext.Part
                 .FirstOrDefault(x => x.Id == maintenance.PartId &&
                 x.CompanyId == int.Parse(companyId)) ??
-                throw new NotFoundException("La pieza no se encuentra registrada en la compañia");
+                throw new NotFoundException("Piece is not registered in the company. ");
 
-
+            maintenance.PartCode = part.Code;
             maintenance.OdometerUpcomingMaintenance = maintenance.CurrentOdometer + part!.MaintenanceOdometerInt;
             return true;
         }

@@ -13,7 +13,7 @@ namespace FUEL_DISPATCH_API.DataAccess.DTOs
 
         [Required] public string PhoneNumber { get; set; } = null!;
 
-        [Required] public DateTime BirthDate { get; set; }
+        [Required] public DateTime? BirthDate { get; set; }
 
         [Required] public string FullDirection { get; set; } = null!;
         public int? DriverId { get; set; }

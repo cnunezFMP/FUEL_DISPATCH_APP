@@ -25,11 +25,11 @@ public partial class Road
 
     public string? CreatedBy { get; set; }
 
-    public DateTime? CreatedAt { get; set; } = DateTime.Now;
+    public DateTime? CreatedAt { get; set; }
 
     public string? UpdatedBy { get; set; }
 
-    public DateTime? UpdatedAt { get; set; } = DateTime.Now;
+    public DateTime? UpdatedAt { get; set; }
 
     [JsonIgnore] public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
 

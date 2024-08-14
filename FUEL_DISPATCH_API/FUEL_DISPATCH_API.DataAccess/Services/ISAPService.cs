@@ -70,7 +70,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
 
             var loginResponse = await Login(company.CompanySAPParams);
 
-            var item = _dbContext.ArticleDataMaster.FirstOrDefault(x => x.Id == whsMovement.ItemId && x.CompanyId == int.Parse(companyId))
+            var item = _dbContext.ArticleDataMaster
+                .FirstOrDefault(x => x.Id == whsMovement.ItemId && x.CompanyId == int.Parse(companyId))
                 ?? throw new NotFoundException("Article not found");
 
             var whs = _dbContext.WareHouse.FirstOrDefault(x => x.Id == whsMovement.WareHouseId && x.CompanyId == int.Parse(companyId))

@@ -4,6 +4,7 @@ using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
+using Gridify;
 using Microsoft.AspNetCore.Http;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
@@ -17,16 +18,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
         }
-
         public bool IsArticleUnique(ArticleDataMaster articleDataMaster)
         {
             string? companyId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             return !_DBContext.ArticleDataMaster
-                .Any(x => x.ArticleNumber == articleDataMaster.ArticleNumber
+                .Any((x) => x.ArticleNumber == articleDataMaster.ArticleNumber
                 && x.CompanyId == int.Parse(companyId));
         }
-
         public ResultPattern<ArticleDataMaster> GetByCode(string code)
         {
             string? companyId;

@@ -1,8 +1,6 @@
 ﻿using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
-using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
-using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Authorization;
@@ -22,13 +20,13 @@ namespace FUEL_DISPATCH_API.Controllers
             _articleServices = articleServices;
             _validator = validator;
         }
-        [HttpGet, Authorize(Roles = "Administrator")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<ArticleDataMaster>>> GetArticles([FromQuery] GridifyQuery query)
         {
             return Ok(_articleServices.GetAll(query));
         }
 
-        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<ArticleDataMaster>> GetArticle(int id)
         {
             return Ok(_articleServices.Get(x => x.Id == id));
@@ -42,7 +40,7 @@ namespace FUEL_DISPATCH_API.Controllers
         /// <response code="400">Si se intenta agregar un articulo con el codigo de una ya existente. </response>
         /// <response code="400">Si se envia el numero de articulo nulo. </response>
         /// <returns></returns>
-        [HttpPost, Authorize(Roles = "Administrator")]
+        [HttpPost, Authorize]
         public ActionResult<ResultPattern<ArticleDataMaster>> PostArticle([FromBody] ArticleDataMaster article)
         {
             //var validationResult = _validator.Validate(article);
@@ -50,12 +48,10 @@ namespace FUEL_DISPATCH_API.Controllers
             //{
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             //}
-            article.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            article.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return CreatedAtAction(nameof(GetArticle), new { id = article.Id }, _articleServices.Post(article));
+            return Created(string.Empty, _articleServices.Post(article));
         }
 
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Part>> UpdateArticle(int id, [FromBody] ArticleDataMaster article)
         {
             //var validationResult = _validator.Validate(article);
