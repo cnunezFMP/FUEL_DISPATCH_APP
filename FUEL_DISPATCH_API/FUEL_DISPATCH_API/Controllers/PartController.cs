@@ -49,8 +49,7 @@ namespace FUEL_DISPATCH_API.Controllers
             //{
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             //}
-            part.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            part.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            
             return Created(string.Empty, _partServices.Post(part));
         }
 
@@ -62,8 +61,7 @@ namespace FUEL_DISPATCH_API.Controllers
             //{
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             //}
-            part.UpdatedAt = DateTime.Now;
-            part.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            
             return Ok(_partServices.Update(x => x.Id == id, part));
         }
     }

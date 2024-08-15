@@ -40,9 +40,16 @@ public partial class Companies
     [JsonIgnore] public virtual ICollection<ArticleDataMaster>? Articles { get; set; } = [];
     [JsonIgnore] public virtual ICollection<User>? Users { get; set; } = [];
     [JsonIgnore] public virtual ICollection<WareHouse>? WareHouses { get; set; } = [];
-    [JsonIgnore] public virtual ICollection<UsersCompanies>? UsersCompanies { get; set; } = [];
+    //[JsonIgnore] public virtual ICollection<UsersCompanies>? UsersCompanies { get; set; } = [];
     [JsonIgnore] public virtual ICollection<Driver> Drivers { get; set; } = [];
     [JsonIgnore] public virtual ICollection<BranchOffices>? BranchOffices { get; set; } = [];
     [JsonIgnore] public virtual ICollection<Part>? Parts { get; set; } = [];
+    [JsonIgnore] public virtual ICollection<Booking>? Bookings { get; set; } = [];
+    [JsonIgnore] public virtual ICollection<BranchIsland>? BranchIslands { get; set; } = [];
+    [JsonIgnore] public virtual ICollection<Dispenser>? Dispensers { get; set; } = [];
     public CompanySAPParams? CompanySAPParams { get; set; }
+    [JsonIgnore] public virtual ICollection<EmployeeConsumptionLimits> EmployeeConsumptionLimits { get; set; } = [];
+    [JsonIgnore] public virtual ICollection<UsersBranchOffices> UsersBranches { get; set; } = [];
+    [JsonIgnore] public virtual ICollection<WareHouseMovementRequest> WareHouseMovementRequests { get; set; } = [];
+    [JsonIgnore] public virtual ICollection<UsersRols> UsersRols{ get; set; } = [];
 }

@@ -16,7 +16,7 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             _makeServices = makeServices;
         }
-        [HttpGet, Authorize(Roles = "Administrator")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Make>> GetMakes([FromQuery] GridifyQuery query)
             => Ok(_makeServices.GetAll(query));
 

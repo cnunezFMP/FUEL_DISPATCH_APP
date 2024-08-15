@@ -39,15 +39,11 @@ namespace FUEL_DISPATCH_API.Controllers
             {
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             }
-            booking.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            booking.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            return CreatedAtAction(nameof(GetBooking), new { id = booking.Id }, _bookingServices.Post(booking));
+            return Created(string.Empty, _bookingServices.Post(booking));
         }
         [HttpPut("{id:int}")]
         public ActionResult<ResultPattern<Booking>> UpdateBooking(int id, [FromBody] Booking booking)
         {
-            booking.UpdatedAt = DateTime.Now;
-            booking.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return Ok(_bookingServices.Update(x => x.Id == id, booking));
         }
     }

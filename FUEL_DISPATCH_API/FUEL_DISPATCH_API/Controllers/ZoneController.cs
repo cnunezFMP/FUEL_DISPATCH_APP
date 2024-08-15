@@ -39,15 +39,11 @@ namespace FUEL_DISPATCH_API.Controllers
             {
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             }
-            zone.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            zone.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return CreatedAtAction(nameof(GetZone), new { id = zone.Id }, _zoneServices.Post(zone));
+            return Created(string.Empty, _zoneServices.Post(zone));
         }
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Zone>> UpdateZone(int id, [FromBody] Zone zone)
         {
-            zone.UpdatedAt = DateTime.Now;
-            zone.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return Ok(_zoneServices.Update(x => x.Id == id, zone));
         }
     }

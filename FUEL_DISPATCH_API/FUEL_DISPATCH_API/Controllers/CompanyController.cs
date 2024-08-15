@@ -60,16 +60,12 @@ namespace FUEL_DISPATCH_API.Controllers
             {
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             }
-            company.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            company.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            return CreatedAtAction(nameof(GetCompany), new { id = company.Id }, _companiesServices.Post(company));
+            return Created(string.Empty, _companiesServices.Post(company));
         }
 
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Companies>> UpdateCompanie(int id, [FromBody] Companies company)
         {
-            company.UpdatedAt = DateTime.Now;
-            company.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return Ok(_companiesServices.Update(x => x.Id == id, company));
         }
     }

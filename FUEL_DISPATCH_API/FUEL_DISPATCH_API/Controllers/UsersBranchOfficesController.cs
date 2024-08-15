@@ -41,9 +41,6 @@ namespace FUEL_DISPATCH_API.Controllers
 
             //if (!validationResult.IsValid)
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-
-            usersBranchOffice.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            usersBranchOffice.CreatedAt = DateTime.Now;
             return Created(string.Empty, _usersBranchOfficesServices.Post(usersBranchOffice));
         }
         // DONE: Luego de resolver los problemas aqui, aplicarlo en los demas servicios. 
@@ -55,8 +52,6 @@ namespace FUEL_DISPATCH_API.Controllers
             if (!validationResult.IsValid)
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             Func<UsersBranchOffices, bool> predicate = x => x.UserId == userId && x.BranchOfficeId == branchOfficeId;
-            usersBranchOffices.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            usersBranchOffices.UpdatedAt = DateTime.Now;
             return Ok(_usersBranchOfficesServices.UpdateUserBranchOffice(predicate, usersBranchOffices));
         }
     }

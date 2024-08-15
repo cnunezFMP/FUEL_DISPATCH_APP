@@ -65,13 +65,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
-            var driverDispatches = (from t0 in _DBContext.WareHouseMovement
-                                    join t1 in _DBContext.BranchOffices on t0.BranchOfficeId equals int.Parse(branchId)
-                                    join t2 in _DBContext.Companies on t1.CompanyId equals int.Parse(companyId)
-                                    where t0.DriverId == driverId
-                                    select t0)
-                                   .AsNoTracking()
-                                   .ToList();
+
+            var driverDispatches = _DBContext.WareHouseMovement
+                .AsNoTracking()
+                .Where(x => x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchId) &&
+                x.DriverId == driverId)
+                .ToList();
 
             if (!driverDispatches.Any())
                 throw new BadRequestException("This driver don't has movements registered. ");

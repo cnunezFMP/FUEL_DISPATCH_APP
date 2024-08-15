@@ -46,9 +46,8 @@ namespace FUEL_DISPATCH_API.Controllers
             //{
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(result));
             //}
-            vehicle.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            vehicle.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return CreatedAtAction(nameof(GetVehicle), new { id = vehicle.Id }, _vehicleServices.Post(vehicle));
+            
+            return Created(string.Empty, _vehicleServices.Post(vehicle));
         }
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Vehicle>> UpdateVehicle(int id, [FromBody] Vehicle vehicle)
@@ -58,8 +57,6 @@ namespace FUEL_DISPATCH_API.Controllers
             //{
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(result));
             //}
-            vehicle.UpdatedAt = DateTime.Now;
-            vehicle.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return Ok(_vehicleServices.Update(x => x.Id == id, vehicle));
         }
     }

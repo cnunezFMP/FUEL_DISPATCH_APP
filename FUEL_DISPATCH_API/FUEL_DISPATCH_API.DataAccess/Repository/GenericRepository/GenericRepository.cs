@@ -35,20 +35,29 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
         public virtual ResultPattern<Paging<T>> GetAll(GridifyQuery query)
         {
             string? companyId, branchId;
-            companyId = _httpContextAccesor.HttpContext?
-                .Items["CompanyId"]?
-                .ToString();
-            branchId = _httpContextAccesor.HttpContext?
-                .Items["BranchOfficeId"]?
-                .ToString();
-            if (branchId is not null &&
-                companyId is not null &&
-                typeof(T).GetProperty("CompanyId") is not null &&
+            companyId = _httpContextAccesor
+                .HttpContext?
+                .Items["CompanyId"] as string ?? string.Empty;
+
+            branchId = _httpContextAccesor
+                .HttpContext?
+                .Items["BranchOfficeId"] as string ?? string.Empty;
+
+            if (companyId is null && branchId is null)
+            {
+                return ResultPattern<Paging<T>>.Success(new Paging<T>(),
+                    StatusCodes.Status401Unauthorized,
+                    "This user isn't in a company. ");
+            }
+
+            if (typeof(T).GetProperty("CompanyId") is not null &&
                 typeof(T).GetProperty("BranchOfficeId") is not null)
             {
                 var entitiesByCompAndBranch = _DBContext.Set<T>()
                     .AsNoTrackingWithIdentityResolution()
-                    .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId!) && EF.Property<int>(x, "BranchOfficeId") == int.Parse(branchId!))
+                    .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId!) && EF.Property<int>(x, "BranchOfficeId") == int.Parse(branchId!) ||
+                    EF.Property<int>(x, "CompanyId") == int.Parse(companyId!) ||
+                    EF.Property<int>(x, "BranchOfficeId") == int.Parse(branchId!))
                     .ApplyFilteringAndOrdering(query);
 
                 var responseComBr = new Paging<T>
@@ -62,7 +71,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                                        AppConstants.DATA_OBTAINED_MESSAGE);
             }
 
-            if (companyId is not null && typeof(T).GetProperty("CompanyId") is not null)
+            if (typeof(T).GetProperty("CompanyId") is not null)
             {
                 var entitiesComp = _DBContext.Set<T>()
                     .AsNoTrackingWithIdentityResolution()
@@ -75,94 +84,19 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                     Data = entitiesComp,
                     Count = entitiesComp.Count()
                 };
-
                 return ResultPattern<Paging<T>>.Success(responseComp,
                     StatusCodes.Status200OK,
                     AppConstants.DATA_OBTAINED_MESSAGE);
             }
-
-            if (branchId is not null && typeof(T).GetProperty("BranchOfficeId") is not null)
-            {
-                var entitiesBranch = _DBContext.Set<T>()
-                    .AsNoTrackingWithIdentityResolution()
-                    .Where(x => EF.Property<int>(x, "BranchOfficeId") == int.Parse(branchId!))
-                    .ApplyFilteringAndOrdering(query);
-
-                var responseBran = new Paging<T>
-                {
-                    Data = entitiesBranch,
-                    Count = entitiesBranch.Count()
-                };
-
-                return ResultPattern<Paging<T>>.Success(responseBran,
-                    StatusCodes.Status200OK,
-                    AppConstants.DATA_OBTAINED_MESSAGE);
-            }
-
-            if (companyId is not null ||
-                branchId is not null &&
-                typeof(T).GetProperty("BranchOfficeId") is null &&
-                typeof(T).GetProperty("CompanyId") is null)
-            {
-                // Retornar todo
-                var entities = _DBContext.Set<T>()
-                    .AsNoTrackingWithIdentityResolution()
-                    .ApplyFilteringAndOrdering(query);
-
-                var response = new Paging<T>
-                {
-                    Data = entities,
-                    Count = entities.Count()
-                };
-
-                return ResultPattern<Paging<T>>.Success(response,
-                    StatusCodes.Status200OK,
-                    AppConstants.DATA_OBTAINED_MESSAGE);
-            }
-
             return ResultPattern<Paging<T>>.Success(new Paging<T>(),
-                StatusCodes.Status200OK,
-                "This user isn't in a company or branch office. ");
+                               StatusCodes.Status200OK,
+                               AppConstants.DATA_OBTAINED_MESSAGE);
 
         }
         // DONE: Asignar los id de compañia y sucursal a las entidades que se creen.
         // DONE: Hacer esto al igual que el metodo GET, para los Id de compañia y sucursal.
         public virtual ResultPattern<T> Post(T entity)
         {
-            string? companyId, branchId;
-            companyId = _httpContextAccesor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccesor.HttpContext?.Items["BranchOfficeId"]?.ToString();
-
-            if (branchId is not null &&
-                companyId is not null &&
-                typeof(T).GetProperty("CompanyId") is not null &&
-                typeof(T).GetProperty("BranchOfficeId") is not null)
-            {
-                typeof(T).GetProperty("CompanyId")?
-                    .SetValue(entity,
-                    int.Parse(companyId!));
-
-                typeof(T).GetProperty("BranchOfficeId")?
-                    .SetValue(entity,
-                    int.Parse(branchId!));
-            }
-
-            if (companyId is not null &&
-                typeof(T).GetProperty("CompanyId") is not null)
-            {
-                typeof(T).GetProperty("CompanyId")?
-                    .SetValue(entity,
-                    int.Parse(companyId!));
-            }
-
-            if (branchId is not null &&
-                typeof(T).GetProperty("BranchOfficeId") is not null)
-            {
-                typeof(T).GetProperty("BranchOfficeId")?
-                    .SetValue(entity,
-                    int.Parse(branchId!));
-            }
-
             _DBContext.Set<T>().Add(entity);
             _DBContext.SaveChanges();
             return ResultPattern<T>.Success(entity!,

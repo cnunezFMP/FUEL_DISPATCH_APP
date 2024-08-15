@@ -1,12 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-
 namespace FUEL_DISPATCH_API.DataAccess.Models
 {
     public class Booking
@@ -14,6 +7,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public int? Id { get; set; }
         [Required] public int? VehicleId { get; set; }
         [Required] public int? DriverId { get; set; }
+        public int? CompanyId { get; set; }
+        public int? BranchOfficeId { get; set; }
         [Required] public DateTime? SpecificDate { get; set; }
         public DateTime? ToSpecificDate { get; set; }
         [Required] public DateTime? PickUpDate { get; set; }
@@ -28,6 +23,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public string? Notes { get; set; }
 
         [JsonIgnore] public virtual Vehicle? Vehicle { get; set; }
+        [JsonIgnore] public virtual Companies? Company { get; set; }
+        [JsonIgnore] public virtual BranchOffices? BranchOffice { get; set; }
 
         [JsonIgnore] public virtual Driver? Driver { get; set; }
     }

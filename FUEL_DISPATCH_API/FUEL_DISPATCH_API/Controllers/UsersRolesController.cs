@@ -32,8 +32,6 @@ namespace FUEL_DISPATCH_API.Controllers
 
             if (!validationResult.IsValid)
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            userRol.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            userRol.UpdatedAt = DateTime.Now;
             return Ok(_userRolesServices.UpdateUserRol(predicate, userRol));
         }
         [HttpPost]
@@ -43,8 +41,6 @@ namespace FUEL_DISPATCH_API.Controllers
 
             if (!validationResult.IsValid)
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-
-
             return Created(string.Empty, _userRolesServices.Post(userRol));
         }
         [HttpDelete("{userId}/Roles/{rolId}"), Authorize(Roles = "Administrator")]

@@ -72,16 +72,13 @@ namespace FUEL_DISPATCH_API.Controllers
             //{
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             //}
-            driver.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            driver.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            return CreatedAtAction(nameof(GetDriver), new { id = driver.Id }, _driverServices.Post(driver));
+
+            return Created(string.Empty, _driverServices.Post(driver));
         }
 
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Driver>> UpdateDriver(int id, [FromBody] Driver driver)
         {
-            driver.UpdatedAt = DateTime.Now;
-            driver.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return Ok(_driverServices.Update(x => x.Id == id, driver));
         }
     }

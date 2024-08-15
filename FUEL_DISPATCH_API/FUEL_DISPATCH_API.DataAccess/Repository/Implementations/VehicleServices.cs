@@ -4,8 +4,6 @@ using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.Design;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
@@ -21,9 +19,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public override ResultPattern<Vehicle> Post(Vehicle entity)
         {
-            string? companyId, branchId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
             if (CheckIfMeasureExists(entity))
                 throw new NotFoundException("The measure doesn't exists. ");
 
@@ -38,11 +33,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if (CheckIfModEngineExists(entity))
                 throw new NotFoundException("Generation not found. ");
             DriverIdHasValue(entity);
-            entity.CompanyId = int.Parse(companyId);
-            entity.BranchOfficeId = int.Parse(branchId);
-            _DBContext.Vehicle.Add(entity);
-            _DBContext.SaveChanges();
-            return ResultPattern<Vehicle>.Success(entity, StatusCodes.Status201Created, "Vehicle created successfully. ");
+
+            return base.Post(entity);
         }
         public bool DriverIdHasValue(Vehicle entity)
             => _DBContext.Driver.Any(x => x.Id == entity.DriverId);

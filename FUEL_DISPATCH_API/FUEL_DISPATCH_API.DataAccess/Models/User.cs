@@ -16,7 +16,7 @@ public partial class User
     [Required] public string? PhoneNumber { get; set; } = null!;
 
     [Required] public DateTime? BirthDate { get; set; }
-
+    public int? CompanyId { get; set; }
     public string? FullDirection { get; set; } = null!;
 
     public string? CreatedBy { get; set; }
@@ -25,12 +25,12 @@ public partial class User
     public DateTime? UpdatedAt { get; set; }
     public int? DriverId { get; set; }
     [JsonIgnore] public virtual Driver? Driver { get; set; }
-
-    [JsonIgnore] public virtual ICollection<UsersRols> UsersRols { get; set; } = new List<UsersRols>();
-    [JsonIgnore] public virtual ICollection<UsersBranchOffices> UsersBranchOffices { get; set; } = new List<UsersBranchOffices>();
+    [JsonIgnore] public virtual Companies? Company { get; set; }
+    [JsonIgnore] public virtual ICollection<UsersRols> UsersRols { get; set; } = [];
+    [JsonIgnore] public virtual ICollection<UsersBranchOffices> UsersBranchOffices { get; set; } = [];
     [JsonIgnore] public virtual ICollection<Role>? Rols { get; set; }
 
-    [JsonIgnore] public virtual ICollection<UsersCompanies> UsersCompanies { get; set; } = new List<UsersCompanies>();
-    [JsonIgnore] public virtual ICollection<Companies> Companies { get; set; } = new List<Companies>();
-    [JsonIgnore] public virtual ICollection<BranchOffices> BranchOffices { get; set; } = new List<BranchOffices>();
+    //[JsonIgnore] public virtual ICollection<UsersCompanies> UsersCompanies { get; set; } = [];
+    //[JsonIgnore] public virtual ICollection<Companies> Companies { get; set; } = [];
+    [JsonIgnore] public virtual ICollection<BranchOffices> BranchOffices { get; set; } = [];
 }

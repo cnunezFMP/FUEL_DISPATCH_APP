@@ -41,9 +41,7 @@ namespace FUEL_DISPATCH_API.Controllers
             //{
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             //}
-            warehouse.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            warehouse.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return CreatedAtAction(nameof(GetWareHouse), new { id = warehouse.Id }, _wareHouseServices.Post(warehouse));
+            return Created(string.Empty, _wareHouseServices.Post(warehouse));
         }
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<WareHouse>> UpdateStore(int id, [FromBody] WareHouse warehouse)

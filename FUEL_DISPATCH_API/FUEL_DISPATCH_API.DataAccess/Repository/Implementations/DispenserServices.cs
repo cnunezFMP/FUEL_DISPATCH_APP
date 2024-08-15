@@ -28,14 +28,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
-            return !(from t0 in _DBContext.Dispenser
-                    join t1 in _DBContext.BranchOffices on t0.BranchOfficeId equals int.Parse(branchId)
-                    join t2 in _DBContext.Companies on t1.CompanyId equals int.Parse(companyId)
-                    join t3 in _DBContext.BranchIslands on t0.BranchIslandId equals t3.Id
-                    where t0.Code == dispenser.Code
-                    select t0)
-                    .AsNoTracking()
-                   .Any();
+            return !_DBContext.Dispenser
+                .Any(x => x.Code == dispenser.Code &&
+                     x.CompanyId == int.Parse(companyId) &&
+                     x.BranchOfficeId == int.Parse(branchId));
+
         }
 
     }

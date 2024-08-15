@@ -41,16 +41,13 @@ namespace FUEL_DISPATCH_API.Controllers
             if (!validationResult.IsValid)
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
 
-            road.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            road.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            return CreatedAtAction(nameof(GetRoad), new { id = road.Id }, _roadServices.Post(road));
+           
+            return Created(string.Empty, _roadServices.Post(road));
         }
 
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Road>> UpdateRoad(int id, [FromBody] Road road)
         {
-            road.UpdatedAt = DateTime.Now;
-            road.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return Ok(_roadServices.Update(x => x.Id == id, road));
         }
     }

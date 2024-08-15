@@ -19,8 +19,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             RuleFor(x => x.BranchOfficeId)
                 .NotEmpty()
                 .WithMessage("BranchOfficeId is required");
-            RuleFor(x => x)
-                .Must(x => usersBranchOfficesServices.IsUserInBranchOffice(x.UserId, x.BranchOfficeId));
+            //RuleFor(x => x)
+            //    .Must(x => usersBranchOfficesServices.IsUserInBranchOffice(x.UserId, x.BranchOfficeId));
 
         }
     }

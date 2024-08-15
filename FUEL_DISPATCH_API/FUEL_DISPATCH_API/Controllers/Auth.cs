@@ -31,18 +31,16 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost("Register")]
         public ActionResult<ResultPattern<User>> Register([FromBody] UserRegistrationDto user)
         {
-            var result = _userValidator.Validate(user);
-            if (!result.IsValid)
-            {
-                var modelstateDictionary = new ModelStateDictionary();
-                foreach (ValidationFailure validationFailure in result.Errors)
-                {
-                    modelstateDictionary.AddModelError(validationFailure.PropertyName, validationFailure.ErrorMessage);
-                }
-                return ValidationProblem(modelstateDictionary);
-            }
-            user.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            user.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            //var result = _userValidator.Validate(user);
+            //if (!result.IsValid)
+            //{
+            //    var modelstateDictionary = new ModelStateDictionary();
+            //    foreach (ValidationFailure validationFailure in result.Errors)
+            //    {
+            //        modelstateDictionary.AddModelError(validationFailure.PropertyName, validationFailure.ErrorMessage);
+            //    }
+            //    return ValidationProblem(modelstateDictionary);
+            //}
             return Created(string.Empty, _usersAuth.UserRegistration(user));
         }
         [HttpPost("Login")]

@@ -9,8 +9,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public int? RoadId { get; set; }
         [Required] public string? Dispatcher { get; set; }
         [Required] public int? ItemId { get; set; }
-        [Required] public int? CompanyId { get; set; }
-        [Required] public int? BranchOfficeId { get; set; }
+        public int? CompanyId { get; set; }
+        public int? BranchOfficeId { get; set; }
         public int? DispenserId { get; set; }
         [Required] public MovementsTypesEnum Type { get; set; }
         [Required] public decimal Qty { get; set; }

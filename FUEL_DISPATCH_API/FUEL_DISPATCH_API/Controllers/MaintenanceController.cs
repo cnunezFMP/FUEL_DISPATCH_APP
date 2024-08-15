@@ -33,8 +33,6 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Maintenance>> UpdateMaintenance(int id, [FromBody] Maintenance maintenance)
         {
-            maintenance.UpdatedAt = DateTime.Now;
-            maintenance.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return Ok(_maintenanceServices.Update(x => x.Id == id, maintenance));
         }
     }

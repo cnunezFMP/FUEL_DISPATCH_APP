@@ -44,16 +44,12 @@ namespace FUEL_DISPATCH_API.Controllers
             //{
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             //}
-            dispenser.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            dispenser.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            return CreatedAtAction(nameof(GetDispenser), new { id = dispenser.Id }, _dispenserServices.Post(dispenser));
+            return Created(string.Empty, _dispenserServices.Post(dispenser));
         }
 
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Dispenser>> UpdateDispenser(int id, [FromBody] Dispenser dispenser)
         {
-            dispenser.UpdatedAt = DateTime.Now;
-            dispenser.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return Ok(_dispenserServices.Update(x => x.Id == id, dispenser));
         }
     }

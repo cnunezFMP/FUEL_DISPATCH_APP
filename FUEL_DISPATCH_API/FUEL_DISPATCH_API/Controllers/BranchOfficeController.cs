@@ -41,20 +41,12 @@ namespace FUEL_DISPATCH_API.Controllers
             //{
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             //}
-            branchOffice.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            branchOffice.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             // DONE: Fix this, currently throws exception 'InvalidOperationException: No route matches the supplied values.'
-            return CreatedAtAction(nameof(GetBranchOffice),
-                new
-                {
-                    id = branchOffice.Id
-                }, _branchOfficeServices.Post(branchOffice));
+            return Created(string.Empty, _branchOfficeServices.Post(branchOffice));
         }
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<BranchOffices>> UpdateBranchOffice(int id, [FromBody] BranchOffices branchOffice)
         {
-            branchOffice.UpdatedAt = DateTime.Now;
-            branchOffice.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             return Ok(_branchOfficeServices.Update(x => x.Id == id, branchOffice));
         }
     }

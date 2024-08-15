@@ -4,6 +4,7 @@ using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
+using Twilio.TwiML.Voice;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class MaintenanceServices : GenericRepository<Maintenance>, IMaintenanceServices
@@ -24,6 +25,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             SetNextMaintenanceOdometer(entity);
             return base.Post(entity);
         }
+
+        public override ResultPattern<Maintenance> Update(Func<Maintenance, bool> predicate, Maintenance updatedEntity)
+        {
+            SetCurrentOdometerByVehicle(updatedEntity);
+            SetNextMaintenanceDate(updatedEntity);
+            SetNextMaintenanceOdometer(updatedEntity);
+            return base.Update(predicate, updatedEntity);
+        }
         public bool SetCurrentOdometerByVehicle(Maintenance maintenance)
         {
             string? companyId, branchId;
@@ -33,6 +42,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             branchId = _httpContextAccessor.HttpContext?
                 .Items["BranchOfficeId"]?
                 .ToString();
+
             var vehicleForMaintenance = _DBContext.Vehicle
                 .FirstOrDefault(x => x.Id == maintenance.VehicleId &&
                 x.CompanyId == int.Parse(companyId) &&

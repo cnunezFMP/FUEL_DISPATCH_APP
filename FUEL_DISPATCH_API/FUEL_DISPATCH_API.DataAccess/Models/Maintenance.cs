@@ -9,6 +9,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public int? Id { get; set; }
         [Required] public int? VehicleId { get; set; }
         [Required] public int? PartId { get; set; }
+        public int? CompanyId { get; set; }
+        public int? BranchOfficeId { get; set; }
         public decimal? CurrentOdometer { get; set; } // Se asignara con el odometer del vehiculo
         [Required] public string? Code { get; set; }
         public decimal? OdometerUpcomingMaintenance { get; set; }

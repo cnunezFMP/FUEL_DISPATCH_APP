@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FUEL_DISPATCH_API.DataAccess.ValueGenerators;
+using System.ComponentModel.DataAnnotations;
 
 namespace FUEL_DISPATCH_API.DataAccess.DTOs
 {
@@ -17,8 +18,8 @@ namespace FUEL_DISPATCH_API.DataAccess.DTOs
 
         [Required] public string FullDirection { get; set; } = null!;
         public int? DriverId { get; set; }
+        public int? CompanyId { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }
-
     }
 }

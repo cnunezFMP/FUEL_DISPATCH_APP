@@ -26,8 +26,8 @@ public class AuthManager
         if (credenciales != null && BCrypt.Net.BCrypt.Verify(password, credenciales.Password))
         {
 
-            var companyId = _dbContext.UsersCompanies
-                           .Where(uc => uc.UserId == credenciales.Id)
+            var companyId = _dbContext.User
+                           .Where(uc => uc.Id == credenciales.Id)
                            .Select(uc => uc.CompanyId)
                            .FirstOrDefault();
 

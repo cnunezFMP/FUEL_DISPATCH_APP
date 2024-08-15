@@ -62,18 +62,15 @@ namespace FUEL_DISPATCH_API.Controllers
             //{
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             //}
-            employeeConsumption.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            employeeConsumption.CreatedAt = DateTime.Now;
             return Ok(_employeeComsuptionLimitsServices.Post(employeeConsumption));
         }
 
-        [HttpPut("{driverId:int}, {methodId:int}"), Authorize(Roles = "Administrator")]
+        [HttpPut("{driverId:int}/DriverMethodOfComsuption/{methodId:int}"), Authorize]
         public ActionResult<ResultPattern<EmployeeConsumptionLimits>> UpdateUserMethod(int driverId, int methodId, EmployeeConsumptionLimits employeeConsumptionLimit)
         {
             // TODO: Ver si necesito validar la compañia y la sucursal. Y ver como hacerlo.
             Func<EmployeeConsumptionLimits, bool> predicate = x => x.DriverId == driverId && x.DriverMethodOfComsuptionId == methodId;
-            employeeConsumptionLimit.UpdatedAt = DateTime.Now;
-            employeeConsumptionLimit.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
             return Created(string.Empty, _employeeComsuptionLimitsServices.Update(predicate, employeeConsumptionLimit));
         }
     }

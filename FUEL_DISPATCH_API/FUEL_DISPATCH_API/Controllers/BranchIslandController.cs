@@ -42,9 +42,7 @@ namespace FUEL_DISPATCH_API.Controllers
             //{
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             //}
-            branchIsland.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            branchIsland.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return CreatedAtAction(nameof(GetBranchIsland), new { id = branchIsland.Id }, _branchIslandServices.Post(branchIsland));
+            return Created(string.Empty, _branchIslandServices.Post(branchIsland));
         }
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<User>> UpdateBranchIsland(int id, [FromBody] BranchIsland branchIsland)

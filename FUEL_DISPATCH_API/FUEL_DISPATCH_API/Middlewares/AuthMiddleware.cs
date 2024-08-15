@@ -27,7 +27,7 @@ namespace FUEL_DISPATCH_API.Middlewares
             if (user.Identity?.IsAuthenticated ??
                 false)
             {
-                string? companyId, branchId, nameid;
+                string? companyId, branchId;
                 companyId = user.Claims
                     .FirstOrDefault(x => x.Type == "CompanyId")?
                     .Value ??

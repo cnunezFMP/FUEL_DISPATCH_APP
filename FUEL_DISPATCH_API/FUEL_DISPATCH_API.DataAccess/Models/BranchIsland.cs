@@ -8,7 +8,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
     {
         public int? Id { get; set; }
         [Required] public string? Code { get; set; }
-        [Required] public int? BranchOfficeId { get; set; }
+        public int? BranchOfficeId { get; set; }
+        public int? CompanyId { get; set; }
         public string? CreatedBy { get; set; }
 
         public DateTime? CreatedAt { get; set; }
@@ -17,8 +18,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
 
         public DateTime? UpdatedAt { get; set; }
 
+
         [JsonIgnore] public virtual ICollection<Dispenser> Dispensers { get; set; } = new List<Dispenser>();
 
         [JsonIgnore] public virtual BranchOffices? BranchOffice { get; set; }
+        [JsonIgnore] public virtual Companies? Company { get; set; }
+
     }
 }
