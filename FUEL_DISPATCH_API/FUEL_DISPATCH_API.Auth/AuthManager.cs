@@ -22,7 +22,9 @@ public class AuthManager
     {
         var username = usuario.Username;
         var password = usuario.Password;
-        var credenciales = _dbContext.User.Include(x => x.Rols).SingleOrDefault(x => x.Username == username);
+        var credenciales = _dbContext.User
+            .Include(x => x.Rols)
+            .SingleOrDefault(x => x.Username == username);
         if (credenciales != null && BCrypt.Net.BCrypt.Verify(password, credenciales.Password))
         {
 

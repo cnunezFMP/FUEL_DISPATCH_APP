@@ -3,6 +3,7 @@ using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Validators;
+using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Authorization;
@@ -68,10 +69,18 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{driverId:int}/DriverMethodOfComsuption/{methodId:int}"), Authorize]
         public ActionResult<ResultPattern<EmployeeConsumptionLimits>> UpdateUserMethod(int driverId, int methodId, EmployeeConsumptionLimits employeeConsumptionLimit)
         {
-            // TODO: Ver si necesito validar la compañia y la sucursal. Y ver como hacerlo.
-            Func<EmployeeConsumptionLimits, bool> predicate = x => x.DriverId == driverId && x.DriverMethodOfComsuptionId == methodId;
+            // DONE: Ver si necesito validar la compañia y la sucursal. Y ver como hacerlo.
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
-            return Created(string.Empty, _employeeComsuptionLimitsServices.Update(predicate, employeeConsumptionLimit));
+
+            bool predicate(EmployeeConsumptionLimits x) => x.DriverId == driverId &&
+                x.DriverMethodOfComsuptionId == methodId &&
+                x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchId);
+
+            return Ok(_employeeComsuptionLimitsServices.Update(predicate, employeeConsumptionLimit));
         }
     }
 }

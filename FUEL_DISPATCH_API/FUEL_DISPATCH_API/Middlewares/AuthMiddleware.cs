@@ -27,25 +27,24 @@ namespace FUEL_DISPATCH_API.Middlewares
             if (user.Identity?.IsAuthenticated ??
                 false)
             {
-                string? companyId, branchId;
+                string? companyId, branchId, username;
                 companyId = user.Claims
                     .FirstOrDefault(x => x.Type == "CompanyId")?
                     .Value ??
-                    " ";
+                    throw new BadRequestException("User is not in branch office. ");
 
                 branchId = user.Claims
                     .FirstOrDefault(x => x.Type == "BranchOfficeId")?
                     .Value
-                    ?? " ";
+                    ??
+                    throw new BadRequestException("User is not in branch office. ");
 
-                /*nameid = user.Claims
-                    .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?
-                    .Value
-                    ?? " ";*/
+                username = user.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value
+                    ?? throw new BadRequestException("User don't has username. ");
 
+                context.Items["UserName"] = username;
                 context.Items["CompanyId"] = companyId;
                 context.Items["BranchOfficeId"] = branchId;
-                //context.Items["nameid"] = nameid;
 
             }
             await _next(context);
