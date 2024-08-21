@@ -16,12 +16,16 @@ namespace FUEL_DISPATCH_API.Controllers
     public class WareHouseController : ControllerBase
     {
         private readonly IWareHouseServices _wareHouseServices;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IValidator<WareHouse> _wareHouseValidator;
 
-        public WareHouseController(IWareHouseServices wareHouseServices, IValidator<WareHouse> wareHouseValidator)
+        public WareHouseController(IWareHouseServices wareHouseServices, 
+                                   IValidator<WareHouse> wareHouseValidator,
+                                   IHttpContextAccessor httpContextAccessor)
         {
             _wareHouseServices = wareHouseServices;
             _wareHouseValidator = wareHouseValidator;
+            _httpContextAccessor = httpContextAccessor;
         }
         [HttpGet, Authorize]
         public async Task<ActionResult<ResultPattern<Paging<WareHouse>>>> GetWareHouses([FromQuery] GridifyQuery query)
@@ -31,7 +35,14 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<WareHouse>> GetWareHouse(int id)
         {
-            return Ok(_wareHouseServices.Get(x => x.Id == id));
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            bool predicate(WareHouse x) => x.Id == id &&
+                                           x.CompanyId == int.Parse(companyId) &&
+                                           x.BranchOfficeId == int.Parse(branchId);
+            return Ok(_wareHouseServices.Get(predicate));
         }
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<WareHouse>> PostWareHouse([FromBody] WareHouse warehouse)
@@ -46,7 +57,15 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<WareHouse>> UpdateStore(int id, [FromBody] WareHouse warehouse)
         {
-            return Ok(_wareHouseServices.Update(x => x.Id == id, warehouse));
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            bool predicate(WareHouse x) => x.Id == id &&
+                                           x.CompanyId == int.Parse(companyId) &&
+                                           x.BranchOfficeId == int.Parse(branchId);
+
+            return Ok(_wareHouseServices.Update(predicate, warehouse));
         }
     }
 }

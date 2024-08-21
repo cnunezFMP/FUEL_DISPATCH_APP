@@ -5,6 +5,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
     public interface IActualStockServices : IGenericInterface<vw_ActualStock>
     {
-        ResultPattern<List<vw_ActualStock>> GetWareHouseArticles(int wareHouseId, int? articleId);
+        // ResultPattern<List<vw_ActualStock>> GetWareHouseArticles(int wareHouseId, int? articleId);
     }
 }

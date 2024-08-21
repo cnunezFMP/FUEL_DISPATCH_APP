@@ -16,14 +16,16 @@ namespace FUEL_DISPATCH_API.Controllers
     public class WareHouseMovementController : ControllerBase
     {
         private readonly IWareHouseMovementServices _wareHouseMovementServices;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IValidator<WareHouseMovement> _wareHouseMovementValidator;
-        public WareHouseMovementController(IWareHouseMovementServices wareHouseMovementServices, IValidator<WareHouseMovement> wareHouseMovementValidator)
+        public WareHouseMovementController(IWareHouseMovementServices wareHouseMovementServices, IValidator<WareHouseMovement> wareHouseMovementValidator, IHttpContextAccessor httpContextAccessor)
         {
             _wareHouseMovementServices = wareHouseMovementServices;
             _wareHouseMovementValidator = wareHouseMovementValidator;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        [HttpGet, Authorize(Roles = "Administrator, Dispatcher")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<WareHouseMovement>>> GetMovements([FromQuery] GridifyQuery query)
         {
             return Ok(_wareHouseMovementServices.GetAll(query));
@@ -32,7 +34,14 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize(Roles = "Administrator, Dispatcher")]
         public ActionResult<ResultPattern<WareHouseMovement>> GetMovement(int id)
         {
-            return Ok(_wareHouseMovementServices.Get(x => x.Id == id));
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            bool predicate(WareHouseMovement x) => x.Id == id &&
+                                           x.CompanyId == int.Parse(companyId) &&
+                                           x.BranchOfficeId == int.Parse(branchId);
+            return Ok(_wareHouseMovementServices.Get(predicate));
         }
 
         [HttpPost, Authorize(Roles = "Administrator, Dispatcher")]
@@ -43,17 +52,23 @@ namespace FUEL_DISPATCH_API.Controllers
             //{
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             //}
-            wareHouseMovement.CreatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            wareHouseMovement.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return CreatedAtAction(nameof(GetMovement), new { id = wareHouseMovement.Id }, _wareHouseMovementServices.Post(wareHouseMovement));
+
+            return Created(string.Empty, _wareHouseMovementServices.Post(wareHouseMovement));
         }
 
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator, Dispatcher")]
-        public ActionResult<ResultPattern<User>> UpdateMovement(int id, [FromBody] WareHouseMovement wareHouseMovement)
+        public ActionResult<ResultPattern<WareHouseMovement>> UpdateMovement(int id, [FromBody] WareHouseMovement wareHouseMovement)
         {
-            wareHouseMovement.UpdatedAt = DateTime.Now;
-            wareHouseMovement.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return Ok(_wareHouseMovementServices.Update(x => x.Id == id, wareHouseMovement));
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            bool predicate(WareHouseMovement x) => x.Id == id &&
+                                           x.CompanyId == int.Parse(companyId) &&
+                                           x.BranchOfficeId == int.Parse(branchId);
+
+
+            return Ok(_wareHouseMovementServices.Update(predicate, wareHouseMovement));
         }
     }
 }

@@ -6,6 +6,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
     public interface IWareHouseHistoryServices : IGenericInterface<vw_WareHouseHistory>
     {
-        ResultPattern<List<vw_WareHouseHistory>> GetHistoryFromSpecifiedWarehouse(int warehouseId);
+        ResultPattern<List<vw_WareHouseHistory>> GetHistoryFromSpecificWareHouse(int wareHouseId);
     }
 }

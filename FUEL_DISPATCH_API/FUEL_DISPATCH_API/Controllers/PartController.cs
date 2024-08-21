@@ -14,11 +14,14 @@ namespace FUEL_DISPATCH_API.Controllers
     public class PartController : ControllerBase
     {
         private HttpContext? _httpContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IPartServices _partServices;
+
         public PartController(IPartServices partServices, IHttpContextAccessor httpContextAccessor)
         {
             _httpContext = httpContextAccessor.HttpContext;
             _partServices = partServices;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet, Authorize]
@@ -30,7 +33,13 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Part>> GetPart(int id)
         {
-            return Ok(_partServices.Get(x => x.Id == id));
+            string? companyId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+
+            bool predicate(Part x) => x.Id == id &&
+                                      x.CompanyId == int.Parse(companyId);
+
+            return Ok(_partServices.Get(predicate));
         }
 
         /// <summary>
@@ -49,7 +58,7 @@ namespace FUEL_DISPATCH_API.Controllers
             //{
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             //}
-            
+
             return Created(string.Empty, _partServices.Post(part));
         }
 
@@ -61,8 +70,13 @@ namespace FUEL_DISPATCH_API.Controllers
             //{
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             //}
-            
-            return Ok(_partServices.Update(x => x.Id == id, part));
+
+            string? companyId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+
+            bool predicate(Part x) => x.Id == id &&
+                                      x.CompanyId == int.Parse(companyId);
+            return Ok(_partServices.Update(predicate, part));
         }
     }
 }

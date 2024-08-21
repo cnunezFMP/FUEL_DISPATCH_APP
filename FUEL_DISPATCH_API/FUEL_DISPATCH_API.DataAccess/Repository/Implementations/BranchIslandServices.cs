@@ -1,6 +1,8 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.Utils.ResponseObjects;
+using Gridify;
 using Microsoft.AspNetCore.Http;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
@@ -15,6 +17,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
         }
+        
         public bool BranchIslandCodeMustBeUnique(BranchIsland branchIsland)
         {
             string? companyId, branchId;
@@ -22,9 +25,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
 
-            return !_DBContext.BranchIslands.Any(x => x.Code == branchIsland.Code &&
-            x.CompanyId == int.Parse(companyId) &&
-            x.BranchOfficeId == int.Parse(branchId));
+            return !_DBContext.BranchIslands
+                .Any(x => x.Code == branchIsland.Code &&
+                x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchId));
         }
     }
 }

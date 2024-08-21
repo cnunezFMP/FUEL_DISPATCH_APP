@@ -2,6 +2,7 @@
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace FUEL_DISPATCH_API.Controllers
 {
@@ -14,8 +15,13 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             _engineServices = modEngineServices;
         }
+
         [HttpGet]
         public ActionResult<ResultPattern<ModEngine>> GetEngines([FromQuery] GridifyQuery query)
             => Ok(_engineServices.GetAll(query));
+
+        [HttpPost, Authorize]
+        public ActionResult<ResultPattern<ModEngine>> PostEngine([FromBody] ModEngine engine)
+            => Created(string.Empty, _engineServices.Post(engine));
     }
 }

@@ -9,11 +9,14 @@
         //    IsSuccess = isSuccess;
         //    Message = message;
         //}
-        public T Data { get; init; }
-        public int StatusCode { get; init; }
-        public bool IsSuccess { get; init; }
-        public string Message { get; init; }
-        public static ResultPattern<T> Success(T data, int statusCode, string message) =>
+        public T? Data { get; init; }
+        public int? StatusCode { get; init; }
+        public bool? IsSuccess { get; init; }
+        public string? Message { get; init; }
+        public static ResultPattern<T> Success(
+            T data, 
+            int statusCode, 
+            string message) =>
             new ResultPattern<T>
             {
                 Data = data,
@@ -21,7 +24,7 @@
                 IsSuccess = true,
                 Message = message
             };
-        public static ResultPattern<T> Failure(int statuscode, string message, T data) =>
+        public static ResultPattern<T> Failure(int statuscode, string message, T? data = default) =>
             new ResultPattern<T>
             {
                 Data = data,

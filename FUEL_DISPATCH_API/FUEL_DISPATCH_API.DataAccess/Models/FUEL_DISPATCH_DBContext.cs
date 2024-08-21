@@ -108,20 +108,17 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(d => d.Company)
             .WithMany(p => p.BranchOffices)
             .HasForeignKey(d => d.CompanyId);
+
+
+            entity.HasMany(x => x.BranchIslands)
+                  .WithOne()
+                  .HasForeignKey(x => x.BranchOfficeId);
         });
         modelBuilder.Entity<CalculatedComsuption>(entity =>
         {
             entity
                 .HasNoKey()
                 .ToView("CalculatedComsuption");
-
-            entity.Property(e => e.CalculatedComsuption1)
-                .HasColumnType("decimal(38, 14)")
-                .HasColumnName("CalculatedComsuption");
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
-            entity.Property(e => e.Gallons).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.Odometer).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.TotalCalculatedComsuption).HasColumnType("decimal(38, 14)");
         });
         modelBuilder.Entity<Companies>(entity =>
         {
@@ -152,6 +149,10 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
             entity.Navigation(x => x.CompanySAPParams)
                   .AutoInclude();
+
+            entity.HasMany(x => x.BranchIslands)
+                  .WithOne()
+                  .HasForeignKey(x => x.CompanyId);
         });
         modelBuilder.Entity<ComsuptionByDay>(entity =>
         {
@@ -200,7 +201,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(x => x.Company).WithMany(x => x.Bookings).HasForeignKey(x => x.CompanyId);
             entity.HasOne(x => x.BranchOffice).WithMany(x => x.Bookings).HasForeignKey(x => x.BranchOfficeId);
         });
-        _ = modelBuilder.Entity<WareHouseMovement>(entity =>
+        modelBuilder.Entity<WareHouseMovement>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.ToTable
@@ -284,59 +285,60 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(x => x.UpdatedBy)
             .ValueGeneratedOnUpdate()
             .HasValueGenerator<UserNameGenerator>();
-
             entity.Property(x => x.UpdatedAt)
             .ValueGeneratedOnUpdate()
             .HasValueGenerator<DateTimeGenerator>();
-            entity.HasOne(x => x.Company).WithMany(x => x.WareHouses).HasForeignKey(x => x.CompanyId);
-            entity.HasOne(e => e.BranchOffice).WithMany(e => e.WareHouses).HasForeignKey(e => e.BranchOfficeId);
+            entity.HasOne(x => x.Company)
+            .WithMany(x => x.WareHouses)
+            .HasForeignKey(x => x.CompanyId);
+            entity.HasOne(e => e.BranchOffice)
+            .WithMany(e => e.WareHouses)
+            .HasForeignKey(e => e.BranchOfficeId);
         });
+
         modelBuilder.Entity<BranchIsland>(entity =>
         {
+            entity.ToTable("BranchIsland");
+
             entity.HasKey(e => e.Id);
+
             entity.Property(x => x.CreatedBy)
-            .ValueGeneratedOnAdd()
-            .HasValueGenerator<UserNameGenerator>();
+                  .ValueGeneratedOnAdd()
+                  .HasValueGenerator<UserNameGenerator>();
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
-            .HasValueGenerator<CompanyIdGenerator>();
+                  .ValueGeneratedOnAddOrUpdate()
+                  .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.BranchOfficeId)
-            .ValueGeneratedOnAdd()
-            .HasValueGenerator<BranchOfficeIdGenerator>();
+                  .ValueGeneratedOnAddOrUpdate()
+                  .HasValueGenerator<BranchOfficeIdGenerator>();
 
             entity.Property(x => x.CreatedAt)
-            .ValueGeneratedOnAdd()
-            .HasValueGenerator<DateTimeGenerator>();
+                  .ValueGeneratedOnAdd()
+                  .HasValueGenerator<DateTimeGenerator>();
 
             entity.Property(x => x.UpdatedBy)
-            .ValueGeneratedOnUpdate()
-            .HasValueGenerator<UserNameGenerator>();
+                  .ValueGeneratedOnUpdate()
+                  .HasValueGenerator<UserNameGenerator>();
 
             entity.Property(x => x.UpdatedAt)
-            .ValueGeneratedOnUpdate()
-            .HasValueGenerator<DateTimeGenerator>();
-            entity.ToTable("BranchIsland");
+                  .ValueGeneratedOnUpdate()
+                  .HasValueGenerator<DateTimeGenerator>();
+
             entity.HasOne(e => e.BranchOffice)
-            .WithMany(e =>
-            e.BranchIslands)
-            .HasForeignKey(e =>
-            e.BranchOfficeId);
+                  .WithMany(e => e.BranchIslands)
+                  .HasForeignKey(e => e.BranchOfficeId);
 
-            entity.HasOne(x => x.BranchOffice)
-            .WithMany()
-            .HasForeignKey(x => x.BranchOfficeId);
-
-            entity.HasOne(x => x.Company)
-            .WithMany()
-            .HasForeignKey(x => x.CompanyId);
+            entity.HasOne(e => e.Company)
+                  .WithMany(e => e.BranchIslands)
+                  .HasForeignKey(e => e.CompanyId);
 
         });
         modelBuilder.Entity<Dispenser>(entity =>
         {
-            entity.HasKey(e => e.Id);
             entity.ToTable("Dispenser");
+            entity.HasKey(e => e.Id);
             entity.Property(x => x.CreatedBy)
             .ValueGeneratedOnAdd()
             .HasValueGenerator<UserNameGenerator>();
@@ -352,8 +354,9 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(x => x.UpdatedAt)
             .ValueGeneratedOnUpdate()
             .HasValueGenerator<DateTimeGenerator>();
+
             entity.HasOne(e => e.BranchIsland)
-            .WithMany(e => e.Dispensers)
+            .WithMany()
             .HasForeignKey(e => e.BranchIslandId);
 
             entity.Property(x => x.CompanyId)
@@ -374,9 +377,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         });
         modelBuilder.Entity<Driver>(entity =>
         {
-            entity.HasKey(e => e.Id);
-
             entity.ToTable("Driver");
+            entity.HasKey(e => e.Id);
 
             entity.Property(x => x.CreatedBy)
             .ValueGeneratedOnAdd()

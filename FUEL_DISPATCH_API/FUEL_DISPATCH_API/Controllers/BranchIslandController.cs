@@ -8,6 +8,7 @@ using Gridify;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Twilio.Rest.Voice.V1;
 
 namespace FUEL_DISPATCH_API.Controllers
 {
@@ -18,21 +19,38 @@ namespace FUEL_DISPATCH_API.Controllers
     {
         private readonly IValidator<BranchIsland> _branchIslandValidator;
         private readonly IBranchIslandServices _branchIslandServices;
-        public BranchIslandController(IBranchIslandServices branchIslandServices, IValidator<BranchIsland> branchIslandValidator)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public BranchIslandController(IBranchIslandServices branchIslandServices,
+                                      IValidator<BranchIsland> branchIslandValidator,
+                                      IHttpContextAccessor httpContextAccessor)
         {
             _branchIslandServices = branchIslandServices;
             _branchIslandValidator = branchIslandValidator;
+            _httpContextAccessor = httpContextAccessor;
         }
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<BranchIsland>>> GetBranchIslands([FromQuery] GridifyQuery query)
         {
-           
             return Ok(_branchIslandServices.GetAll(query));
         }
         [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<BranchIsland>> GetBranchIsland(int id)
         {
-            return Ok(_branchIslandServices.Get(x => x.Id == id));
+            string? companyId, branchId;
+            companyId = _httpContextAccessor
+                .HttpContext?
+                .Items["CompanyId"]?
+                .ToString();
+            branchId = _httpContextAccessor
+                .HttpContext?
+                .Items["BranchOfficeId"]?
+                .ToString();
+
+            bool predicate(BranchIsland x) => x.Id == id &&
+                x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchId);
+
+            return Ok(_branchIslandServices.Get(predicate));
         }
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<BranchIsland>> PostBranchIsland([FromBody] BranchIsland branchIsland)
@@ -42,14 +60,21 @@ namespace FUEL_DISPATCH_API.Controllers
             //{
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             //}
-            return Created(string.Empty, _branchIslandServices.Post(branchIsland));
+            return Created(string.Empty,
+                           _branchIslandServices.Post(branchIsland));
         }
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<User>> UpdateBranchIsland(int id, [FromBody] BranchIsland branchIsland)
         {
-            branchIsland.UpdatedAt = DateTime.Now;
-            branchIsland.UpdatedBy = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return Ok(_branchIslandServices.Update(x => x.Id == id, branchIsland));
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            bool predicate(BranchIsland x) => x.Id == id &&
+                x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchId);
+
+            return Ok(_branchIslandServices.Update(predicate, branchIsland));
         }
     }
 }

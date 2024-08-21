@@ -15,11 +15,16 @@ namespace FUEL_DISPATCH_API.Controllers
     public class VehicleBookingController : ControllerBase
     {
         private readonly IValidator<Booking> _bookingValidator;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IBookingServices _bookingServices;
-        public VehicleBookingController(IBookingServices bookingServices, IValidator<Booking> bookingValidator)
+        public VehicleBookingController(IBookingServices bookingServices,
+                                        IValidator<Booking> bookingValidator,
+                                        IHttpContextAccessor httpContextAccessor)
         {
             _bookingServices = bookingServices;
             _bookingValidator = bookingValidator;
+            _httpContextAccessor = httpContextAccessor;
+
         }
         [HttpGet]
         public ActionResult<ResultPattern<Paging<Booking>>> GetBookings([FromQuery] GridifyQuery query)
@@ -29,7 +34,15 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}")]
         public ActionResult<ResultPattern<Booking>> GetBooking(int id)
         {
-            return Ok(_bookingServices.Get(x => x.Id == id));
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            bool predicate(Booking x) => x.Id == id &&
+                                      x.CompanyId == int.Parse(companyId) &&
+                                      x.BranchOfficeId == int.Parse(branchId);
+
+            return Ok(_bookingServices.Get(predicate));
         }
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Booking>> PostBooking([FromBody] Booking booking)
@@ -44,7 +57,15 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}")]
         public ActionResult<ResultPattern<Booking>> UpdateBooking(int id, [FromBody] Booking booking)
         {
-            return Ok(_bookingServices.Update(x => x.Id == id, booking));
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            bool predicate(Booking x) => x.Id == id &&
+                                      x.CompanyId == int.Parse(companyId) &&
+                                      x.BranchOfficeId == int.Parse(branchId);
+
+            return Ok(_bookingServices.Update(predicate, booking));
         }
     }
 }

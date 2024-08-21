@@ -16,6 +16,7 @@ namespace FUEL_DISPATCH_API.Controllers
     public class WareHouseMovementRequestController : ControllerBase
     {
         private readonly IRequestServices _requestServices;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IValidator<WareHouseMovementRequest> _validator;
         public WareHouseMovementRequestController(IRequestServices requestServices, IValidator<WareHouseMovementRequest> validator)
         {
@@ -31,7 +32,15 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}")]
         public ActionResult<ResultPattern<WareHouseMovementRequest>> GetRequest(int id)
         {
-            return Ok(_requestServices.Get(x => x.Id == id));
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            bool predicate(WareHouseMovementRequest x) => x.Id == id &&
+                                           x.CompanyId == int.Parse(companyId) &&
+                                           x.BranchOfficeId == int.Parse(branchId);
+
+            return Ok(_requestServices.Get(predicate));
         }
         // DONE: Agregar el validador aqui.
         [HttpPost]
@@ -46,9 +55,17 @@ namespace FUEL_DISPATCH_API.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public ActionResult<ResultPattern<User>> UpdateRequest(int id, [FromBody] WareHouseMovementRequest request)
+        public ActionResult<ResultPattern<WareHouseMovementRequest>> UpdateRequest(int id, [FromBody] WareHouseMovementRequest request)
         {
-            return Ok(_requestServices.Update(x => x.Id == id, request));
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            bool predicate(WareHouseMovementRequest x) => x.Id == id &&
+                                           x.CompanyId == int.Parse(companyId) &&
+                                           x.BranchOfficeId == int.Parse(branchId);
+
+            return Ok(_requestServices.Update(predicate, request));
         }
     }
 }

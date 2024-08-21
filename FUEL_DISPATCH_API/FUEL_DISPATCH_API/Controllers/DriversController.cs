@@ -16,11 +16,13 @@ namespace FUEL_DISPATCH_API.Controllers
     public class DriversController : ControllerBase
     {
         private readonly IValidator<Driver> _driverValidator;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IDriversServices _driverServices;
-        public DriversController(IDriversServices driverServices, IValidator<Driver> driverValidator)
+        public DriversController(IDriversServices driverServices, IValidator<Driver> driverValidator, IHttpContextAccessor httpContextAccessor)
         {
             _driverServices = driverServices;
             _driverValidator = driverValidator;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet, Authorize(Roles = "Administrator")]
@@ -38,7 +40,14 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}")]
         public ActionResult<ResultPattern<Driver>> GetDriver(int id)
         {
-            return Ok(_driverServices.Get(x => x.Id == id));
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            bool predicate(Driver x) => x.Id == id &&
+                                               x.CompanyId == int.Parse(companyId) &&
+                                               x.BranchOfficeId == int.Parse(branchId);
+            return Ok(_driverServices.Get(predicate));
         }
 
         /// <summary>
@@ -79,7 +88,14 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Driver>> UpdateDriver(int id, [FromBody] Driver driver)
         {
-            return Ok(_driverServices.Update(x => x.Id == id, driver));
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            bool predicate(Driver x) => x.Id == id &&
+                                               x.CompanyId == int.Parse(companyId) &&
+                                               x.BranchOfficeId == int.Parse(branchId);
+            return Ok(_driverServices.Update(predicate, driver));
         }
     }
 }

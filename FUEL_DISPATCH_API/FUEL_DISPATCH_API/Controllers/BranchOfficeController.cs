@@ -18,10 +18,14 @@ namespace FUEL_DISPATCH_API.Controllers
     {
         private readonly IValidator<BranchOffices> _branchOfficeValidator;
         private readonly IBranchOfficeServices _branchOfficeServices;
-        public BranchOfficeController(IValidator<BranchOffices> branchOfficeValidator, IBranchOfficeServices branchOfficeServices)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public BranchOfficeController(IValidator<BranchOffices> branchOfficeValidator, 
+                                      IBranchOfficeServices branchOfficeServices,
+                                      IHttpContextAccessor httpContextAccessor)
         {
             _branchOfficeValidator = branchOfficeValidator;
             _branchOfficeServices = branchOfficeServices;
+            _httpContextAccessor = httpContextAccessor;
         }
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<BranchOffices>>> GetBranchOfficess([FromQuery] GridifyQuery query)
@@ -31,7 +35,15 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<BranchOffices>> GetBranchOffice(int id)
         {
-            return Ok(_branchOfficeServices.Get(x => x.Id == id));
+            string? companyId;
+            companyId = _httpContextAccessor
+                        .HttpContext?
+                        .Items["CompanyId"]?
+                        .ToString();
+
+            bool predicate(BranchOffices x) => x.Id == id && 
+                                               x.CompanyId == int.Parse(companyId);
+            return Ok(_branchOfficeServices.Get(predicate));
         }
         [HttpPost, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<BranchOffices>> PostBranchOffice([FromBody] BranchOffices branchOffice)
@@ -47,7 +59,15 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<BranchOffices>> UpdateBranchOffice(int id, [FromBody] BranchOffices branchOffice)
         {
-            return Ok(_branchOfficeServices.Update(x => x.Id == id, branchOffice));
+            string? companyId;
+            companyId = _httpContextAccessor
+                        .HttpContext?
+                        .Items["CompanyId"]?
+                        .ToString();
+
+            bool predicate(BranchOffices x) => x.Id == id &&
+                                               x.CompanyId == int.Parse(companyId);
+            return Ok(_branchOfficeServices.Update(predicate, branchOffice));
         }
     }
 }

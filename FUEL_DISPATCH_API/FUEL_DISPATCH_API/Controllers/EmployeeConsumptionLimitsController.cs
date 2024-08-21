@@ -37,7 +37,10 @@ namespace FUEL_DISPATCH_API.Controllers
             string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
-            Func<EmployeeConsumptionLimits, bool> predicate = x => x.DriverId == driverId && (int)x.DriverMethodOfComsuptionId == methodId;
+            bool predicate(EmployeeConsumptionLimits x) => x.DriverId == driverId && 
+                                                           x.DriverMethodOfComsuptionId == methodId && 
+                                                           x.CompanyId == int.Parse(companyId) && 
+                                                           x.BranchOfficeId == int.Parse(branchId);
             return Ok(_employeeComsuptionLimitsServices.Delete(predicate));
         }
         /// <summary>

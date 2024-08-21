@@ -12,9 +12,11 @@ public partial class CalculatedComsuption
     public int? VehicleId { get; set; }
 
     public decimal? Odometer { get; set; }
+    public decimal? Qty { get; set; }
     public int? CompanyId { get; set; }
+    public int? ItemId { get; set; }
     public int? BranchOfficeId { get; set; }
-    public decimal Gallons { get; set; }
+    public string? ArticleNumber{ get; set; }
 
     public DateTime? CreatedAt { get; set; }
 

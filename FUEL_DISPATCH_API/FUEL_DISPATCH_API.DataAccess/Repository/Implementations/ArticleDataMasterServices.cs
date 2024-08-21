@@ -2,6 +2,7 @@
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.DataAccess.Services;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
@@ -12,11 +13,28 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public ArticleDataMasterServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor)
+        private readonly ISAPService _sapService;
+        public ArticleDataMasterServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor, ISAPService sAPService)
             : base(dbContext, httpContextAccessor)
         {
             _DBContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
+            _sapService = sAPService;
+        }
+        public override ResultPattern<ArticleDataMaster> Post(ArticleDataMaster entity)
+        {
+            try
+            {
+                var getArticleTask = _sapService.GetItemsSAP(entity.ArticleNumber);
+                getArticleTask.Wait();
+            }
+            catch (Exception ex)
+            {
+                return ResultPattern<ArticleDataMaster>.Failure(
+                    StatusCodes.Status400BadRequest,
+                    "The article doesn't exist in SAP");
+            }
+            return base.Post(entity);
         }
         public bool IsArticleUnique(ArticleDataMaster articleDataMaster)
         {

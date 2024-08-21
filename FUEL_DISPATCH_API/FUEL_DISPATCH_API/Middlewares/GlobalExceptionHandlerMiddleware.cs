@@ -6,7 +6,7 @@ using System.Net;
 using System.Text.Json;
 namespace FUEL_DISPATCH_API.Middlewares
 {
-    public class GlobalExceptionHandler : IExceptionHandler
+    public class GlobalExceptionHandlerMiddleware : IExceptionHandler
     {
         public async ValueTask<bool> TryHandleAsync(
             HttpContext httpContext,
@@ -25,7 +25,12 @@ namespace FUEL_DISPATCH_API.Middlewares
 
             return true;
         }
-        private static void CheckException(HttpContext httpContext, Exception exception, out ProblemDetails problemDetails, Type exType, out HttpStatusCode httpStatusCode)
+        private static void CheckException(
+            HttpContext httpContext,
+            Exception exception,
+            out ProblemDetails problemDetails,
+            Type exType,
+            out HttpStatusCode httpStatusCode)
         {
             if (exType == typeof(BadRequestException))
             {

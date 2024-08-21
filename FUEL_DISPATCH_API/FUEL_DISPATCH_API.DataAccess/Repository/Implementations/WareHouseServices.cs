@@ -1,32 +1,46 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.DataAccess.Services;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class WareHouseServices : GenericRepository<WareHouse>, IWareHouseServices
     {
-        public override ResultPattern<WareHouse> Post(WareHouse wareHouse)
-        {
-            if (wareHouse.BranchOfficeId.HasValue)
-            {
-                SetWareHouseDir(wareHouse);
-            }
-            _DBContext.WareHouse.Add(wareHouse);
-            _DBContext.SaveChanges();
-            return ResultPattern<WareHouse>.Success(
-                wareHouse,
-                StatusCodes.Status201Created,
-                "Warehouse added successfully. ");
-        }
+
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public WareHouseServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor)
+        private readonly ISAPService _sapService;
+        public WareHouseServices(FUEL_DISPATCH_DBContext dbContext,
+                                 IHttpContextAccessor httpContextAccessor,
+                                 ISAPService sapService)
             : base(dbContext, httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
             _DBContext = dbContext;
+            _sapService = sapService;
+        }
+
+        public override ResultPattern<WareHouse> Post(WareHouse wareHouse)
+        {
+            try
+            {
+                var getWareHouseTask = _sapService.GetWarehouseSAP(wareHouse.Code);
+                getWareHouseTask.Wait();
+            }
+            catch (Exception ex)
+            {
+                return ResultPattern<WareHouse>.Failure(
+                    StatusCodes.Status400BadRequest,
+                    "The warehouse doesn't exist in SAP");
+            }
+
+            if (wareHouse.BranchOfficeId.HasValue)
+            {
+                SetWareHouseDir(wareHouse);
+            }
+            return base.Post(wareHouse);
         }
         public bool WareHouseExists(WareHouse wareHouse)
         {

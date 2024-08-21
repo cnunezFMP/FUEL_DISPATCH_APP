@@ -31,10 +31,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                     AppConstants.ACCOUNT_CREATED_MESSAGE,
                     "Your account was created successfully. ");
 
-            return ResultPattern<Driver>.Success(
-                entity,
-                StatusCodes.Status200OK,
-                "Driver added successfully. ");
+            return base.Post(entity);
         }
         public bool CheckIfIdIsUnique(Driver entity)
         {

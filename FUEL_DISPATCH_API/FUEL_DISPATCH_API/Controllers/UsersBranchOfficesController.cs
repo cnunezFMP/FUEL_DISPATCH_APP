@@ -15,11 +15,14 @@ namespace FUEL_DISPATCH_API.Controllers
     public class UsersBranchOfficesController : ControllerBase
     {
         private readonly IUsersBranchOfficesServices _usersBranchOfficesServices;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IValidator<UsersBranchOffices> _validator;
-        public UsersBranchOfficesController(IUsersBranchOfficesServices usersBranchOfficesServices, IValidator<UsersBranchOffices> validator)
+        public UsersBranchOfficesController(IUsersBranchOfficesServices usersBranchOfficesServices, IValidator<UsersBranchOffices> validator, 
+          IHttpContextAccessor httpContextAccessor)
         {
             _usersBranchOfficesServices = usersBranchOfficesServices;
             _validator = validator;
+            _httpContextAccessor = httpContextAccessor;
         }
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<UsersBranchOffices>>> GetUsersBranchOfficess([FromQuery] GridifyQuery query)
@@ -27,9 +30,17 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_usersBranchOfficesServices.GetAll(query));
         }
         [HttpDelete("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<UsersBranchOffices>> DeleteUserBranchOffice(int userId, int branchOfficeId)
+        public ActionResult<ResultPattern<UsersBranchOffices>> DeleteUserBranchOffice(int userId)
         {
-            Func<UsersBranchOffices, bool> predicate = x => x.UserId == userId && x.BranchOfficeId == branchOfficeId;
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            bool predicate(UsersBranchOffices x) => x.BranchOfficeId == int.Parse(branchId) &&
+                                                    x.UserId == userId &&
+                                                    x.CompanyId == int.Parse(companyId);
+
+
             return Ok(_usersBranchOfficesServices.Delete(predicate));
         }
 
@@ -45,13 +56,22 @@ namespace FUEL_DISPATCH_API.Controllers
         }
         // DONE: Luego de resolver los problemas aqui, aplicarlo en los demas servicios. 
         [HttpPut("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<UsersBranchOffices>> UpdateUserCompany(int userId, int branchOfficeId, UsersBranchOffices usersBranchOffices)
+        public ActionResult<ResultPattern<UsersBranchOffices>> UpdateUserCompany(int userId,
+            UsersBranchOffices usersBranchOffices)
         {
-            var validationResult = _validator.Validate(usersBranchOffices);
+            //var validationResult = _validator.Validate(usersBranchOffices);
 
-            if (!validationResult.IsValid)
-                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            Func<UsersBranchOffices, bool> predicate = x => x.UserId == userId && x.BranchOfficeId == branchOfficeId;
+            //if (!validationResult.IsValid)
+            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            bool predicate(UsersBranchOffices x) => x.BranchOfficeId == int.Parse(branchId) &&
+                                                    x.UserId == userId &&
+                                                    x.CompanyId == int.Parse(companyId);
+
             return Ok(_usersBranchOfficesServices.UpdateUserBranchOffice(predicate, usersBranchOffices));
         }
     }

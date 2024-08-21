@@ -16,20 +16,22 @@ namespace FUEL_DISPATCH_API.Controllers
     public class vw_WareHouseHistoryController : ControllerBase
     {
         private readonly IWareHouseHistoryServices _wareHouseHistoryServices;
-        public vw_WareHouseHistoryController(IWareHouseHistoryServices wareHouseHistoryServices)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public vw_WareHouseHistoryController(IWareHouseHistoryServices wareHouseHistoryServices, 
+                                            IHttpContextAccessor httpContextAccessor)
         {
             _wareHouseHistoryServices = wareHouseHistoryServices;
+            _httpContextAccessor = httpContextAccessor;
         }
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<vw_WareHouseHistory>>> GetVwWareHouseHistory([FromQuery] GridifyQuery query)
         {
-
             return Ok(_wareHouseHistoryServices.GetAll(query));
         }
         [HttpGet("{wareHouseId:int}")]
         public ActionResult<ResultPattern<vw_WareHouseHistory>> GetHistoryFromWareHouse(int wareHouseId)
         {
-            return Ok(_wareHouseHistoryServices.GetHistoryFromSpecifiedWarehouse(wareHouseId));
+            return Ok(_wareHouseHistoryServices.GetHistoryFromSpecificWareHouse(wareHouseId));
         }
     }
 }

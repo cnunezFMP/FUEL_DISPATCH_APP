@@ -17,38 +17,5 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
         }
-
-        public ResultPattern<List<vw_ActualStock>> GetWareHouseArticles(int wareHouseId, int? articleId)
-        {
-            string? companyId, branchId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
-
-            var wareHouse = _DBContext.WareHouse.FirstOrDefault(x => x.Id == wareHouseId &&
-            x.CompanyId == int.Parse(companyId) &&
-            x.BranchOfficeId == int.Parse(branchId))
-                ?? throw new NotFoundException("No warehouse found. ");
-
-            if (articleId.HasValue)
-            {
-                var article = _DBContext.ArticleDataMaster.Find(articleId)
-                    ?? throw new NotFoundException("This article doesn't exist. ");
-
-                var actualStockFromWareHouseWithArticleId = _DBContext.vw_ActualStock
-                .Where(x => x.WareHouseId == wareHouseId
-                && x.ItemId == articleId)
-                .ToList();
-
-            }
-
-            var actualStockFromWareHouse = _DBContext.vw_ActualStock
-                .Where(x => x.WareHouseId == wareHouseId)
-                .ToList();
-
-            return ResultPattern<List<vw_ActualStock>>
-                .Success(actualStockFromWareHouse,
-                StatusCodes.Status200OK,
-                "Actual stock from warehouse obtained. ");
-        }
     }
 }

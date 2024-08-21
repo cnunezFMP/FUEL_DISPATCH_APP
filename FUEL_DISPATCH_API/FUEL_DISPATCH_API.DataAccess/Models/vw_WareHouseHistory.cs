@@ -5,6 +5,8 @@
     {
         public int? WareHouse { get; set; }
         public int? ToWareHouse { get; set; }
+        public int? CompanyId { get; set; }
+        public int? BranchOfficeId { get; set; }
         public string? WareHouseCode { get; set; }
         public string? ToWareHouseCode { get; set; }
         public int? ItemId { get; set; }

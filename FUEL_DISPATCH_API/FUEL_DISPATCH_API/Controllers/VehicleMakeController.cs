@@ -11,14 +11,18 @@ namespace FUEL_DISPATCH_API.Controllers
     [ApiController]
     public class VehicleMakeController : ControllerBase
     {
-        private readonly IMakeServices _makeServices;
+        private readonly IMakeServices _vehicleMakeServices;
         public VehicleMakeController(IMakeServices makeServices)
         {
-            _makeServices = makeServices;
+            _vehicleMakeServices = makeServices;
         }
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Make>> GetMakes([FromQuery] GridifyQuery query)
-            => Ok(_makeServices.GetAll(query));
+            => Ok(_vehicleMakeServices.GetAll(query));
+
+        [HttpPost, Authorize]
+        public ActionResult<ResultPattern<Make>> PostMake([FromBody] Make make)
+            => Created(string.Empty, _vehicleMakeServices.Post(make));
 
         // TODO: Hacer controlador para recuperar: Las marcas, modelos, generaciones y modification engines por Id de marca. 
 

@@ -17,10 +17,14 @@ namespace FUEL_DISPATCH_API.Controllers
     {
         private readonly IValidator<Dispenser> _dispenserValidator;
         private readonly IDispenserServices _dispenserServices;
-        public DispenserController(IDispenserServices dispenserServices, IValidator<Dispenser> dispenserValidator)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public DispenserController(IDispenserServices dispenserServices,
+                                   IValidator<Dispenser> dispenserValidator,
+                                   IHttpContextAccessor httpContextAccessor)
         {
             _dispenserServices = dispenserServices;
             _dispenserValidator = dispenserValidator;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet, Authorize(Roles = "Administrator")]
@@ -33,7 +37,14 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Dispenser>> GetDispenser(int id)
         {
-            return Ok(_dispenserServices.Get(x => x.Id == id));
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            bool predicate(Dispenser x) => x.Id == id &&
+                                               x.CompanyId == int.Parse(companyId) &&
+                                               x.BranchOfficeId == int.Parse(branchId);
+            return Ok(_dispenserServices.Get(predicate));
         }
 
         [HttpPost, Authorize(Roles = "Administrator")]
@@ -50,7 +61,15 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Dispenser>> UpdateDispenser(int id, [FromBody] Dispenser dispenser)
         {
-            return Ok(_dispenserServices.Update(x => x.Id == id, dispenser));
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
+            bool predicate(Dispenser x) => x.Id == id &&
+                                               x.CompanyId == int.Parse(companyId) &&
+                                               x.BranchOfficeId == int.Parse(branchId);
+
+            return Ok(_dispenserServices.Update(predicate, dispenser));
         }
     }
 }

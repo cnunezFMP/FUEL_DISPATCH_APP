@@ -18,32 +18,21 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             _httpContextAccessor = httpContextAccessor;
             _DBContext = dbContext;
-        }
-        public ResultPattern<List<vw_WareHouseHistory>> GetHistoryFromSpecifiedWarehouse(int warehouseId)
+        } 
+
+        public ResultPattern<List<vw_WareHouseHistory>> GetHistoryFromSpecificWareHouse(int wareHouseId)
         {
             string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
-            var wareHouseHistoryList = (from t0 in _DBContext.Vw_WareHouseHistories
-                                        join t1 in _DBContext.WareHouse on t0.WareHouse equals t1.Id
-                                        where t0.WareHouse == warehouseId &&
-                                        t1.CompanyId == int.Parse(companyId) &&
-                                        t1.BranchOfficeId == int.Parse(branchId)
-                                        select t0)
-                                       .AsNoTracking()
-                                       .ToList();
+            var history = _DBContext.Vw_WareHouseHistories
+                .Where(x => x.WareHouse == wareHouseId &&
+                       x.CompanyId == int.Parse(companyId) &&
+                       x.BranchOfficeId == int.Parse(branchId))
+                .ToList();
 
-
-
-
-            if (!wareHouseHistoryList.Any())
-                throw new BadRequestException("This warehouse don't has history. ");
-
-
-            return ResultPattern<List<vw_WareHouseHistory>>.Success(wareHouseHistoryList,
-                StatusCodes.Status200OK,
-                "History from the specified warehouse obtained. ");
+            return ResultPattern<List<vw_WareHouseHistory>>.Success(history, StatusCodes.Status200OK, "History from specific warehouse retrieved successfully."); 
         }
     }
 }

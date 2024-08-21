@@ -18,8 +18,8 @@ public partial class Model
 
     public int? MakeId { get; set; }
 
-    [JsonIgnore] public virtual ICollection<Generation> Generations { get; set; } = new List<Generation>();
+    [JsonIgnore] public virtual ICollection<Generation> Generations { get; set; } = [];
 
     [JsonIgnore] public virtual Make? Make { get; set; }
-    [JsonIgnore] public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
+    [JsonIgnore] public virtual ICollection<Vehicle> Vehicles { get; set; } = [];
 }

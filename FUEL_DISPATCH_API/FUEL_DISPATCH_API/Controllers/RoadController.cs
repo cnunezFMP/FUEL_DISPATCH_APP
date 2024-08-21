@@ -16,11 +16,17 @@ namespace FUEL_DISPATCH_API.Controllers
     public class RoadController : ControllerBase
     {
         private readonly IValidator<Road> _roadValidator;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IRoadServices _roadServices;
-        public RoadController(IRoadServices roadServices, IValidator<Road> roadValidator)
+
+        public RoadController(IRoadServices roadServices,
+                              IValidator<Road> roadValidator,
+                              IHttpContextAccessor httpContextAccessor)
         {
             _roadServices = roadServices;
             _roadValidator = roadValidator;
+            _httpContextAccessor = httpContextAccessor;
+
         }
         [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<Road>>> GetRoads([FromQuery] GridifyQuery query)
@@ -31,7 +37,13 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Road>> GetRoad(int id)
         {
-            return Ok(_roadServices.Get(x => x.Id == id));
+            string? companyId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+
+            bool predicate(Road x) => x.Id == id &&
+                                      x.CompanyId == int.Parse(companyId);
+
+            return Ok(_roadServices.Get(predicate));
         }
 
         [HttpPost, Authorize(Roles = "Administrator")]
@@ -41,14 +53,19 @@ namespace FUEL_DISPATCH_API.Controllers
             if (!validationResult.IsValid)
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
 
-           
             return Created(string.Empty, _roadServices.Post(road));
         }
 
         [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Road>> UpdateRoad(int id, [FromBody] Road road)
         {
-            return Ok(_roadServices.Update(x => x.Id == id, road));
+            string? companyId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+
+            bool predicate(Road x) => x.Id == id &&
+                                      x.CompanyId == int.Parse(companyId);
+
+            return Ok(_roadServices.Update(predicate, road));
         }
     }
 }

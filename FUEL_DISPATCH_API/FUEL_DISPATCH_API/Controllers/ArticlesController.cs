@@ -15,8 +15,12 @@ namespace FUEL_DISPATCH_API.Controllers
     {
         private readonly IArticleServices _articleServices;
         private readonly IValidator<ArticleDataMaster> _validator;
-        public ArticlesController(IArticleServices articleServices, IValidator<ArticleDataMaster> validator)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public ArticlesController(IArticleServices articleServices,
+                                  IValidator<ArticleDataMaster> validator,
+                                  IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _articleServices = articleServices;
             _validator = validator;
         }
@@ -29,7 +33,12 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<ArticleDataMaster>> GetArticle(int id)
         {
-            return Ok(_articleServices.Get(x => x.Id == id));
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            bool predicate(ArticleDataMaster x) => x.Id == id &&
+                                                   x.CompanyId == int.Parse(companyId);
+            return Ok(_articleServices.Get(predicate));
         }
 
         /// <summary>
@@ -50,7 +59,6 @@ namespace FUEL_DISPATCH_API.Controllers
             //}
             return Created(string.Empty, _articleServices.Post(article));
         }
-
         [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Part>> UpdateArticle(int id, [FromBody] ArticleDataMaster article)
         {
@@ -59,7 +67,13 @@ namespace FUEL_DISPATCH_API.Controllers
             //{
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             //}
-            return Ok(_articleServices.Update(x => x.Id == id, article));
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            bool predicate(ArticleDataMaster x) => x.Id == id &&
+                x.CompanyId == int.Parse(companyId);
+
+            return Ok(_articleServices.Update(predicate, article));
         }
     }
 }

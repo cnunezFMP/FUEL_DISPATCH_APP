@@ -30,11 +30,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             await sapService.PostGenExit(wareHouseMovement);
         }
 
+
+
         public override ResultPattern<WareHouseMovement> Post(WareHouseMovement wareHouseMovement)
         {
-            string? companyId, branchId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+
             if (wareHouseMovement.RequestId.HasValue)
                 SetRequestForMovement(wareHouseMovement);
             if (wareHouseMovement.VehicleId.HasValue)
@@ -48,18 +48,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             }
             // NoEnoughAmount(wareHouseMovement);
             UpdateVehicleOdometer(wareHouseMovement);
-            wareHouseMovement.BranchOfficeId = int.Parse(branchId);
-            _DBContext.WareHouseMovement.Add(wareHouseMovement);
-            _DBContext.SaveChanges();
 
-            // SAP POST
-            //if (wareHouseMovement.Type is MovementsTypesEnum.Salida)
-            //    PostSAP(wareHouseMovement).Wait();
-
-
-            return ResultPattern<WareHouseMovement>.Success(wareHouseMovement,
-                StatusCodes.Status201Created,
-                "Registered dispatch. ");
+            return base.Post(wareHouseMovement);
         }
         #region Logic
         public bool SetDriverIdByVehicle(WareHouseMovement wareHouseMovement)
@@ -81,34 +71,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             }
             return false;
         }
-        //public bool VehicleHasMovements(WareHouseMovement wareHouseMovement)
-        //{
-        //    string? companyId, branchOfficeId;
-        //    companyId = _httpContextAccessor
-        //                .HttpContext?
-        //                .Items["CompanyId"]?
-        //                .ToString();
 
-        //    branchOfficeId = _httpContextAccessor
-        //                    .HttpContext?
-        //                    .Items["BranchOfficeId"]?
-        //                    .ToString();
 
-        //    var vehicleForDispatch = _DBContext.Vehicle
-        //        .Include(x => x.WareHouseMovements)
-        //        .AsNoTrackingWithIdentityResolution()
-        //        .Where(x => x.CompanyId == int.Parse(companyId)
-        //        && x.BranchOfficeId == int.Parse(branchOfficeId))
-        //        .FirstOrDefault(v => v.Id == wareHouseMovement.VehicleId)
-        //        ?? throw new NotFoundException("No vehicle found. ");
-
-        //    //if (vehicleForDispatch!.WareHouseMovements.Any())
-        //    //{
-        //    //    if (CheckPreviousVehicleDispatch(wareHouseMovement))
-        //    //        throw new BadRequestException("The odometer is equal or less than the previous dispatch.");
-        //    //}
-        //    return false;
-        //}
         public bool QtyCantBeZero(WareHouseMovement wareHouseMovement)
             => wareHouseMovement.Qty > ValidationConstants.ZeroGallons;
         public bool CheckPreviousVehicleDispatch(WareHouseMovement wareHouseMovement)
@@ -315,24 +279,28 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public void NoEnoughAmount(WareHouseMovement wareHouseMovement)
         {
-            string? companyId, branchOfficeId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            string? companyId,
+                    branchOfficeId;
+
+            companyId = _httpContextAccessor
+                        .HttpContext?
+                        .Items["CompanyId"]?
+                        .ToString();
+            branchOfficeId = _httpContextAccessor.
+                             HttpContext?.
+                             Items["BranchOfficeId"]?
+                             .ToString();
 
             if (wareHouseMovement.Type is MovementsTypesEnum.Salida)
             {
-                // DONE: Probar esto: (El "CompanyId" no estaba nulo. )  
-                var driverCurrentAmount = (from t0 in _DBContext.EmployeeConsumptionLimits
-                                           join t1 in _DBContext.Driver on t0.DriverId equals t1.Id
-                                           where t0.DriverId == wareHouseMovement.DriverId &&
-                                           (int)t0.DriverMethodOfComsuptionId == wareHouseMovement.FuelMethodOfComsuptionId &&
-                                           t1.BranchOfficeId == int.Parse(branchOfficeId) &&
-                                           t1.CompanyId == int.Parse(companyId)
-                                           select t0)
-                                           .AsNoTrackingWithIdentityResolution()
-                                           .FirstOrDefault()
-                                           ?? throw new NotFoundException("This driver don't has this method. ");
-
+                var driverCurrentAmount = _DBContext
+                .EmployeeConsumptionLimits
+                .AsNoTrackingWithIdentityResolution()
+                .FirstOrDefault(x => x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchOfficeId) &&
+                x.DriverId == wareHouseMovement.DriverId &&
+                x.DriverMethodOfComsuptionId == wareHouseMovement.FuelMethodOfComsuptionId)
+                ?? throw new NotFoundException("This driver don't has this method. ");
 
                 if (driverCurrentAmount!.DriverMethodOfComsuptionId is ValidationConstants.CreditCardMethod)
                 {
@@ -400,7 +368,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             var articleForDispatch = _DBContext.ArticleDataMaster
                 .AsNoTracking()
-                .FirstOrDefault(x => x.Id == wareHouseMovement.ItemId);
+                .FirstOrDefault(x => x.Id == wareHouseMovement.ItemId) ??
+                throw new NotFoundException("Article not found. ");
 
             wareHouseMovement.Amount = articleForDispatch!.UnitPrice * wareHouseMovement.Qty;
 
@@ -409,7 +378,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         public bool UpdateVehicleOdometer(WareHouseMovement wareHouseMovement)
         {
             var vehicle = _DBContext.Vehicle
-                .FirstOrDefault(x => x.Id == wareHouseMovement.VehicleId);
+                .FirstOrDefault(x => x.Id == wareHouseMovement.VehicleId)
+                ?? throw new NotFoundException("No vehicle found. ");
 
             vehicle!.Odometer = wareHouseMovement.Odometer;
             _DBContext.Vehicle.Update(vehicle);

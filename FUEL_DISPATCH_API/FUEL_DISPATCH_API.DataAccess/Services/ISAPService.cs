@@ -5,13 +5,17 @@ using FUEL_DISPATCH_API.Utils.Exceptions;
 using Microsoft.AspNetCore.Http;
 using RestSharp;
 using RestSharp.Serializers.Json;
+using System.ComponentModel.Design;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 namespace FUEL_DISPATCH_API.DataAccess.Services
 {
-    public interface ISAPService
+    public interface ISAPService 
     {
         Task PostGenExit(WareHouseMovement whsMovement);
+        Task<dynamic> GetWarehouseSAP(string id);
+        Task<dynamic> GetItemsSAP(string id);
     }
 
     public class SAPService : ISAPService
@@ -59,7 +63,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
         }
         public async Task PostGenExit(WareHouseMovement whsMovement)
         {
-            var companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString()
+            var companyId = _httpContextAccessor
+                .HttpContext?
+                .Items["CompanyId"]?
+                .ToString()
                 ?? throw new BadRequestException("Invalid Company");
 
             var company = _companiesService.Get(x => x.Id == int.Parse(companyId))?.Data
@@ -100,6 +107,68 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
                 var errorResponse = JsonSerializer.Deserialize<ErrorResponseModel>(response.Content ?? "", JsonSerializerOptions)
                     ?? throw new BadRequestException("Invalid Response");
             }
+        }
+        public async Task<dynamic> GetWarehouseSAP(string id)
+        {
+            var companyId = _httpContextAccessor
+                .HttpContext?
+                .Items["CompanyId"]?
+                .ToString()
+                ?? throw new BadRequestException("Invalid Company");
+
+            var company = _companiesService.Get(x => x.Id == int.Parse(companyId))?.Data
+               ?? throw new NotFoundException("Company not found");
+
+            if (company.CompanySAPParams is null)
+                throw new NotFoundException("Company connection params not set");
+
+            var loginResponse = await Login(company.CompanySAPParams);
+
+            var request = new RestRequest($"/Warehouses('{id}')", Method.Get);
+
+            var response = await _restClient!.ExecuteAsync(request);
+
+            if (!response.IsSuccessful)
+            {
+                var errorResponse = JsonSerializer.Deserialize<ErrorResponseModel>(response.Content ?? "", JsonSerializerOptions)
+                    ?? throw new BadRequestException("Invalid Response");
+
+                throw new BadRequestException(errorResponse.Error?.Message?.Value ?? "Invalid Response");
+            }
+
+            return response.Content;    
+
+        }
+
+        public async Task<dynamic> GetItemsSAP(string id)
+        {
+            var companyId = _httpContextAccessor
+                .HttpContext?
+                .Items["CompanyId"]?
+                .ToString()
+                ?? throw new BadRequestException("Invalid Company");
+
+            var company = _companiesService.Get(x => x.Id == int.Parse(companyId))?.Data
+               ?? throw new NotFoundException("Company not found");
+
+            if (company.CompanySAPParams is null)
+                throw new NotFoundException("Company connection params not set");
+
+            var loginResponse = await Login(company.CompanySAPParams);
+
+            var request = new RestRequest($"/Items('{id}')", Method.Get);
+
+            var response = await _restClient!.ExecuteAsync(request);
+
+            if (!response.IsSuccessful)
+            {
+                var errorResponse = JsonSerializer.Deserialize<ErrorResponseModel>(response.Content ?? "", JsonSerializerOptions)
+                    ?? throw new BadRequestException("Invalid Response");
+
+                throw new BadRequestException(errorResponse.Error?.Message?.Value ?? "Invalid Response");
+            }
+
+            return response.Content;
         }
     }
 }

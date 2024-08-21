@@ -24,7 +24,7 @@ var builder = WebApplication.CreateBuilder(args);
 const string swaggerTitle = "FUEL_DISPATCH_API";
 const string swaggerVersion = "v1";
 const string corsName = "MyPolicy";
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandlerMiddleware>();
 builder.Services.AddProblemDetails();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers()

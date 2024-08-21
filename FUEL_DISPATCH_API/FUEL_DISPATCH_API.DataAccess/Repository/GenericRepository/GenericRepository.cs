@@ -27,7 +27,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
         }
         public virtual ResultPattern<T> Get(Func<T, bool> predicate)
         {
-            var entity = _DBContext.Set<T>().AsNoTrackingWithIdentityResolution().FirstOrDefault(predicate)
+            var entity = _DBContext.Set<T>()
+                .AsNoTrackingWithIdentityResolution()
+                .FirstOrDefault(predicate)
                 ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
 
             return ResultPattern<T>.Success(entity!, StatusCodes.Status200OK, AppConstants.DATA_OBTAINED_MESSAGE);
@@ -37,11 +39,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
             string? companyId, branchId;
             companyId = _httpContextAccesor
                 .HttpContext?
-                .Items["CompanyId"] as string ?? string.Empty;
+                .Items["CompanyId"] as string ??
+                string.Empty;
 
             branchId = _httpContextAccesor
                 .HttpContext?
-                .Items["BranchOfficeId"] as string ?? string.Empty;
+                .Items["BranchOfficeId"] as string ??
+                string.Empty;
 
             if (companyId is null && branchId is null)
             {
@@ -70,7 +74,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                                        StatusCodes.Status200OK,
                                        AppConstants.DATA_OBTAINED_MESSAGE);
             }
-
             if (typeof(T).GetProperty("CompanyId") is not null)
             {
                 var entitiesComp = _DBContext.Set<T>()
@@ -91,7 +94,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
             return ResultPattern<Paging<T>>.Success(new Paging<T>(),
                                StatusCodes.Status200OK,
                                AppConstants.DATA_OBTAINED_MESSAGE);
-
         }
         // DONE: Asignar los id de compañia y sucursal a las entidades que se creen.
         // DONE: Hacer esto al igual que el metodo GET, para los Id de compañia y sucursal.
@@ -104,7 +106,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                 AppConstants.DATA_SAVED_MESSAGE);
         }
         // UNDONE: Buscar alguna forma de que no se actualicen las propiedades que no envio en los PUT.
-        public virtual ResultPattern<T> Update(Func<T, bool> predicate,  T updatedEntity)
+        public virtual ResultPattern<T> Update(Func<T, bool> predicate, T updatedEntity)
         {
             // UNDONE: Buscar el objeto por compañia y sucursal. 
             var entityToUpdate = _DBContext.Set<T>().FirstOrDefault(predicate)
