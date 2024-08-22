@@ -24,9 +24,8 @@ namespace FUEL_DISPATCH_API.Controllers
         }
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<vw_ActualStock>>> GetAllVwActualStock([FromQuery] GridifyQuery query)
-        {
-            return Ok(_actualStockServices.GetAll(query));
-        }
+            => Ok(_actualStockServices.GetAll(query));
+
         [HttpGet("{warehouseId:int}"), Authorize]
         public ActionResult<ResultPattern<Paging<vw_ActualStock>>> GetVwActualStock(int warehouseId)
         {
@@ -34,7 +33,7 @@ namespace FUEL_DISPATCH_API.Controllers
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
-            bool predicate(vw_ActualStock x) => 
+            bool predicate(vw_ActualStock x) =>
                 x.WareHouseId == warehouseId &&
                 x.CompanyId == int.Parse(companyId) &&
                 x.BranchOfficeId == int.Parse(branchId);

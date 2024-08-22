@@ -34,6 +34,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
         public override ResultPattern<WareHouseMovement> Post(WareHouseMovement wareHouseMovement)
         {
+            
 
             if (wareHouseMovement.RequestId.HasValue)
                 SetRequestForMovement(wareHouseMovement);

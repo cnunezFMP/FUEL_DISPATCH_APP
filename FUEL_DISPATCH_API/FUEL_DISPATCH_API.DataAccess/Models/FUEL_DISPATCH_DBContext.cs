@@ -1,4 +1,5 @@
-﻿using FUEL_DISPATCH_API.DataAccess.ValueGenerators;
+﻿using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
+using FUEL_DISPATCH_API.DataAccess.ValueGenerators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FUEL_DISPATCH_API.DataAccess.Models;
@@ -38,6 +39,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<WareHouse> WareHouse { get; set; }
     public virtual DbSet<WareHouseMovement> WareHouseMovement { get; set; }
     public virtual DbSet<WareHouseMovementRequest> WareHouseMovementRequest { get; set; }
+    public virtual DbSet<vw_LicenseExpDateAlert> Vw_LicenseExpDateAlertServices { get; set; }
     public virtual DbSet<User> User { get; set; }
     public virtual DbSet<UserToken> UserToken { get; set; }
     public virtual DbSet<UsersRols> UsersRols { get; set; }
@@ -850,6 +852,12 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity
                 .HasNoKey()
                 .ToView("vw_ActualStock");
+        });
+        modelBuilder.Entity<vw_LicenseExpDateAlert>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToView("vw_LicenseExpDateAlert");
         });
         modelBuilder.Entity<vw_WareHouseHistory>(entity =>
         {

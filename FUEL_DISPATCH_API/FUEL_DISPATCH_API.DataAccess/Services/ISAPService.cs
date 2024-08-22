@@ -6,16 +6,18 @@ using Microsoft.AspNetCore.Http;
 using RestSharp;
 using RestSharp.Serializers.Json;
 using System.ComponentModel.Design;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 namespace FUEL_DISPATCH_API.DataAccess.Services
 {
-    public interface ISAPService 
+    public interface ISAPService
     {
         Task PostGenExit(WareHouseMovement whsMovement);
         Task<dynamic> GetWarehouseSAP(string id);
         Task<dynamic> GetItemsSAP(string id);
+        Task<WarehouseItemStock?> GetItemsStockSAP(string whsCode, string[]? itemCodes = null);
     }
 
     public class SAPService : ISAPService
@@ -136,7 +138,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
                 throw new BadRequestException(errorResponse.Error?.Message?.Value ?? "Invalid Response");
             }
 
-            return response.Content;    
+            return response.Content;
 
         }
 
@@ -169,6 +171,53 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
             }
 
             return response.Content;
+        }
+
+        public async Task<WarehouseItemStock?> GetItemsStockSAP(string whsCode, string[]? itemCodes = null)
+        {
+
+            var companyId = _httpContextAccessor
+                .HttpContext?
+                .Items["CompanyId"]?
+                .ToString()
+                ?? throw new BadRequestException("Invalid Company");
+
+            var company = _companiesService.Get(x => x.Id == int.Parse(companyId))?.Data
+               ?? throw new NotFoundException("Company not found");
+
+            if (company.CompanySAPParams is null)
+                throw new NotFoundException("Company connection params not set");
+
+            var loginResponse = await Login(company.CompanySAPParams);
+
+            var queryBuilder = new StringBuilder($"/$crossjoin(Items, Items/ItemWarehouseInfoCollection)?$expand=Items($select=ItemCode,ItemName),Items/ItemWarehouseInfoCollection($select=InStock)&$filter=Items/ItemCode eq Items/ItemWarehouseInfoCollection/ItemCode and Items/ItemWarehouseInfoCollection/WarehouseCode eq '{whsCode}'");
+
+            if (itemCodes is not null && itemCodes.Length > 0)
+            {
+                queryBuilder.Append(" and (");
+                foreach (var item in itemCodes.Select((item, i) => new { i, item }))
+                {
+                    if (item.i > 0)
+                        queryBuilder.Append($" or Items/ItemCode eq '{item.item}'");
+                    else
+                        queryBuilder.Append($"Items/ItemCode eq '{item.item}'");
+                }
+                queryBuilder.Append(")");
+            }
+
+            var request = new RestRequest(queryBuilder.ToString(), Method.Get);
+
+            var response = await _restClient!.ExecuteAsync<WarehouseItemStock>(request);
+
+            if (!response.IsSuccessful)
+            {
+                var errorResponse = JsonSerializer.Deserialize<ErrorResponseModel>(response.Content ?? "", JsonSerializerOptions)
+                    ?? throw new BadRequestException("Invalid Response");
+
+                throw new BadRequestException(errorResponse.Error?.Message?.Value ?? "Invalid Response");
+            }
+
+            return response.Data;
         }
     }
 }

@@ -14,8 +14,8 @@ namespace FUEL_DISPATCH_API.Controllers
     public class ArticlesController : ControllerBase
     {
         private readonly IArticleServices _articleServices;
-        private readonly IValidator<ArticleDataMaster> _validator;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IValidator<ArticleDataMaster> _validator;
         public ArticlesController(IArticleServices articleServices,
                                   IValidator<ArticleDataMaster> validator,
                                   IHttpContextAccessor httpContextAccessor)

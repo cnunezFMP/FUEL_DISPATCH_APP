@@ -156,6 +156,7 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IDispenserServices, DispenserServices>()
                 .AddScoped<IRoadServices, RoadServices>()
                 .AddScoped<ICompaniesServices, CompaniesServices>()
+                .AddScoped<ILicenseExpDateAlertServices, LicenseExpDateAlertServices>()
                 .AddScoped<IAllComsuptionServices, AllComsuptionServices>()
                 .AddScoped<ICalculatedComsuptionServices, CalculatedComsuptionServices>()
                 .AddScoped<IComsuptionByDayServices, ComsuptionByDayServices>()
@@ -206,11 +207,11 @@ app.UseExceptionHandler();
 
         companyId = c.Claims
         .FirstOrDefault(x => x.Type == "CompanyId")?
-        .Value;
+        .WarehouseItemStockValue;
 
         branchId = c.Claims
         .FirstOrDefault(x => x.Type == "BranchOfficeId")?
-        .Value;
+        .WarehouseItemStockValue;
 
 
     }
