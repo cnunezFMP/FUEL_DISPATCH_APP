@@ -19,7 +19,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<vw_ActualStock> vw_ActualStock { get; set; }
     public virtual DbSet<vw_WareHouseHistory> Vw_WareHouseHistories { get; set; }
     public virtual DbSet<Companies> Companies { get; set; }
-    //public virtual DbSet<UsersCompanies> UsersCompanies { get; set; }
     public virtual DbSet<ComsuptionByDay> ComsuptionByDay { get; set; }
     public virtual DbSet<ComsuptionByMonth> ComsuptionByMonth { get; set; }
     public virtual DbSet<Dispenser> Dispenser { get; set; }

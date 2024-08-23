@@ -91,9 +91,20 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                     StatusCodes.Status200OK,
                     AppConstants.DATA_OBTAINED_MESSAGE);
             }
-            return ResultPattern<Paging<T>>.Success(new Paging<T>(),
-                               StatusCodes.Status200OK,
-                               AppConstants.DATA_OBTAINED_MESSAGE);
+
+            var entities = _DBContext.Set<T>()
+                .AsNoTrackingWithIdentityResolution()
+                .ApplyFilteringAndOrdering(query);
+
+            var responseEntities = new Paging<T>
+            {
+                Data = entities,
+                Count = entities.Count()
+            };
+
+            return ResultPattern<Paging<T>>.Success(responseEntities,
+                    StatusCodes.Status200OK,
+                    AppConstants.DATA_OBTAINED_MESSAGE);
         }
         // DONE: Asignar los id de compañia y sucursal a las entidades que se creen.
         // DONE: Hacer esto al igual que el metodo GET, para los Id de compañia y sucursal.

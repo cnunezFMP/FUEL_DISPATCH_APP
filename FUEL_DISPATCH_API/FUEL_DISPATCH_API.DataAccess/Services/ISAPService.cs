@@ -175,7 +175,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
 
         public async Task<WarehouseItemStock?> GetItemsStockSAP(string whsCode, string[]? itemCodes = null)
         {
-
             var companyId = _httpContextAccessor
                 .HttpContext?
                 .Items["CompanyId"]?

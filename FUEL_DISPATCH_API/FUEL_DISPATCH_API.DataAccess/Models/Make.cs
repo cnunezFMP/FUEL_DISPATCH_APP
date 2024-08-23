@@ -13,5 +13,5 @@ public partial class Make
 
     public virtual ICollection<Model> Models { get; set; } = [];
 
-    [JsonIgnore] public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
+    [JsonIgnore] public virtual ICollection<Vehicle> Vehicles { get; set; } = [];
 }

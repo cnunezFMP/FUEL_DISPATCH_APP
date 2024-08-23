@@ -30,12 +30,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             await sapService.PostGenExit(wareHouseMovement);
         }
 
-
-
         public override ResultPattern<WareHouseMovement> Post(WareHouseMovement wareHouseMovement)
         {
-            
-
             if (wareHouseMovement.RequestId.HasValue)
                 SetRequestForMovement(wareHouseMovement);
             if (wareHouseMovement.VehicleId.HasValue)
@@ -292,39 +288,37 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                              Items["BranchOfficeId"]?
                              .ToString();
 
-            if (wareHouseMovement.Type is MovementsTypesEnum.Salida)
+            var driverCurrentAmount = _DBContext
+            .EmployeeConsumptionLimits
+            .AsNoTrackingWithIdentityResolution()
+            .FirstOrDefault(x => x.CompanyId == int.Parse(companyId) &&
+            x.BranchOfficeId == int.Parse(branchOfficeId) &&
+            x.DriverId == wareHouseMovement.DriverId &&
+            x.DriverMethodOfComsuptionId == wareHouseMovement.FuelMethodOfComsuptionId)
+            ?? throw new NotFoundException("This driver don't has this method. ");
+
+            if (driverCurrentAmount!.DriverMethodOfComsuptionId is ValidationConstants.CreditCardMethod)
             {
-                var driverCurrentAmount = _DBContext
-                .EmployeeConsumptionLimits
-                .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault(x => x.CompanyId == int.Parse(companyId) &&
-                x.BranchOfficeId == int.Parse(branchOfficeId) &&
-                x.DriverId == wareHouseMovement.DriverId &&
-                x.DriverMethodOfComsuptionId == wareHouseMovement.FuelMethodOfComsuptionId)
-                ?? throw new NotFoundException("This driver don't has this method. ");
+                if (wareHouseMovement.Amount > driverCurrentAmount.LimitAmount)
+                    throw new BadRequestException("Driver have'nt enough amount. ");
+                // Si el current amounrt no puede pasar el liminte. El current amount debe empezar en cero.. 
+                var newDriverAmount = driverCurrentAmount.CurrentAmount + wareHouseMovement.Amount;
+                driverCurrentAmount.CurrentAmount = newDriverAmount;
+                _DBContext.EmployeeConsumptionLimits.Update(driverCurrentAmount);
+                _DBContext.SaveChanges();
+            }
 
-                if (driverCurrentAmount!.DriverMethodOfComsuptionId is ValidationConstants.CreditCardMethod)
-                {
-                    if (wareHouseMovement.Amount > driverCurrentAmount.CurrentAmount)
-                        throw new BadRequestException("Driver have'nt enough amount. ");
+            if (driverCurrentAmount!.DriverMethodOfComsuptionId is ValidationConstants.GallonsMethod ||
+                driverCurrentAmount!.DriverMethodOfComsuptionId is ValidationConstants.TicketMethod)
+            {
+                if (wareHouseMovement.Qty > driverCurrentAmount.LimitAmount)
+                    throw new BadRequestException("Driver have'nt enough amount. ");
+                // El current amounrt no puede pasar el liminte. El current amount debe empezar en cero.. 
+                var newDriverAmount = driverCurrentAmount.CurrentAmount + wareHouseMovement.Amount;
+                driverCurrentAmount.CurrentAmount = newDriverAmount;
+                _DBContext.EmployeeConsumptionLimits.Update(driverCurrentAmount);
+                _DBContext.SaveChanges();
 
-                    var newDriverAmount = driverCurrentAmount.CurrentAmount - wareHouseMovement.Amount;
-                    driverCurrentAmount.CurrentAmount = newDriverAmount;
-                    _DBContext.EmployeeConsumptionLimits.Update(driverCurrentAmount);
-                    _DBContext.SaveChanges();
-                }
-
-                if (driverCurrentAmount!.DriverMethodOfComsuptionId is ValidationConstants.GallonsMethod ||
-                    driverCurrentAmount!.DriverMethodOfComsuptionId is ValidationConstants.TicketMethod)
-                {
-                    if (wareHouseMovement.Qty > driverCurrentAmount.CurrentAmount)
-                        throw new BadRequestException("Driver have'nt enough amount. ");
-
-                    var newDriverAmount = driverCurrentAmount.CurrentAmount - wareHouseMovement.Amount;
-                    driverCurrentAmount.CurrentAmount = newDriverAmount;
-                    _DBContext.EmployeeConsumptionLimits.Update(driverCurrentAmount);
-                    _DBContext.SaveChanges();
-                }
             }
         }
         // DONE: Verificar el estado de las solicitudes. Agregar a FluentValidation.
@@ -335,13 +329,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
             // DONE: Test this:
-            var requestForMovement = (from t0 in _DBContext.WareHouseMovementRequest
-                                      join t1 in _DBContext.WareHouse on t0.WareHouseId equals t1.Id
-                                      where t0.Id == wareHouseMovement.RequestId &&
-                                      t1.BranchOfficeId == int.Parse(branchOfficeId) &&
-                                      t1.CompanyId == int.Parse(companyId)
-                                      select t0)
-                                      .FirstOrDefault()
+            var requestForMovement = _DBContext
+                                      .WareHouseMovementRequest
+                                      .FirstOrDefault(x => x.Id == wareHouseMovement.RequestId &&
+                                                      x.CompanyId == int.Parse(companyId) &&
+                                                      x.BranchOfficeId == int.Parse(branchOfficeId))
                                       ?? throw new NotFoundException("Request not found. ");
 
             if (requestForMovement.Status == ValidationConstants.PendingStatus ||

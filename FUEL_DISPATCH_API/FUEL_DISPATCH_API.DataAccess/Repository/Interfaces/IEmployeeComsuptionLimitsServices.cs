@@ -10,7 +10,5 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
         // ResultPattern<EmployeeConsumptionLimits> DeleteDriverMethod(int driverId, int methodId);
         /*ResultPattern<EmployeeConsumptionLimits> UpdateDriverMethod(int driverId, int methodId, EmployeeConsumptionLimits employeeConsumptionLimit);*/
         bool DriverHasTheMethod(int driverId, int methodOfComsuptionId);
-        bool SetCompanyIdAndBranchOfficeIdByDriver(EmployeeConsumptionLimits employeeConsumptionLimits);
-
     }
 }

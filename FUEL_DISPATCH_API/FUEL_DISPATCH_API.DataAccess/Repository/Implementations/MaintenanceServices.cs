@@ -1,9 +1,11 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.Utils.Constants;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
+using Twilio.TwiML.Voice;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class MaintenanceServices : GenericRepository<Maintenance>, IMaintenanceServices
@@ -20,17 +22,26 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         public override ResultPattern<Maintenance> Post(Maintenance entity)
         {
             SetCurrentOdometerByVehicle(entity);
-            SetNextMaintenanceDate(entity);
             SetNextMaintenanceOdometer(entity);
-            return base.Post(entity);
+            _DBContext.Maintenance.Add(entity);
+            _DBContext.SaveChanges();
+            SetNextMaintenanceDate(entity);
+            return ResultPattern<Maintenance>.Success(entity!,
+                StatusCodes.Status201Created,
+                AppConstants.DATA_SAVED_MESSAGE);
         }
 
         public override ResultPattern<Maintenance> Update(Func<Maintenance, bool> predicate, Maintenance updatedEntity)
         {
             SetCurrentOdometerByVehicle(updatedEntity);
-            SetNextMaintenanceDate(updatedEntity);
             SetNextMaintenanceOdometer(updatedEntity);
-            return base.Update(predicate, updatedEntity);
+            _DBContext.Entry(updatedEntity).CurrentValues.SetValues(updatedEntity);
+            _DBContext.Update(updatedEntity);
+            _DBContext.SaveChanges();
+            SetNextMaintenanceDate(updatedEntity);
+            return ResultPattern<Maintenance>.Success(updatedEntity,
+                StatusCodes.Status200OK,
+                AppConstants.DATA_UPDATED_MESSAGE);
         }
         public bool SetCurrentOdometerByVehicle(Maintenance maintenance)
         {
@@ -66,13 +77,21 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 x.CompanyId == int.Parse(companyId)) ??
                 throw new NotFoundException("La pieza no se encuentra registrada en la compañia");
 
-            maintenance.NextMaintenanceDate = maintenance.CreatedAt.AddMonths(part!.MaintenanceMonthsInt);
+            var dateForNextMaintenance = maintenance.CreatedAt.AddMonths(part!.MaintenanceMonthsInt);
+
+            maintenance.NextMaintenanceDate = dateForNextMaintenance;
+            // Actualizar la fecha de la proxima mantencion
+
+            _DBContext.Maintenance.Update(maintenance);
+            _DBContext.SaveChanges();
+
             return true;
         }
         public bool SetNextMaintenanceOdometer(Maintenance maintenance)
         {
             string? companyId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString() ??
+            companyId = _httpContextAccessor
+                .HttpContext?.Items["CompanyId"]?.ToString() ??
                 throw new BadRequestException("Invalid company. ");
 
             var part = _DBContext.Part

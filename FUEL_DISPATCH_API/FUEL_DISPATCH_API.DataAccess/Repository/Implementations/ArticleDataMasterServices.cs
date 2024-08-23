@@ -32,7 +32,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             {
                 return ResultPattern<ArticleDataMaster>.Failure(
                     StatusCodes.Status400BadRequest,
-                    "The article doesn't exist in SAP");
+                    ex.Message);
             }
             return base.Post(entity);
         }
