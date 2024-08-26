@@ -6,8 +6,6 @@ using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using RestSharp;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class EmployeeComsuptionLimitsServices : GenericRepository<EmployeeConsumptionLimits>, IEmployeeComsuptionLimitsServices
@@ -23,8 +21,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
         }
-
-
         public override ResultPattern<EmployeeConsumptionLimits> Delete(Func<EmployeeConsumptionLimits, bool> predicate)
         {
             var employeeComsuptionLimitEntityToDelete = _DBContext
@@ -37,7 +33,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                                                                     StatusCodes.Status200OK,
                                                                     "Driver method deleted. ");
         }
-        public ResultPattern<EmployeeConsumptionLimits> Update(int driverId, int methodId, EmployeeConsumptionLimits updatedEntity)
+        public ResultPattern<EmployeeConsumptionLimits> Update
+            (
+            int driverId,
+            int methodId,
+            EmployeeConsumptionLimits updatedEntity
+            )
         {
             string? companyId, branchId;
             companyId = _httpContextAccessor
@@ -58,7 +59,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 x.BranchOfficeId == updatedEntity.Driver.BranchOfficeId) ??
                 throw new NotFoundException("No relation found. ");
 
-            _DBContext.Entry(employeeComsuptionLimitEntity!).CurrentValues.SetValues(updatedEntity);
+            _DBContext
+                .Entry(employeeComsuptionLimitEntity!)
+                .CurrentValues
+                .SetValues(updatedEntity);
+
             _DBContext.Update(employeeComsuptionLimitEntity);
             _DBContext.SaveChanges();
             return ResultPattern<EmployeeConsumptionLimits>.Success(employeeComsuptionLimitEntity!, StatusCodes.Status200OK, AppConstants.DATA_UPDATED_MESSAGE);
