@@ -9,13 +9,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
         {
             RuleFor(x => x.Plate)
                 .MinimumLength(6)
-                .MaximumLength(10);
+                .MaximumLength(10)
+                .WithMessage("Ingrese una placa valida. ");
 
             RuleFor(x => x.VIN)
                 .MinimumLength(17)
                 .MaximumLength(17)
                 .NotNull()
-                .NotEmpty();
+                .NotEmpty()
+                .WithMessage("Ingrese un numero de chasis valido. ");
 
             RuleFor(x => x.Ficha)
                 .NotNull()
@@ -23,7 +25,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
                 .Must((vehicleToken, _) =>
                 {
                     return vehiclesServices.FichaMustBeUnique(vehicleToken);
-                }).WithMessage("Ya existe un vehiculo con {PropertyValue}. Esto ocurrio en {PropertyName}. ");
+                }).WithMessage("Ya existe un vehiculo con esta ficha. ");
         }
     }
 }

@@ -16,17 +16,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
                 .NotNull()
                 .MaximumLength(9)
                 .MinimumLength(9)
-                .Must(
-                    (company, _) =>
-                    {
-                        return companiesServices.IsCompanyUnique(company);
-                    });
+                .Must((company, _) => companiesServices.IsCompanyUnique(company));
 
-            RuleFor(x => x.EmailAddress).EmailAddress();
+            RuleFor(x => x.EmailAddress)
+                .EmailAddress();
 
-            RuleFor(x => x.Name).NotNull().NotEmpty();
-
-            RuleFor(x => x.Industry).NotNull().NotEmpty();
+            RuleFor(x => x.Name)
+                .NotNull()
+                .NotEmpty();
         }
     }
 }

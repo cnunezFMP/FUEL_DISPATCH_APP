@@ -58,8 +58,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             string? companyId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
 
-            return _DBContext.BranchOffices.Any(x => x.Id == wareHouse.BranchOfficeId &&
-            x.CompanyId == int.Parse(companyId));
+            return _DBContext
+                .BranchOffices
+                .Any(x => x.Id == wareHouse.BranchOfficeId &&
+                x.CompanyId == int.Parse(companyId));
         }
 
         public bool SetWareHouseDir(WareHouse wareHouse)

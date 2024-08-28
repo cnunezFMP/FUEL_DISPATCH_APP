@@ -82,7 +82,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 .Where(x => x.Id == wareHouseMovement.VehicleId &&
                 x.BranchOfficeId == int.Parse(branchOfficeId))
                 .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault();
+                .FirstOrDefault()??
+                throw new NotFoundException("No se encontro el vehiculo para el despacho. d ");
 
             return wareHouseMovement.Odometer > vehicleForDispatch!.Odometer;
         }
@@ -138,23 +139,20 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool CheckDispenser(WareHouseMovement wareHouseMovement)
         {
-
             string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
-            if (wareHouseMovement.DispenserId is not null && wareHouseMovement.Type is MovementsTypesEnum.Salida)
-            {
-                var dispenser = _DBContext.Dispenser
-                .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault(dp => dp.Id == wareHouseMovement.DispenserId &&
-                dp.BranchIsland.BranchOfficeId == int.Parse(branchId) &&
-                dp.BranchIsland.BranchOffice.CompanyId == int.Parse(companyId))
-                ?? throw new NotFoundException("No dispenser found. ");
 
-                return dispenser.Status is not ValidationConstants.InactiveStatus;
-            }
-            return true;
+            var dispenser = _DBContext.Dispenser
+            .AsNoTrackingWithIdentityResolution()
+            .FirstOrDefault(dp => dp.Id == wareHouseMovement.DispenserId &&
+            dp.BranchOfficeId == int.Parse(branchId) &&
+            dp.CompanyId == int.Parse(companyId))
+            ?? throw new NotFoundException("No dispenser found. ");
+
+            return dispenser.Status is not ValidationConstants.InactiveStatus;
+
         }
         // DONE: Corregir la excepcion aqui
         public bool CheckWareHouseStock(WareHouseMovement wareHouseMovement)
@@ -177,26 +175,19 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             => _DBContext.vw_ActualStock
             .AsNoTrackingWithIdentityResolution()
             .Any(x => x.WareHouseId == wareHouseMovement!.WareHouseId && x.ItemId == wareHouseMovement!.ItemId);
+
+
         public bool CheckIfWareHousesHasActiveStatus(WareHouseMovement wareHouseMovement)
         {
             string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
-            var wareHouse = (from t0 in _DBContext.WareHouse
-                             join t1 in _DBContext.BranchOffices on t0.BranchOfficeId equals int.Parse(branchId)
-                             join t2 in _DBContext.Companies on t0.CompanyId equals int.Parse(companyId)
-                             select t0)
+            var wareHouse = _DBContext.WareHouse
                             .AsNoTrackingWithIdentityResolution()
-                            .FirstOrDefault()
+                            .FirstOrDefault(x => x.CompanyId == int.Parse(companyId) &&
+                            x.BranchOfficeId == int.Parse(companyId))
                             ?? throw new NotFoundException("No warehouse found. ");
 
-            var toWareHouse = _DBContext.WareHouse
-                .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault(x => x.Id == wareHouseMovement.ToWareHouseId);
-
-            if (wareHouseMovement.Type is MovementsTypesEnum.Transferencia)
-                return wareHouse!.Status is ValidationConstants.ActiveStatus &&
-                    toWareHouse!.Status is ValidationConstants.ActiveStatus;
 
             return wareHouse!.Status is ValidationConstants.ActiveStatus;
         }

@@ -23,7 +23,7 @@ public partial class Companies
     public string? EmailAddress2 { get; set; }
 
     public string? Website { get; set; }
-    [Required] public string? Industry { get; set; }
+    public string? Industry { get; set; }
     public DateTime? DateEstablished { get; set; }
     [Required] public string? CEOFounder { get; set; }
     public DateTime? CreatedAt { get; set; }

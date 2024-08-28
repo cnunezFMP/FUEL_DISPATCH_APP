@@ -58,10 +58,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
                 _restClient.AddDefaultHeader("Cookie", $"B1SESSION={response.Data?.SessionId}");
                 return response.Data!;
             }
-            var errorResponse = JsonSerializer.Deserialize<ErrorResponseModel>(response.Content ?? "", JsonSerializerOptions)
+
+            var errorResponse = response.ErrorMessage
                 ?? throw new BadRequestException("Invalid Response");
 
-            throw new BadRequestException(errorResponse.Error?.Message?.Value ?? "Invalid Response");
+            throw new BadRequestException(errorResponse ?? "Invalid Response");
         }
         public async Task PostGenExit(WareHouseMovement whsMovement)
         {
@@ -106,8 +107,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
 
             if (!response.IsSuccessful)
             {
-                var errorResponse = JsonSerializer.Deserialize<ErrorResponseModel>(response.Content ?? "", JsonSerializerOptions)
-                    ?? throw new BadRequestException("Invalid Response");
+                var errorResponse = response.ErrorMessage
+                 ?? throw new BadRequestException("Invalid Response");
+
+                throw new BadRequestException(errorResponse ?? "Invalid Response");
             }
         }
         public async Task<dynamic> GetWarehouseSAP(string id)
@@ -132,10 +135,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
 
             if (!response.IsSuccessful)
             {
-                var errorResponse = JsonSerializer.Deserialize<ErrorResponseModel>(response.Content ?? "", JsonSerializerOptions)
-                    ?? throw new BadRequestException("Invalid Response");
+                var errorResponse = response.ErrorMessage
+                ?? throw new BadRequestException("Invalid Response");
 
-                throw new BadRequestException(errorResponse.Error?.Message?.Value ?? "Invalid Response");
+                throw new BadRequestException(errorResponse ?? "Invalid Response");
             }
 
             return response.Content;
@@ -164,10 +167,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
 
             if (!response.IsSuccessful)
             {
-                var errorResponse = JsonSerializer.Deserialize<ErrorResponseModel>(response.Content ?? "", JsonSerializerOptions)
-                    ?? throw new BadRequestException("Invalid Response");
+                var errorResponse = response.ErrorMessage
+                ?? throw new BadRequestException("Invalid Response");
 
-                throw new BadRequestException(errorResponse.Error?.Message?.Value ?? "Invalid Response");
+                throw new BadRequestException(errorResponse ?? "Invalid Response");
             }
 
             return response.Content;
@@ -210,10 +213,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
 
             if (!response.IsSuccessful)
             {
-                var errorResponse = JsonSerializer.Deserialize<ErrorResponseModel>(response.Content ?? "", JsonSerializerOptions)
-                    ?? throw new BadRequestException("Invalid Response");
+                var errorResponse = response.ErrorMessage
+                ?? throw new BadRequestException("Invalid Response");
 
-                throw new BadRequestException(errorResponse.Error?.Message?.Value ?? "Invalid Response");
+                throw new BadRequestException(errorResponse ?? "Invalid Response");
             }
 
             return response.Data;

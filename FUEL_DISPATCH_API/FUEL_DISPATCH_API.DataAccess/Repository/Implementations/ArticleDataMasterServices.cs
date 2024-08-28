@@ -28,21 +28,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 var getArticleTask = _sapService.GetItemsSAP(entity.ArticleNumber);
                 getArticleTask.Wait();
             }
-            catch (AggregateException aggEx)
-            {
-                var specificException = aggEx.InnerException;
-
-                if (specificException != null)
-                {
-                    throw specificException;
-                }
-                throw;
-            }
             catch (Exception ex)
             {
-                throw;
+                return ResultPattern<ArticleDataMaster>.Failure(
+                    StatusCodes.Status400BadRequest,
+                    ex.Message);
             }
-
             return base.Post(entity);
         }
 

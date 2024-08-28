@@ -11,19 +11,21 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             RuleFor(x => x.Code)
                 .NotEmpty()
                 .NotNull()
-                .Must((branch, _) =>
-            {
-                return branchOfficeServices.BranchCodeMustBeUnique(branch);
-            }).WithMessage("Branch office with this code already exist. ");
+                .Must((branch, _) => branchOfficeServices.BranchCodeMustBeUnique(branch))
+                .WithMessage("Branch office with this code already exist. ");
+
             RuleFor(x => x.Phone)
                 .NotNull()
                 .NotEmpty();
+
             RuleFor(x => x.Representative)
                 .NotNull()
                 .NotEmpty();
+
             RuleFor(x => x.CompanyId)
                 .NotNull()
                 .NotEmpty();
+
             RuleFor(x => x.FullLocation)
                 .NotNull()
                 .NotEmpty();

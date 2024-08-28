@@ -5,11 +5,8 @@ using Microsoft.AspNetCore.Http;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
-    public class MakeServices : GenericRepository<Make>, IMakeServices
+    public class MakeServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor) 
+        : GenericRepository<Make>(dbContext, httpContextAccessor), IMakeServices
     {
-        public MakeServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor)
-            : base(dbContext, httpContextAccessor)
-        {
-        }
     }
 }

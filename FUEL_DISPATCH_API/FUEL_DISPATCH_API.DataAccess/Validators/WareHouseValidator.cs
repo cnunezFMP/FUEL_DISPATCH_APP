@@ -13,10 +13,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
                 .Must((wareHouse, _) =>
             {
                 return wareHouseServices.WareHouseExists(wareHouse);
-            }).WithName("Code exist. ")
-              .WithMessage("Warehouse with this code exist. ");
+            }).WithName("Existe un almacen. ")
+              .WithMessage("Ya existe un almacen con el codigo proporcionado. ");
 
-            RuleFor(x => x.BranchOfficeId).Must((wareHouse, _) =>
+            RuleFor(x => x.BranchOfficeId)
+                .Must((wareHouse, _) =>
             {
                 return wareHouseServices.BranchOfficeExist(wareHouse);
             }).WithName("No existe la sucursal. ")

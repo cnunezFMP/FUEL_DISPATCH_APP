@@ -16,31 +16,26 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
                 .NotEmpty()
                 .NotNull()
                 .NotEqual(0);
-                RuleFor(x => x.ToWareHouseId)
-                .NotEmpty()
-                .NotNull()
-                .NotEqual(0)
-                .When(x => x.Type is MovementsTypesEnum.Transferencia);
             });
 
             RuleFor(x => x)
                 .Must(requestServices.CheckDriver)
-                .WithMessage("Drive doesn't exist or is unavailable. "); ;
+                .WithMessage("El conductor no existe o es invalido. "); ;
 
             // DONE: Hacer nativo el servicio. 
             RuleFor(x => x)
                 .Must(x => requestServices.CheckVehicle(x))
-                .WithMessage("The vehicle is inactive or unavailable. ");
+                .WithMessage("El vehiculo esta inactivo o no es valido. ");
 
             RuleFor(x => x)
                 .Must(requestServices.CheckIfWareHousesHasActiveStatus)
-                .WithMessage("WareHouse in not active. ");
+                .WithMessage("El almacen esta inactivo. ");
 
             RuleFor(x => x.Qty).Must(x => x > ValidationConstants.ZeroGallons);
 
             RuleFor(x => x)
                 .Must(requestServices.CheckVehicle)
-                .WithMessage("The vehicle may be inactive or unavailable. ");
+                .WithMessage("El vehiculo esta inactivo o no es valido. ");
         }
     }
 }

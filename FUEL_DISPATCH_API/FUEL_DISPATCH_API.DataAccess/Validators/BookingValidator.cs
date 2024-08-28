@@ -11,19 +11,22 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
         {
             RuleFor(x => x)
                 .Must(bookingServices.VehicleHasDriverAssigned);
+
             RuleFor(x => x)
                 .Must(bookingServices.VerifyDisponibility)
-                .WithMessage("The vehicle is already reserved for these dates. Or is not ready for proccess. ");
+                .WithMessage("El vehiculo ya esta reservado para estas fechas, o no esta listo para procesar. ");
+
             RuleFor(x => x)
                 .NotEmpty()
                 .NotNull()
                 .Must(bookingServices.CheckDriver)
-                .WithMessage("Drive doesn't exist or is unavailable. ");
+                .WithMessage("El conductor no existe o no es valido. ");
+
             RuleFor(x => x)
                 .NotEmpty()
                 .NotNull()
                 .Must(bookingServices.CheckVehicle)
-                .WithMessage("Vehicle doesn't exist. ");
+                .WithMessage("El vehiculo no existe. ");
         }
     }
 }

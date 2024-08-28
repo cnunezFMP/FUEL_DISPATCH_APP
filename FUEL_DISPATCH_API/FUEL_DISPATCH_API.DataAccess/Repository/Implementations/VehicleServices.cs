@@ -56,8 +56,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             return !_DBContext.Vehicle
                 .Any(x => x.Ficha == vehicleToken.Ficha &&
-                x.CompanyId == Convert.ToInt32(companyId) &&
-                x.BranchOfficeId == Convert.ToInt32(branchId));
+                x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchId));
         }
         // DONE: Implementar esto en el controlador de Vehicle
         public ResultPattern<List<WareHouseMovement>> GetVehicleDispatches(int vehicleId)

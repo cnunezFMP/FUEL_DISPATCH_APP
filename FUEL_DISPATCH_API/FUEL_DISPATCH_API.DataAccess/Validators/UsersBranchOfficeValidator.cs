@@ -15,10 +15,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
         {
             RuleFor(x => x.UserId)
                 .NotEmpty()
-                .WithMessage("UserId is required");
+                .WithMessage("El usuario es requerido. ");
             RuleFor(x => x.BranchOfficeId)
                 .NotEmpty()
-                .WithMessage("BranchOfficeId is required");
+                .WithMessage("La sucursal es requerida. ");
             //RuleFor(x => x)
             //    .Must(x => usersBranchOfficesServices.IsUserInBranchOffice(x.UserId, x.BranchOfficeId));
 

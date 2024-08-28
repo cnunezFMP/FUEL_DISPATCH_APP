@@ -67,13 +67,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
             var vehicleForBook = _DBContext.Vehicle
+                .Include(x => x.Driver)
                 .FirstOrDefault(x => x.Id == booking.VehicleId &&
                 x.CompanyId == int.Parse(companyId) &&
                 x.BranchOfficeId == int.Parse(branchId)) ??
                 throw new NotFoundException("No vehicle found. ");
 
 
-            return !vehicleForBook!.DriverId!.HasValue;
+            return !vehicleForBook!.DriverId.HasValue;
         }
     }
 }
