@@ -176,6 +176,7 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IUsersAuth, UsersAuth>()
                 .AddScoped<IUserServices, UsersServices>()
                 .AddScoped<ISAPService, SAPService>()
+                .AddScoped<IReportsServices, ReportsServices>()
                 .AddTransient<IEmailSender, EmailSender>();
 #endregion
 // Ignore cycles in the object that is actually serializing.
