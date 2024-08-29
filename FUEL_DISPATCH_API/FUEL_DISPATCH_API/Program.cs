@@ -1,5 +1,6 @@
 using FluentValidation;
 using FMP_DISPATCH_API.Services.Emails;
+using FUEL_DISPATCH_API;
 using FUEL_DISPATCH_API.Auth;
 using FUEL_DISPATCH_API.Auth.AuthRepository;
 using FUEL_DISPATCH_API.DataAccess.DTOs;
@@ -19,6 +20,7 @@ using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
+using Twilio.Rest.Voice.V1.DialingPermissions;
 
 var builder = WebApplication.CreateBuilder(args);
 const string swaggerTitle = "FUEL_DISPATCH_API";
@@ -193,6 +195,7 @@ builder.Services.AddCors((options) =>
          .AllowAnyHeader();
     });
 });
+AppConfiguration.Configuration = builder.Configuration;
 var app = builder.Build();
 app.UseExceptionHandler();
 # region AuthMiddlewareInLine

@@ -40,6 +40,7 @@ public class AuthManager
 
             var userFullName = credenciales.FullName;
 
+            // TODO: Revisar esto. 
             var keyBytes = Encoding.UTF8.GetBytes(_secretKey);
             var claims = new ClaimsIdentity();
             claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, usuario.Username!));
