@@ -31,7 +31,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_wareHouseMovementServices.GetAll(query));
         }
 
-        [HttpGet("{id:int}"), Authorize(Roles = "Administrator, Dispatcher")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Dispatcher")]
         public ActionResult<ResultPattern<WareHouseMovement>> GetMovement(int id)
         {
             string? companyId, branchId;
@@ -44,7 +44,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_wareHouseMovementServices.Get(predicate));
         }
 
-        [HttpPost, Authorize(Roles = "Administrator, Dispatcher")]
+        [HttpPost, Authorize(Roles = "Dispatcher")]
         public ActionResult<ResultPattern<WareHouseMovement>> PostMovement([FromBody] WareHouseMovement wareHouseMovement)
         {
             //var validationResult = _wareHouseMovementValidator.Validate(wareHouseMovement);
@@ -56,19 +56,28 @@ namespace FUEL_DISPATCH_API.Controllers
             return Created(string.Empty, _wareHouseMovementServices.Post(wareHouseMovement));
         }
 
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrator, Dispatcher")]
-        public ActionResult<ResultPattern<WareHouseMovement>> UpdateMovement(int id, [FromBody] WareHouseMovement wareHouseMovement)
+        [HttpPut("{id:int}"), Authorize(Roles = "Dispatcher")]
+        public ActionResult<ResultPattern<WareHouseMovement>> UpdateMovement(int id,
+            [FromBody] WareHouseMovement wareHouseMovement)
         {
             string? companyId, branchId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            companyId = _httpContextAccessor
+                .HttpContext?
+                .Items["CompanyId"]?
+                .ToString();
+
+            branchId = _httpContextAccessor
+                .HttpContext?
+                .Items["BranchOfficeId"]?
+                .ToString();
 
             bool predicate(WareHouseMovement x) => x.Id == id &&
                                            x.CompanyId == int.Parse(companyId) &&
                                            x.BranchOfficeId == int.Parse(branchId);
 
 
-            return Ok(_wareHouseMovementServices.Update(predicate, wareHouseMovement));
+            return Ok(_wareHouseMovementServices
+                .Update(predicate, wareHouseMovement));
         }
     }
 }

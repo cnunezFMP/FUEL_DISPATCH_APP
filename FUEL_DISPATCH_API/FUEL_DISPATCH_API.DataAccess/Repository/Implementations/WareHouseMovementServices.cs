@@ -7,7 +7,6 @@ using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class WareHouseMovementServices : GenericRepository<WareHouseMovement>, IWareHouseMovementServices
@@ -37,15 +36,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if (wareHouseMovement.VehicleId.HasValue)
             {
                 SetDriverIdByVehicle(wareHouseMovement);
-                // VehicleHasMovements(wareHouseMovement);
             }
-            if (wareHouseMovement.Type is MovementsTypesEnum.Salida)
+            /*if (wareHouseMovement.Type is MovementsTypesEnum.Salida)
             {
                 CalculateAmountForDispatch(wareHouseMovement);
-            }
-            // NoEnoughAmount(wareHouseMovement);
+            }*/
             UpdateVehicleOdometer(wareHouseMovement);
-
+            PostSAP(wareHouseMovement).Wait();
             return base.Post(wareHouseMovement);
         }
         #region Logic
@@ -69,7 +66,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             return false;
         }
 
-
         public bool QtyCantBeZero(WareHouseMovement wareHouseMovement)
             => wareHouseMovement.Qty > ValidationConstants.ZeroGallons;
         public bool CheckPreviousVehicleDispatch(WareHouseMovement wareHouseMovement)
@@ -82,7 +78,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 .Where(x => x.Id == wareHouseMovement.VehicleId &&
                 x.BranchOfficeId == int.Parse(branchOfficeId))
                 .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault()??
+                .FirstOrDefault() ??
                 throw new NotFoundException("No se encontro el vehiculo para el despacho. d ");
 
             return wareHouseMovement.Odometer > vehicleForDispatch!.Odometer;

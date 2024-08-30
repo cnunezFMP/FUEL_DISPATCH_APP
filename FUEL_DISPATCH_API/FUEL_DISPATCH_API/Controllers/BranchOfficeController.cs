@@ -19,7 +19,7 @@ namespace FUEL_DISPATCH_API.Controllers
         private readonly IValidator<BranchOffices> _branchOfficeValidator;
         private readonly IBranchOfficeServices _branchOfficeServices;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public BranchOfficeController(IValidator<BranchOffices> branchOfficeValidator, 
+        public BranchOfficeController(IValidator<BranchOffices> branchOfficeValidator,
                                       IBranchOfficeServices branchOfficeServices,
                                       IHttpContextAccessor httpContextAccessor)
         {
@@ -27,12 +27,12 @@ namespace FUEL_DISPATCH_API.Controllers
             _branchOfficeServices = branchOfficeServices;
             _httpContextAccessor = httpContextAccessor;
         }
-        [HttpGet, Authorize(Roles = "Administrator")]
+        [HttpGet, Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Paging<BranchOffices>>> GetBranchOfficess([FromQuery] GridifyQuery query)
         {
             return Ok(_branchOfficeServices.GetAll(query));
         }
-        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<BranchOffices>> GetBranchOffice(int id)
         {
             string? companyId;
@@ -41,22 +41,17 @@ namespace FUEL_DISPATCH_API.Controllers
                         .Items["CompanyId"]?
                         .ToString();
 
-            bool predicate(BranchOffices x) => x.Id == id && 
+            bool predicate(BranchOffices x) => x.Id == id &&
                                                x.CompanyId == int.Parse(companyId);
             return Ok(_branchOfficeServices.Get(predicate));
         }
-        [HttpPost, Authorize(Roles = "Administrator")]
+        [HttpPost, Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<BranchOffices>> PostBranchOffice([FromBody] BranchOffices branchOffice)
         {
-            //var validationResult = _branchOfficeValidator.Validate(branchOffice);
-            //if (!validationResult.IsValid)
-            //{
-            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            //}
             // DONE: Fix this, currently throws exception 'InvalidOperationException: No route matches the supplied values.'
             return Created(string.Empty, _branchOfficeServices.Post(branchOffice));
         }
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<BranchOffices>> UpdateBranchOffice(int id, [FromBody] BranchOffices branchOffice)
         {
             string? companyId;

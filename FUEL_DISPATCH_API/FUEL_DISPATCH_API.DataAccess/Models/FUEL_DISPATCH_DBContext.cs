@@ -515,7 +515,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.ToTable("Part");
             entity.Property(x => x.CreatedBy)
             .ValueGeneratedOnAdd()
-            .HasValueGenerator<UserNameGenerator>();
+            .HasValueGenerator<UserNameGenerator>();                                                                                                                           
 
             entity.Property(x => x.CreatedAt)
             .ValueGeneratedOnAdd()

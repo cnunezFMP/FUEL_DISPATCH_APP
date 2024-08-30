@@ -12,7 +12,6 @@ using Twilio.Rest.Voice.V1;
 
 namespace FUEL_DISPATCH_API.Controllers
 {
-    [Authorize(Roles = "Administrator")]
     [ApiController]
     [Route("api/[controller]")]
     public class BranchIslandController : ControllerBase
@@ -28,12 +27,12 @@ namespace FUEL_DISPATCH_API.Controllers
             _branchIslandValidator = branchIslandValidator;
             _httpContextAccessor = httpContextAccessor;
         }
-        [HttpGet, Authorize(Roles = "Administrator")]
+        [HttpGet, Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Paging<BranchIsland>>> GetBranchIslands([FromQuery] GridifyQuery query)
         {
             return Ok(_branchIslandServices.GetAll(query));
         }
-        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<BranchIsland>> GetBranchIsland(int id)
         {
             string? companyId, branchId;
@@ -52,7 +51,7 @@ namespace FUEL_DISPATCH_API.Controllers
 
             return Ok(_branchIslandServices.Get(predicate));
         }
-        [HttpPost, Authorize(Roles = "Administrator")]
+        [HttpPost, Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<BranchIsland>> PostBranchIsland([FromBody] BranchIsland branchIsland)
         {
             //var validationResult = _branchIslandValidator.Validate(branchIsland);
@@ -63,7 +62,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Created(string.Empty,
                            _branchIslandServices.Post(branchIsland));
         }
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<User>> UpdateBranchIsland(int id, [FromBody] BranchIsland branchIsland)
         {
             string? companyId, branchId;

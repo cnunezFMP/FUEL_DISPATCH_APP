@@ -1,31 +1,33 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.Extensions.Configuration;
 using RestSharp;
+using System.Runtime.InteropServices;
 
 namespace FUEL_DISPATCH_API.DataAccess.Services
 {
     public interface IReportsServices
     {
-        Task<byte[]> GetReportAsync(DateTime fromDate, DateTime toDate, string? exportFileName);
-    }
-
+        Task<byte[]> GetReportAsync(DateTime fromDate,
+            DateTime toDate,
+            string? exportFileName);
+    } 
     public class ReportsServices : IReportsServices
     {
-        private readonly RestClient _client;
-
-        public ReportsServices()
+        private RestClient? _client;
+        private readonly IConfiguration configuration;
+        public ReportsServices(IConfiguration configuration)
         {
-            _client = new RestClient("https://localhost:44338/");
+            this.configuration = configuration;
         }
-
         public async Task<byte[]> GetReportAsync(DateTime fromDate, DateTime toDate, string? exportFileName)
         {
-            var request = new RestRequest("api/Reports", Method.Get);
+            string? reportsApiBaseUrl = configuration.GetValue<string>("reportsApiUrl:baseUrl");
+            _client = new RestClient(reportsApiBaseUrl!);
+            var request = new RestRequest($"api/Reports", Method.Get);
             request.AddParameter("fromDate", fromDate.ToString("yyyy-MM-dd"));
             request.AddParameter("toDate", toDate.ToString("yyyy-MM-dd"));
             request.AddParameter("exportFileName", exportFileName);
-
             var response = await _client.ExecuteAsync(request);
-
             if (response.IsSuccessful)
             {
                 return response.RawBytes;

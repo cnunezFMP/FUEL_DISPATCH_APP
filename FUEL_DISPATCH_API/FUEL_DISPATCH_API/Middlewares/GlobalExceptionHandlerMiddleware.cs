@@ -25,6 +25,7 @@ namespace FUEL_DISPATCH_API.Middlewares
 
             return true;
         }
+
         private static void CheckException(
             HttpContext httpContext,
             Exception exception,

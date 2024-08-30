@@ -21,7 +21,6 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using Twilio.Rest.Voice.V1.DialingPermissions;
-
 var builder = WebApplication.CreateBuilder(args);
 const string swaggerTitle = "FUEL_DISPATCH_API";
 const string swaggerVersion = "v1";
@@ -79,6 +78,7 @@ builder.Services.AddSwaggerGen(
 });
 builder.Services.AddDbContext<FUEL_DISPATCH_DBContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("cadenaSQL")));
+
 // Call to the secret key.
 var secretkey = builder.Configuration.GetSection("settings:secretkey").Value; //.GetSection("secretkey").ToString();
 var keyBytes = Encoding.UTF8.GetBytes(secretkey!);
@@ -196,7 +196,7 @@ builder.Services.AddCors((options) =>
          .AllowAnyHeader();
     });
 });
-AppConfiguration.Configuration = builder.Configuration;
+AppOptions.ReportsApiBaseUrl = builder.Configuration.GetSection("reportsApiBaseUrl").ToString();
 var app = builder.Build();
 app.UseExceptionHandler();
 # region AuthMiddlewareInLine

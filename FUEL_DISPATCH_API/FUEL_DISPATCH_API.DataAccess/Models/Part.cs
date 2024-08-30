@@ -13,7 +13,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public string? Model { get; set; }
         public string? CreatedBy { get; set; }
         public string? Manufacturer { get; set; }
-        [Required] public int? CompanyId { get; set; }
+        public int? CompanyId { get; set; }
         [Required] public decimal? MaintenanceOdometerInt { get; set; }
         [Required] public int MaintenanceMonthsInt { get; set; }
         public DateTime? CreatedAt { get; set; }

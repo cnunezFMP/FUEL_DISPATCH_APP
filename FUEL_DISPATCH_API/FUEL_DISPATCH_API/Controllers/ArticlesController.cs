@@ -24,13 +24,13 @@ namespace FUEL_DISPATCH_API.Controllers
             _articleServices = articleServices;
             _validator = validator;
         }
-        [HttpGet, Authorize]
+        [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<ArticleDataMaster>>> GetArticles([FromQuery] GridifyQuery query)
         {
             return Ok(_articleServices.GetAll(query));
         }
 
-        [HttpGet("{id:int}"), Authorize]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrador, Despachador")]
         public ActionResult<ResultPattern<ArticleDataMaster>> GetArticle(int id)
         {
             string? companyId, branchId;
@@ -49,7 +49,7 @@ namespace FUEL_DISPATCH_API.Controllers
         /// <response code="400">Si se intenta agregar un articulo con el codigo de una ya existente. </response>
         /// <response code="400">Si se envia el numero de articulo nulo. </response>
         /// <returns></returns>
-        [HttpPost, Authorize]
+        [HttpPost, Authorize(Roles = "Administrador, Almacenista")]
         public ActionResult<ResultPattern<ArticleDataMaster>> PostArticle([FromBody] ArticleDataMaster article)
         {
             //var validationResult = _validator.Validate(article);
