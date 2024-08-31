@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
@@ -24,7 +24,7 @@ namespace FUEL_DISPATCH_API.Controllers
 
         }
 
-        [HttpPut("{userId:int}/Roles/{rolId:int}"), Authorize(Roles = "Administrator")]
+        [HttpPut("{userId:int}/Roles/{rolId:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<UsersRols>> UpdateUserRol(int userId, int rolId, UsersRols userRol)
         {
             Func<UsersRols, bool> predicate = x => x.UserId == userId && x.RolId == rolId;
@@ -34,7 +34,7 @@ namespace FUEL_DISPATCH_API.Controllers
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             return Ok(_userRolesServices.UpdateUserRol(predicate, userRol));
         }
-        [HttpPost]
+        [HttpPost, Authorize("Administrador")]
         public ActionResult<ResultPattern<UsersRols>> PostUserRol([FromBody] UsersRols userRol)
         {
             var validationResult = _validator.Validate(userRol);
@@ -43,7 +43,7 @@ namespace FUEL_DISPATCH_API.Controllers
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             return Created(string.Empty, _userRolesServices.Post(userRol));
         }
-        [HttpDelete("{userId}/Roles/{rolId}"), Authorize(Roles = "Administrator")]
+        [HttpDelete("{userId}/Roles/{rolId}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<UsersRols>> DeleteUserRol(int userId, int rolId)
         {
             Func<UsersRols, bool> predicate = x => x.UserId == userId && x.RolId == rolId;
