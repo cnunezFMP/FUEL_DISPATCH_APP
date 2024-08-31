@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
@@ -25,13 +25,13 @@ namespace FUEL_DISPATCH_API.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        [HttpGet, Authorize]
+        [HttpGet, Authorize(Roles = "Despachador, Administrador")]
         public ActionResult<ResultPattern<Paging<WareHouseMovement>>> GetMovements([FromQuery] GridifyQuery query)
         {
             return Ok(_wareHouseMovementServices.GetAll(query));
         }
 
-        [HttpGet("{id:int}"), Authorize(Roles = "Dispatcher")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Despachador, Administrador")]
         public ActionResult<ResultPattern<WareHouseMovement>> GetMovement(int id)
         {
             string? companyId, branchId;
@@ -44,7 +44,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_wareHouseMovementServices.Get(predicate));
         }
 
-        [HttpPost, Authorize(Roles = "Dispatcher")]
+        [HttpPost, Authorize(Roles = "Despachador")]
         public ActionResult<ResultPattern<WareHouseMovement>> PostMovement([FromBody] WareHouseMovement wareHouseMovement)
         {
             //var validationResult = _wareHouseMovementValidator.Validate(wareHouseMovement);
@@ -56,7 +56,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Created(string.Empty, _wareHouseMovementServices.Post(wareHouseMovement));
         }
 
-        [HttpPut("{id:int}"), Authorize(Roles = "Dispatcher")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Despachador")]
         public ActionResult<ResultPattern<WareHouseMovement>> UpdateMovement(int id,
             [FromBody] WareHouseMovement wareHouseMovement)
         {
