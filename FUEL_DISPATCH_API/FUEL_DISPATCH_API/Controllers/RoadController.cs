@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
@@ -28,13 +28,13 @@ namespace FUEL_DISPATCH_API.Controllers
             _httpContextAccessor = httpContextAccessor;
 
         }
-        [HttpGet, Authorize(Roles = "Administrator")]
+        [HttpGet, Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Paging<Road>>> GetRoads([FromQuery] GridifyQuery query)
         {
             return Ok(_roadServices.GetAll(query));
         }
 
-        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Road>> GetRoad(int id)
         {
             string? companyId;
@@ -46,7 +46,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_roadServices.Get(predicate));
         }
 
-        [HttpPost, Authorize(Roles = "Administrator")]
+        [HttpPost, Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Road>> PostRoad([FromBody] Road road)
         {
             var validationResult = _roadValidator.Validate(road);
@@ -56,7 +56,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Created(string.Empty, _roadServices.Post(road));
         }
 
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Road>> UpdateRoad(int id, [FromBody] Road road)
         {
             string? companyId;
