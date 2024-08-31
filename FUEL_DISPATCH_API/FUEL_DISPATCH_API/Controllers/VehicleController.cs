@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
@@ -24,22 +24,22 @@ namespace FUEL_DISPATCH_API.Controllers
             _vehicleServices = vehicleServices;
             _vehicleValidator = validator;
         }
-        [HttpGet, Authorize(Roles = "Administrator")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Vehicle>>> GetVehicles([FromQuery] GridifyQuery query)
         {
             return Ok(_vehicleServices.GetAll(query));
         }
-        [HttpGet("{vehicleId:int}/WareHouseMovement"), Authorize(Roles = "Administrator")]
+        [HttpGet("{vehicleId:int}/WareHouseMovement"), Authorize]
         public ActionResult<ResultPattern<Paging<Vehicle>>> GetVehicleWareHouseMovements(int vehicleId)
         {
             return Ok(_vehicleServices.GetVehicleDispatches(vehicleId));
         }
-        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Vehicle>> GetVehicle(int id)
         {
             return Ok(_vehicleServices.Get(x => x.Id == id));
         }
-        [HttpPost, Authorize(Roles = "Administrator")]
+        [HttpPost, Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Vehicle>> PostVehicle([FromBody] Vehicle vehicle)
         {
             //var result = _vehicleValidator.Validate(vehicle);
@@ -50,7 +50,7 @@ namespace FUEL_DISPATCH_API.Controllers
             
             return Created(string.Empty, _vehicleServices.Post(vehicle));
         }
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Vehicle>> UpdateVehicle(int id, [FromBody] Vehicle vehicle)
         {
             string? companyId, branchId;
