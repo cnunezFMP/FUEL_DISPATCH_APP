@@ -1,4 +1,4 @@
-﻿using FUEL_DISPATCH_API.DataAccess.Models;
+using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
@@ -16,7 +16,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _engineServices = modEngineServices;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<ModEngine>> GetEngines([FromQuery] GridifyQuery query)
             => Ok(_engineServices.GetAll(query));
 
