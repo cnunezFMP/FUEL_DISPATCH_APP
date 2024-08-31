@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Validators;
@@ -24,7 +24,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _validator = validator;
             _httpContextAccessor = httpContextAccessor;
         }
-        [HttpGet, Authorize(Roles = "Administrator")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Zone>>> GetZones([FromQuery] GridifyQuery query)
         {
             return Ok(_zoneServices.GetAll(query));
@@ -40,7 +40,7 @@ namespace FUEL_DISPATCH_API.Controllers
 
             return Ok(_zoneServices.Get(predicate));
         }
-        [HttpPost, Authorize(Roles = "Administrator")]
+        [HttpPost, Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Zone>> PostZone([FromBody] Zone zone)
         {
             // DONE: Hacer validador de Zonas.
@@ -51,7 +51,7 @@ namespace FUEL_DISPATCH_API.Controllers
             //}
             return Created(string.Empty, _zoneServices.Post(zone));
         }
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Zone>> UpdateZone(int id, [FromBody] Zone zone)
         {
             string? companyId;
