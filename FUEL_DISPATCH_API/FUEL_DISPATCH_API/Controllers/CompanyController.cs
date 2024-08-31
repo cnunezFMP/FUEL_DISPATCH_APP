@@ -24,7 +24,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _companiesValidator = companiesValidator;
         }
 
-        [HttpGet, Authorize(Roles = "Administrator")]
+        [HttpGet, Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Paging<Companies>>> GetComanies([FromQuery] GridifyQuery query)
         {
             return Ok(_companiesServices.GetAll(query));
@@ -35,12 +35,12 @@ namespace FUEL_DISPATCH_API.Controllers
         /// </summary>
         /// <param name="companyId"></param>
         /// <returns></returns>
-        [HttpGet("{companyId}/BranchOffice"), Authorize(Roles = "Administrator")]
+        [HttpGet("{companyId}/BranchOffice"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<BranchOffices>> GetCompanyBranchOfficess(int companyId)
         {
             return Ok(_companiesServices.GetCompanyBranchOfficess(companyId));
         }
-        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Companies>> GetCompany(int id)
         {
             return Ok(_companiesServices.Get(x => x.Id == id));
@@ -52,7 +52,7 @@ namespace FUEL_DISPATCH_API.Controllers
         //    return Ok(_companiesServices.GetCompanyByRnc(companyRnc));
         //}
 
-        [HttpPost, Authorize(Roles = "Administrator")]
+        [HttpPost, Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Companies>> PostCompany([FromBody] Companies company)
         {
             var validationResult = _companiesValidator.Validate(company);
@@ -63,7 +63,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Created(string.Empty, _companiesServices.Post(company));
         }
 
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Companies>> UpdateCompanie(int id, [FromBody] Companies company)
         {
             return Ok(_companiesServices.Update(x => x.Id == id, company));

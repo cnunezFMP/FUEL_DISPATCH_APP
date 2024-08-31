@@ -26,12 +26,12 @@ namespace FUEL_DISPATCH_API.Controllers
             _httpContextAccessor = new HttpContextAccessor();
             _validator = validator;
         }
-        [HttpGet, Authorize(Roles = "Administrator")]
+        [HttpGet, Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Paging<EmployeeConsumptionLimits>>> GetEmployeeComsuptionMethods([FromQuery] GridifyQuery query)
         {
             return Ok(_employeeComsuptionLimitsServices.GetAll(query));
         }
-        [HttpDelete("{driverId:int}, {methodId:int}"), Authorize(Roles = "Administrator")]
+        [HttpDelete("{driverId:int}, {methodId:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<DriverMethodOfComsuption>> DeleteUserCompany(int driverId, int methodId)
         {
             string? companyId, branchId;
@@ -58,7 +58,7 @@ namespace FUEL_DISPATCH_API.Controllers
         /// </remarks>
         /// <param name="employeeConsumption"></param>
         /// <returns></returns>
-        [HttpPost, Authorize(Roles = "Administrator")]
+        [HttpPost, Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<EmployeeConsumptionLimits>> SetEmployeLimitAndMethod([FromBody] EmployeeConsumptionLimits employeeConsumption)
         {
             //var validationResult = _validator.Validate(employeeConsumption, options => options.IncludeRuleSets("InPost"));
@@ -69,7 +69,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_employeeComsuptionLimitsServices.Post(employeeConsumption));
         }
 
-        [HttpPut("{driverId:int}/DriverMethodOfComsuption/{methodId:int}"), Authorize]
+        [HttpPut("{driverId:int}/DriverMethodOfComsuption/{methodId:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<EmployeeConsumptionLimits>> UpdateUserMethod(int driverId, int methodId, EmployeeConsumptionLimits employeeConsumptionLimit)
         {
             // DONE: Ver si necesito validar la compañia y la sucursal. Y ver como hacerlo.

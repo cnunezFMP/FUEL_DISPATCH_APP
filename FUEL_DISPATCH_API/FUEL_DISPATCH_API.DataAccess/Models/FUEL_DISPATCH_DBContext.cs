@@ -15,7 +15,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<BranchOffices> BranchOffices { get; set; }
     public virtual DbSet<BranchIsland> BranchIslands { get; set; }
     public virtual DbSet<Booking> Booking { get; set; }
-    public virtual DbSet<CalculatedComsuption> CalculatedComsuption { get; set; }
+    public virtual DbSet<CalculatedComsuptionReport> CalculatedComsuption { get; set; }
     public virtual DbSet<vw_ActualStock> vw_ActualStock { get; set; }
     public virtual DbSet<vw_WareHouseHistory> Vw_WareHouseHistories { get; set; }
     public virtual DbSet<Companies> Companies { get; set; }
@@ -115,7 +115,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
                   .WithOne()
                   .HasForeignKey(x => x.BranchOfficeId);
         });
-        modelBuilder.Entity<CalculatedComsuption>(entity =>
+        modelBuilder.Entity<CalculatedComsuptionReport>(entity =>
         {
             entity
                 .HasNoKey()

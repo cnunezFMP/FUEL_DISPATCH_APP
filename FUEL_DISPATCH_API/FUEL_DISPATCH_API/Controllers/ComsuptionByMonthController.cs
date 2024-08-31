@@ -19,7 +19,7 @@ namespace FUEL_DISPATCH_API.Controllers
         }
         // DONE: Implementar los controladores para obtener los consumos restantes. 
         [HttpGet, Authorize(Roles = "Administrator")]
-        public ActionResult<ResultPattern<Paging<CalculatedComsuption>>> GetCalculatedComsuptionByMonth([FromQuery] GridifyQuery query)
+        public ActionResult<ResultPattern<Paging<CalculatedComsuptionReport>>> GetCalculatedComsuptionByMonth([FromQuery] GridifyQuery query)
         {
             return Ok(_comsuptionByMonthServices.GetAll(query));
         }

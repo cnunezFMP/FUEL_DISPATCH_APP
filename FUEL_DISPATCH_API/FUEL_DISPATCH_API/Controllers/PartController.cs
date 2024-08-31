@@ -17,14 +17,15 @@ namespace FUEL_DISPATCH_API.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IPartServices _partServices;
 
-        public PartController(IPartServices partServices, IHttpContextAccessor httpContextAccessor)
+        public PartController(IPartServices partServices,
+            IHttpContextAccessor httpContextAccessor)
         {
             _httpContext = httpContextAccessor.HttpContext;
             _partServices = partServices;
             _httpContextAccessor = httpContextAccessor;
         }
 
-        [HttpGet, Authorize]
+        [HttpGet, Authorize("")]
         public ActionResult<ResultPattern<Paging<Part>>> GetParts([FromQuery] GridifyQuery query)
         {
             return Ok(_partServices.GetAll(query));

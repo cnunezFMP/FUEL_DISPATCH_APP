@@ -18,7 +18,7 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             _driverMethodOfComsuptionServices = driverMethodOfComsuptionServices;
         }
-        [HttpGet/*, Authorize(Roles = "Administrator")*/]
+        [HttpGet, Authorize(Roles = "Administrator")]
         public ActionResult<ResultPattern<Paging<ArticleDataMaster>>> GetArticles([FromQuery] GridifyQuery query)
         {
             return Ok(_driverMethodOfComsuptionServices.GetAll(query));

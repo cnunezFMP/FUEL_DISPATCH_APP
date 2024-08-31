@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
-    public class CalculatedComsuptionServices : GenericRepository<CalculatedComsuption>, ICalculatedComsuptionServices
+    public class CalculatedComsuptionServices : GenericRepository<CalculatedComsuptionReport>, ICalculatedComsuptionServices
     {
         public CalculatedComsuptionServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor)
             : base(dbContext, httpContextAccessor)

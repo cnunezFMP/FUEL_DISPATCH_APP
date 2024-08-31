@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
-    public interface ICalculatedComsuptionServices : IGenericInterface<CalculatedComsuption>
+    public interface ICalculatedComsuptionServices : IGenericInterface<CalculatedComsuptionReport>
     {
     }
 }

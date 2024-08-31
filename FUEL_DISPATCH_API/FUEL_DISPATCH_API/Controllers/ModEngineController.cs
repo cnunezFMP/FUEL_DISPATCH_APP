@@ -14,7 +14,7 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             _modEngineServices = modEngineServices;
         }
-        [HttpGet, Authorize(Roles = "Administrator")]
+        [HttpGet, Authorize(Roles = "Administrador")]
         public ActionResult GetModEngines([FromQuery] GridifyQuery query)
             => Ok(_modEngineServices.GetAll(query));
     }
