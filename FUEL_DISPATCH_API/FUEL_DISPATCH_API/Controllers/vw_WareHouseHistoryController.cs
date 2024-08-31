@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
@@ -23,12 +23,12 @@ namespace FUEL_DISPATCH_API.Controllers
             _wareHouseHistoryServices = wareHouseHistoryServices;
             _httpContextAccessor = httpContextAccessor;
         }
-        [HttpGet, Authorize(Roles = "Administrator")]
+        [HttpGet, Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Paging<vw_WareHouseHistory>>> GetVwWareHouseHistory([FromQuery] GridifyQuery query)
         {
             return Ok(_wareHouseHistoryServices.GetAll(query));
         }
-        [HttpGet("{wareHouseId:int}")]
+        [HttpGet("{wareHouseId:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<vw_WareHouseHistory>> GetHistoryFromWareHouse(int wareHouseId)
         {
             return Ok(_wareHouseHistoryServices.GetHistoryFromSpecificWareHouse(wareHouseId));
