@@ -1,4 +1,4 @@
-﻿using FUEL_DISPATCH_API.DataAccess.Models;
+using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
@@ -19,12 +19,12 @@ namespace FUEL_DISPATCH_API.Controllers
             _usersServices = usersServices;
             _httpContextAccessor = httpContextAccessor;
         }
-        [HttpGet, Authorize(Roles = "Administrator")]
+        [HttpGet, Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Paging<User>>> GetUsers([FromQuery] GridifyQuery query)
         {
             return Ok(_usersServices.GetAll(query));
         }
-        [HttpGet("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<User>> GetUser(int id)
         {
             string? companyId;
@@ -35,7 +35,7 @@ namespace FUEL_DISPATCH_API.Controllers
 
             return Ok(_usersServices.Get(predicate));
         }
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<User>> UpdateUser(int id, [FromBody] User user)
         {
             string? companyId;
@@ -45,7 +45,7 @@ namespace FUEL_DISPATCH_API.Controllers
                                       x.CompanyId == int.Parse(companyId);
             return Ok(_usersServices.Update(predicate, user));
         }
-        [HttpDelete("{id:int}"), Authorize(Roles = "Administrator")]
+        [HttpDelete("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<User>> DeleteUser(int id)
         {
             string? companyId;
