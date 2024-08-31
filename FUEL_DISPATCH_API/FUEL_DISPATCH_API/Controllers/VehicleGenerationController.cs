@@ -1,4 +1,4 @@
-﻿using FUEL_DISPATCH_API.DataAccess.Models;
+using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
@@ -17,7 +17,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _vehicleGenerationServices = vehicleGenerationServices;
         }
 
-        [HttpGet, Authorize(Roles = "Administrator")]
+        [HttpGet, Authorize]
         public ActionResult GetGenerations([FromQuery] GridifyQuery query)
             => Ok(_vehicleGenerationServices.GetAll(query));
 
