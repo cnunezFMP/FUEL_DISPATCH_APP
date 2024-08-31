@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
@@ -24,12 +24,12 @@ namespace FUEL_DISPATCH_API.Controllers
             _validator = validator;
         }
 
-        [HttpGet, Authorize(Roles = "Administrator, Dispatcher")]
+        [HttpGet, Authorize(Roles = "Despachador")]
         public ActionResult<ResultPattern<Paging<WareHouseMovementRequest>>> GetRequests([FromQuery] GridifyQuery query)
         {
             return Ok(_requestServices.GetAll(query));
         }
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Authorize(Roles = "Despachador")]
         public ActionResult<ResultPattern<WareHouseMovementRequest>> GetRequest(int id)
         {
             string? companyId, branchId;
@@ -43,7 +43,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_requestServices.Get(predicate));
         }
         // DONE: Agregar el validador aqui.
-        [HttpPost]
+        [HttpPost, Authorize]
         public ActionResult<ResultPattern<WareHouseMovementRequest>> PostRequest([FromBody] WareHouseMovementRequest request)
         {
             var validationResult = _validator.Validate(request, option => option.IncludeRuleSets("WareHouses"));
@@ -54,7 +54,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Created(string.Empty, _requestServices.Post(request));
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<WareHouseMovementRequest>> UpdateRequest(int id, [FromBody] WareHouseMovementRequest request)
         {
             string? companyId, branchId;
