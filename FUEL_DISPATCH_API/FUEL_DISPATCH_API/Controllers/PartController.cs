@@ -1,4 +1,4 @@
-﻿
+
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
@@ -24,7 +24,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _partServices = partServices;
             _httpContextAccessor = httpContextAccessor;
         }
-        // Hola
+        // Hola mundo 
         [HttpGet, Authorize("")]
         public ActionResult<ResultPattern<Paging<Part>>> GetParts([FromQuery] GridifyQuery query)
         {
