@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
@@ -26,12 +26,12 @@ namespace FUEL_DISPATCH_API.Controllers
             _httpContextAccessor = httpContextAccessor;
 
         }
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Despachador")]
         public ActionResult<ResultPattern<Paging<Booking>>> GetBookings([FromQuery] GridifyQuery query)
         {
             return Ok(_bookingServices.GetAll(query));
         }
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize(Roles = "Despachador")]
         public ActionResult<ResultPattern<Booking>> GetBooking(int id)
         {
             string? companyId, branchId;
@@ -44,7 +44,7 @@ namespace FUEL_DISPATCH_API.Controllers
 
             return Ok(_bookingServices.Get(predicate));
         }
-        [HttpPost, Authorize(Roles = "Administrator")]
+        [HttpPost, Authorize]
         public ActionResult<ResultPattern<Booking>> PostBooking([FromBody] Booking booking)
         {
             var validationResult = _bookingValidator.Validate(booking);
@@ -54,7 +54,7 @@ namespace FUEL_DISPATCH_API.Controllers
             }
             return Created(string.Empty, _bookingServices.Post(booking));
         }
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Booking>> UpdateBooking(int id, [FromBody] Booking booking)
         {
             string? companyId, branchId;
