@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
@@ -24,12 +24,12 @@ namespace FUEL_DISPATCH_API.Controllers
             _validator = validator;
             _httpContextAccessor = httpContextAccessor;
         }
-        [HttpGet, Authorize(Roles = "Administrator")]
+        [HttpGet, Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Paging<UsersBranchOffices>>> GetUsersBranchOfficess([FromQuery] GridifyQuery query)
         {
             return Ok(_usersBranchOfficesServices.GetAll(query));
         }
-        [HttpDelete("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize(Roles = "Administrator")]
+        [HttpDelete("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<UsersBranchOffices>> DeleteUserBranchOffice(int userId)
         {
             string? companyId, branchId;
@@ -45,7 +45,7 @@ namespace FUEL_DISPATCH_API.Controllers
         }
 
         // DONE: Corregir exception. (Cannot insert duplicate key in object 'dbo.UsersBranchOffices'. The duplicate key Value is (1, 1)). Solution: Quite la llave primaria compuesta de la tabla UsersBranchOffices.
-        [HttpPost, Authorize(Roles = "Administrator")]
+        [HttpPost, Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<UsersBranchOffices>> SetUsersBranchOffices([FromBody] UsersBranchOffices usersBranchOffice)
         {
             //var validationResult = _validator.Validate(usersBranchOffice);
@@ -55,7 +55,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Created(string.Empty, _usersBranchOfficesServices.Post(usersBranchOffice));
         }
         // DONE: Luego de resolver los problemas aqui, aplicarlo en los demas servicios. 
-        [HttpPut("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize(Roles = "Administrator")]
+        [HttpPut("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<UsersBranchOffices>> UpdateUserCompany(int userId,
             UsersBranchOffices usersBranchOffices)
         {
