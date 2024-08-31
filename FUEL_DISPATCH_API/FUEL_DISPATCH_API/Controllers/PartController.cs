@@ -24,7 +24,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _partServices = partServices;
             _httpContextAccessor = httpContextAccessor;
         }
-
+        // Hola
         [HttpGet, Authorize("")]
         public ActionResult<ResultPattern<Paging<Part>>> GetParts([FromQuery] GridifyQuery query)
         {
