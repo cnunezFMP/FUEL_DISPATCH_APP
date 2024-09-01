@@ -1,6 +1,8 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.Utils.Exceptions;
+using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,11 +22,23 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext = dbContext;
         }
         // Indica que hay alguna ruta con el mismo codigo.
+        public override ResultPattern<Road> Post(Road entity)
+        {
+            if (RoadCodeMustBeUnique(entity))
+                throw new BadRequestException("Existe una ruta con el mismo codigo asignado. ");
+
+
+            return base.Post(entity);
+        }
         public bool RoadCodeMustBeUnique(Road road)
         {
             string? companyId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            return !_DBContext.Road
+            companyId = _httpContextAccessor
+                .HttpContext?
+                .Items["CompanyId"]?
+                .ToString();
+
+            return _DBContext.Road
                 .AsNoTracking()
                 .Where(x => x.CompanyId == int.Parse(companyId))
                 .Any();

@@ -16,6 +16,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             _DBContext = dbContext;
         }
+
+        public override ResultPattern<UsersBranchOffices> Post(UsersBranchOffices entity)
+        {
+            if (IsUserInBranchOffice(entity.UserId, entity.BranchOfficeId))
+                throw new BadRequestException("El usuario ya esta asignado a la sucursal. ");
+
+            return base.Post(entity);
+        }
         public override ResultPattern<UsersBranchOffices> Delete(Func<UsersBranchOffices, bool> predicate)
         {
             var userBranchOfficeEntityToDelete = _DBContext.UsersBranchOffices
@@ -43,8 +51,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             return ResultPattern<UsersBranchOffices>.Success(updatedEntity, StatusCodes.Status200OK, AppConstants.DATA_UPDATED_MESSAGE);
         }
         // Verificar si el usuario pertenece a la sucursal.
-        public bool IsUserInBranchOffice(int userId, int branchOfficeId)
-            => !_DBContext.UsersBranchOffices.Any(x => x.UserId == userId &&
+        public bool IsUserInBranchOffice(int userId, int? branchOfficeId)
+            => _DBContext.UsersBranchOffices.Any(x => x.UserId == userId &&
                        x.BranchOfficeId == branchOfficeId);
     }
 }

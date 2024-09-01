@@ -31,16 +31,35 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
         public override ResultPattern<WareHouseMovement> Post(WareHouseMovement wareHouseMovement)
         {
+            if (CheckIfWareHousesHasActiveStatus(wareHouseMovement))
+                throw new BadRequestException("Este almacen esta inactivo. ");
             if (wareHouseMovement.RequestId.HasValue)
                 SetRequestForMovement(wareHouseMovement);
+
             if (wareHouseMovement.VehicleId.HasValue)
-            {
                 SetDriverIdByVehicle(wareHouseMovement);
-            }
-            /*if (wareHouseMovement.Type is MovementsTypesEnum.Salida)
-            {
-                CalculateAmountForDispatch(wareHouseMovement);
-            }*/
+
+            if (!QtyCantBeZero(wareHouseMovement))
+                throw new BadRequestException("No se puede dispensar con cero. ");
+
+            if (!CheckPreviousVehicleDispatch(wareHouseMovement))
+                throw new BadRequestException("El odometro es menor o igual al del vehiculo. ");
+
+            if (!CheckVehicle(wareHouseMovement))
+                throw new BadRequestException("El vehiculo esta inactivo, o no esta disponible. ");
+
+            if (!CheckDriver(wareHouseMovement))
+                throw new BadRequestException("El conductor esta inactivo, o no esta disponible. ");
+
+            if (!CheckBranchOffice(wareHouseMovement))
+                throw new BadRequestException("El conductor esta inactivo, o no esta disponible. ");
+
+            if (!CheckDispenser(wareHouseMovement))
+                throw new BadRequestException("El dispensador no esta activo. ");
+
+            if (!CheckIfProductIsInTheWareHouse(wareHouseMovement))
+                throw new BadRequestException(" ");
+
             UpdateVehicleOdometer(wareHouseMovement);
             PostSAP(wareHouseMovement).Wait();
             return base.Post(wareHouseMovement);
@@ -79,7 +98,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 x.BranchOfficeId == int.Parse(branchOfficeId))
                 .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefault() ??
-                throw new NotFoundException("No se encontro el vehiculo para el despacho. d ");
+                throw new NotFoundException("No se encontro el vehiculo para el despacho. ");
 
             return wareHouseMovement.Odometer > vehicleForDispatch!.Odometer;
         }
@@ -115,7 +134,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                     ?? throw new NotFoundException("No driver found. ");
 
                 return (driverForDispatch!.Status is not ValidationConstants.InactiveStatus &&
-                                       driverForDispatch!.Status is not ValidationConstants.NotAvailableStatus);
+                        driverForDispatch!.Status is not ValidationConstants.NotAvailableStatus);
             }
 
             return true;
@@ -131,7 +150,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 b.CompanyId == int.Parse(companyId))
                 ?? throw new NotFoundException("No branch office found. ");
 
-            return branchOffice.Status is ValidationConstants.InactiveStatus;
+            return branchOffice.Status is not ValidationConstants.InactiveStatus;
         }
         public bool CheckDispenser(WareHouseMovement wareHouseMovement)
         {
@@ -160,7 +179,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             var wareHouseStock = _DBContext.vw_ActualStock
                 .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefault(x => x.WareHouseId == wareHouseMovement.WareHouseId &&
-                x.ItemId == wareHouseMovement.ItemId);
+                x.ItemId == wareHouseMovement.ItemId)
+                ?? throw new NotFoundException("No existe relacion del almacen con el articulo. ");
 
             if (wareHouseStock is not null)
                 return wareHouseStock!.StockQty > 0 || wareHouseStock.StockQty > wareHouseMovement.Qty;
@@ -170,7 +190,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         public bool CheckIfProductIsInTheWareHouse(WareHouseMovement wareHouseMovement)
             => _DBContext.vw_ActualStock
             .AsNoTrackingWithIdentityResolution()
-            .Any(x => x.WareHouseId == wareHouseMovement!.WareHouseId && x.ItemId == wareHouseMovement!.ItemId);
+            .Any(x => x.WareHouseId == wareHouseMovement!.WareHouseId &&
+            x.ItemId == wareHouseMovement!.ItemId);
 
 
         public bool CheckIfWareHousesHasActiveStatus(WareHouseMovement wareHouseMovement)
@@ -185,9 +206,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                             ?? throw new NotFoundException("No warehouse found. ");
 
 
-            return wareHouse!.Status is ValidationConstants.ActiveStatus;
+            return wareHouse!.Status is not ValidationConstants.ActiveStatus;
         }
-        public bool WillStockFallBelowMinimum(WareHouseMovement wareHouseMovement)
+        /*public bool WillStockFallBelowMinimum(WareHouseMovement wareHouseMovement)
         {
             string? companyId, branchOfficeId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
@@ -212,8 +233,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 return currentQtyInWareHouse < wareHouse!.MinCapacity;
             }
             return false;
-        }
-        public bool WillStockFallMaximun(WareHouseMovement wareHouseMovement)
+        }*/
+        /*public bool WillStockFallMaximun(WareHouseMovement wareHouseMovement)
         {
             string? companyId, branchOfficeId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
@@ -260,8 +281,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 return currentQtyInWareHouse > wareHouse!.MaxCapacity;
             }
             return false;
-        }
-        public void NoEnoughAmount(WareHouseMovement wareHouseMovement)
+        }*/
+        /*public void NoEnoughAmount(WareHouseMovement wareHouseMovement)
         {
             string? companyId,
                     branchOfficeId;
@@ -307,7 +328,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 _DBContext.SaveChanges();
 
             }
-        }
+        }*/
         // DONE: Verificar el estado de las solicitudes. Agregar a FluentValidation.
         // DONE: Hacer un movimiento con la solicitud que agregue.
         public bool SetRequestForMovement(WareHouseMovement wareHouseMovement)
@@ -344,7 +365,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             return true;
         }
-        public bool CalculateAmountForDispatch(WareHouseMovement wareHouseMovement)
+        /*public bool CalculateAmountForDispatch(WareHouseMovement wareHouseMovement)
         {
             var articleForDispatch = _DBContext.ArticleDataMaster
                 .AsNoTracking()
@@ -354,7 +375,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             wareHouseMovement.Amount = articleForDispatch!.UnitPrice * wareHouseMovement.Qty;
 
             return true;
-        }
+        }*/
         public bool UpdateVehicleOdometer(WareHouseMovement wareHouseMovement)
         {
             var vehicle = _DBContext.Vehicle

@@ -13,6 +13,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
     {
         ResultPattern<UsersBranchOffices> UpdateUserBranchOffice(Func<UsersBranchOffices, bool> predicate, UsersBranchOffices updatedEntity);
 
-        bool IsUserInBranchOffice(int userId, int branchOfficeId);
+        bool IsUserInBranchOffice(int userId, int? branchOfficeId);
     }
 }

@@ -21,6 +21,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
         }
+        public override ResultPattern<EmployeeConsumptionLimits> Post(EmployeeConsumptionLimits entity)
+        {
+            if (DriverHasTheMethod(entity.DriverId, entity.DriverMethodOfComsuptionId))
+                throw new BadRequestException("Este conductor ya tiene el metodo asignado. ");
+            return base.Post(entity);
+        }
         public override ResultPattern<EmployeeConsumptionLimits> Delete(Func<EmployeeConsumptionLimits, bool> predicate)
         {
             var employeeComsuptionLimitEntityToDelete = _DBContext
@@ -70,7 +76,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
 
         public bool DriverHasTheMethod(int driverId, int methodOfComsuptionId)
-            => !_DBContext.EmployeeConsumptionLimits.Any(x => x.DriverId == driverId && (int)x.DriverMethodOfComsuptionId == methodOfComsuptionId);
+            => _DBContext.EmployeeConsumptionLimits.Any(x => x.DriverId == driverId && (int)x.DriverMethodOfComsuptionId == methodOfComsuptionId);
 
     }
 }

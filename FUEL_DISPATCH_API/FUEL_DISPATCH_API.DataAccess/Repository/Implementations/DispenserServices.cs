@@ -1,6 +1,8 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.Utils.Exceptions;
+using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -21,14 +23,19 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _httpContextAccessor = httpContextAccessor;
             _DBContext = dbContext;
         }
-
+        public override ResultPattern<Dispenser> Post(Dispenser entity)
+        {
+            if (DispenserCodeMustBeUnique(entity))
+                throw new BadRequestException("Existe un dispensador con el mismo codigo. ");
+            return base.Post(entity);
+        }
         public bool DispenserCodeMustBeUnique(Dispenser dispenser)
         {
             string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
-            return !_DBContext.Dispenser
+            return _DBContext.Dispenser
                 .Any(x => x.Code == dispenser.Code &&
                      x.CompanyId == int.Parse(companyId) &&
                      x.BranchOfficeId == int.Parse(branchId));

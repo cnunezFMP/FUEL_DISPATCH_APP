@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +22,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             : base(dbContext, httpContextAccessor)
         {
             _DBContext = dbContext;
+        }
+        public override ResultPattern<UsersRols> Post(UsersRols entity)
+        {
+            if (IsUserRol(entity.UserId, entity.RolId))
+                throw new BadRequestException("El usuario ya tiene el rol asignado. ");
+
+            return base.Post(entity);
         }
         public override ResultPattern<UsersRols> Delete(Func<UsersRols, bool> predicate)
         {
@@ -52,7 +60,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         // Verificar si el usuario tiene el rol.
         public bool IsUserRol(int userId, int rolId)
-            => !_DBContext.UsersRols.Any(x => x.UserId == userId &&
+            => _DBContext.UsersRols.Any(x => x.UserId == userId &&
                                   x.RolId == rolId);
     }
 }

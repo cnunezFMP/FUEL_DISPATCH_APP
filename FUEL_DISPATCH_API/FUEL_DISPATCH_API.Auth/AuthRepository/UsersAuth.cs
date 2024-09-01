@@ -15,7 +15,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IEmailSender _emailSender;
         private readonly string? _secretKey;
-        public UsersAuth(IConfiguration config, FUEL_DISPATCH_DBContext DBContext, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
+        public UsersAuth(IConfiguration config, FUEL_DISPATCH_DBContext DBContext,
+            IEmailSender emailSender,
+            IHttpContextAccessor httpContextAccessor)
             : base(DBContext, httpContextAccessor)
         {
             _DBContext = DBContext;
@@ -24,8 +26,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public ResultPattern<User> UserRegistration(UserRegistrationDto entity)
         {
-            if (!IsUserNameUnique(entity))
+            if (IsUserNameUnique(entity))
                 throw new BadRequestException("User with this user name exist. ");
+
+            if (IsEmailUnique(entity))
+                throw new BadRequestException("User with this user name exist. ");
+
             if (entity.DriverId.HasValue)
                 DriverIdHasValue(entity);
 
@@ -62,9 +68,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             return ResultPattern<object>.Success(result, StatusCodes.Status200OK, "Token obtenido correctamente. "); // Devolver token
         }
         public bool IsUserNameUnique(UserRegistrationDto user)
-           => !_DBContext.User.Any(x => x.Username == user.Username);
+           => _DBContext.User.Any(x => x.Username == user.Username);
         public bool IsEmailUnique(UserRegistrationDto user)
-            => !_DBContext.User.Any(x => x.Email == user.Email);
+            => _DBContext.User.Any(x => x.Email == user.Email);
         string PasswordHashing(string password)
             => BCrypt.Net.BCrypt.HashPassword(password, 13);
         public bool DriverIdHasValue(UserRegistrationDto user)

@@ -20,18 +20,22 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         public override ResultPattern<Vehicle> Post(Vehicle entity)
         {
             if (CheckIfMeasureExists(entity))
-                throw new NotFoundException("The measure doesn't exists. ");
+                throw new NotFoundException("La medida no existe. ");
 
             if (CheckIfMakeExists(entity))
-                throw new NotFoundException("Make not found. ");
+                throw new NotFoundException("No se encuentra la marca. ");
 
             if (CheckIfModelExists(entity))
-                throw new NotFoundException("Model not found. ");
+                throw new NotFoundException("No se encuentra el modelo . ");
 
             if (CheckIfGenerationExists(entity))
-                throw new NotFoundException("Generation not found. ");
+                throw new NotFoundException("No se encuentra la generacion. ");
             if (CheckIfModEngineExists(entity))
-                throw new NotFoundException("Generation not found. ");
+                throw new NotFoundException("No se encuentra el motor. ");
+
+            if (FichaMustBeUnique(entity))
+                throw new BadRequestException("Existe una ficha con esta ficha asignada. ");
+
             DriverIdHasValue(entity);
 
             return base.Post(entity);
@@ -47,14 +51,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         public bool CheckIfModEngineExists(Vehicle vehicle)
             => !_DBContext.ModEngine.Any(x => x.Id == vehicle.ModEngineId);
         public bool CheckIfMeasureExists(Vehicle vehicle)
-            => !_DBContext.Measure.Any(x => x.Id == (int)vehicle.OdometerMeasureId);
+            => !_DBContext.Measure.Any(x => x.Id == vehicle.OdometerMeasureId);
         public bool FichaMustBeUnique(Vehicle vehicleToken)
         {
             string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
-            return !_DBContext.Vehicle
+            return _DBContext.Vehicle
                 .Any(x => x.Ficha == vehicleToken.Ficha &&
                 x.CompanyId == int.Parse(companyId) &&
                 x.BranchOfficeId == int.Parse(branchId));

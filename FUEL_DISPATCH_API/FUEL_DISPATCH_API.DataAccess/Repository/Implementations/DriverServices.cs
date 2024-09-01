@@ -7,6 +7,7 @@ using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using RestSharp;
 using Twilio.TwiML.Voice;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
@@ -24,6 +25,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public override ResultPattern<Driver> Post(Driver entity)
         {
+            if (CheckIfIdIsUnique(entity))
+                throw new BadRequestException("Existe un conductor con esta identificacion. ");
+
+            if (IsEmailUnique(entity))
+                throw new BadRequestException("Existe un conductor con esta direccion de correo. ");
+
             _DBContext.Driver.Add(entity);
             _DBContext.SaveChanges();
             if (entity.Email is not null)
@@ -39,9 +46,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
-            return !_DBContext.Driver.Any(x => x.Identification == entity.Identification &&
-            x.CompanyId == int.Parse(companyId) &&
-            x.BranchOfficeId == int.Parse(branchId));
+            return _DBContext
+                .Driver
+                .Any(x => x.Identification == entity.Identification &&
+                x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchId));
         }
 
         // DONE: Chequear esta validacion. 
@@ -51,7 +60,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
-            return !_DBContext.Driver.Any(x => x.Email == driver.Email &&
+            return _DBContext.Driver.Any(x => x.Email == driver.Email &&
             x.CompanyId == int.Parse(companyId) &&
             x.BranchOfficeId == int.Parse(branchId));
         }

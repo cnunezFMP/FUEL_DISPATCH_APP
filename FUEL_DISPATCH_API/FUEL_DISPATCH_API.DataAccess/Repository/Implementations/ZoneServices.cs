@@ -1,6 +1,8 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.Utils.Exceptions;
+using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -20,14 +22,22 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext = dbContext;
         }
 
+        public override ResultPattern<Zone> Post(Zone entity)
+        {
+            if (ZoneCodeMustBeUnique(entity))
+                throw new BadRequestException("Existe una zona registrada con este codigo. ");
+            return base.Post(entity);
+        }
+
         public bool ZoneCodeMustBeUnique(Zone zone)
         {
             string? companyId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
 
-
-            return !_DBContext.Zone.Any(x => x.Code == zone.Code &&
-            x.CompanyId == int.Parse(companyId));
+            return _DBContext
+                .Zone
+                .Any(x => x.Code == zone.Code &&
+                x.CompanyId == int.Parse(companyId));
         }
     }
 }

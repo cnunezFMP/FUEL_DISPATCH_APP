@@ -2,6 +2,7 @@
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.DataAccess.Services;
+using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
@@ -53,7 +54,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             x.BranchOfficeId == int.Parse(branchId));
         }
 
-        public bool BranchOfficeExist(WareHouse wareHouse)
+        /*public bool BranchOfficeExist(WareHouse wareHouse)
         {
             string? companyId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
@@ -62,7 +63,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 .BranchOffices
                 .Any(x => x.Id == wareHouse.BranchOfficeId &&
                 x.CompanyId == int.Parse(companyId));
-        }
+        }*/
 
         public bool SetWareHouseDir(WareHouse wareHouse)
         {
@@ -71,7 +72,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             var branchOffice = _DBContext.BranchOffices
                 .FirstOrDefault(x => x.Id == wareHouse.BranchOfficeId &&
-                x.CompanyId == int.Parse(companyId));
+                x.CompanyId == int.Parse(companyId)) ??
+                throw new NotFoundException("La sucursal indicada no existe. ");
             wareHouse.FullDirection = branchOffice!.FullLocation;
             return true;
         }
