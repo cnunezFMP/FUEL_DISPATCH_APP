@@ -1034,7 +1034,10 @@
           "Twilio": "7.1.0"
         },
         "runtime": {
-          "FMP_DISPATCH_API.Services.dll": {}
+          "FMP_DISPATCH_API.Services.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "FUEL_DISPATCH_API.Auth/1.0.0": {
@@ -1045,7 +1048,10 @@
           "FluentValidation": "11.9.2"
         },
         "runtime": {
-          "FUEL_DISPATCH_API.Auth.dll": {}
+          "FUEL_DISPATCH_API.Auth.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "FUEL_DISPATCH_API.DataAccess/1.0.0": {
@@ -1063,7 +1069,10 @@
           "Swashbuckle.AspNetCore.Annotations": "6.6.2"
         },
         "runtime": {
-          "FUEL_DISPATCH_API.DataAccess.dll": {}
+          "FUEL_DISPATCH_API.DataAccess.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "FUEL_DISPATCH_API.Utils/1.0.0": {
@@ -1074,7 +1083,10 @@
           "Serilog.Sinks.File": "5.0.0"
         },
         "runtime": {
-          "FUEL_DISPATCH_API.Utils.dll": {}
+          "FUEL_DISPATCH_API.Utils.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

@@ -83,5 +83,17 @@
             <response code="400">Si se envia el numero de articulo nulo. </response>
             <returns></returns>
         </member>
+        <member name="M:FUEL_DISPATCH_API.Controllers.VehicleModelController.PostModel(FUEL_DISPATCH_API.DataAccess.Models.Model)">
+            <summary>
+            Posts a new vehicle model to the system.
+            </summary>
+            <param name="model">The model object to be added. This object should be provided in the request body.</param>
+            <returns>
+            An ActionResult object containing a ResultPattern of Make type.
+            If the model is successfully added, the ResultPattern will contain the created model data.
+            If an error occurs during the process, the ResultPattern will contain an error message.
+            The HTTP status code for this request is set to 201 Created.
+            </returns>
+        </member>
     </members>
 </doc>

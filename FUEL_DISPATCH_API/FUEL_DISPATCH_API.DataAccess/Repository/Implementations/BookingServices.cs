@@ -24,6 +24,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
+            if (!CheckVehicle(book))
+                throw new BadRequestException("El vehiculo no existe. ");
+
+            if (VerifyDisponibility(book))
+                throw new BadRequestException("El vehiculo ya esta reservado para estas fechas, o no esta listo para procesar. ");
+
+
             var driverForBook = _DBContext.Driver
                 .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefault(d => d.Id == book.DriverId &&

@@ -33,31 +33,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 StatusCodes.Status200OK,
                 "All company branch offices obtained. "
             );
-
-            /*var companyBranchOffices = _DBContext.BranchOffices
-                .AsNoTracking()
-                .Where(x => x.CompanyId == companyId)
-                .ToList();
-
-            if (!companyBranchOffices.Any())
-                throw new BadRequestException("This company don't have branch offices. ");
-
-            return ResultPattern<List<BranchOffices>>.Success
-            (
-                companyBranchOffices,
-                StatusCodes.Status200OK,
-                "All company branch offices obtained. "
-            );*/
         }
-        //public ResultPattern<Companies> GetCompanyByRnc(string companyRNC)
-        //{
-        //    var companyByRnc = _DBContext.Companies.FirstOrDefault(x => x.CompanyRNC == companyRNC)
-        //        ?? throw new NotFoundException("No company with this RNC. ");
-        //    return ResultPattern<Companies>.Success(companyByRnc, 
-        //        StatusCodes.Status200OK, 
-        //        "Company obtained. ");
-        //}
-        public bool IsCompanyUnique(Companies company)
-            => !_DBContext.Companies.Any(x => x.CompanyRNC == company.CompanyRNC);
+        
     }
 }

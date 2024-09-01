@@ -23,6 +23,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public override ResultPattern<ArticleDataMaster> Post(ArticleDataMaster entity)
         {
+
             try
             {
                 var getArticleTask = _sapService.GetItemsSAP(entity.ArticleNumber);
