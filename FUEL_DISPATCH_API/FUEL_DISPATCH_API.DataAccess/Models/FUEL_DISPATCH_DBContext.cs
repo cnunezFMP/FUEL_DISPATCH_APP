@@ -397,15 +397,12 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasValueGenerator<UserNameGenerator>();
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
-            .HasValueGenerator<CompanyIdGenerator>();
-
-            entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnUpdate()
-            .HasValueGenerator<CompanyIdGenerator>();
+            .ValueGeneratedOnAddOrUpdate()
+            .HasValueGenerator<CompanyIdGenerator>()
+            .Metadata.SetAfterSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Save);
 
             entity.Property(x => x.BranchOfficeId)
-            .ValueGeneratedOnUpdate()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<BranchOfficeIdGenerator>();
 
             entity.Property(x => x.UpdatedAt)
