@@ -69,7 +69,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                     Count = entitiesByCompAndBranch.Count()
                 };
 
-                if(responseComBr.Count == 0)
+                if (responseComBr.Count == 0)
                     return ResultPattern<Paging<T>>.Success(new Paging<T>(),
                                        StatusCodes.Status400BadRequest,
                                        "No hay datos en tu sucursal. ");

@@ -1,4 +1,5 @@
-﻿using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
+﻿using FUEL_DISPATCH_API.DataAccess.Enums;
+using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.ValueGenerators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -578,6 +579,9 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(x => x.UpdatedAt)
             .ValueGeneratedOnUpdate()
             .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.Status)
+            .HasConversion<EnumToStringConverter<MaitenanceStatusEnum>>();
 
             entity.HasOne(x => x.Vehicle)
             .WithMany(x => x.Maintenances)

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using FUEL_DISPATCH_API.DataAccess.Enums;
 namespace FUEL_DISPATCH_API.DataAccess.Models
 {
     public partial class WareHouseMovement

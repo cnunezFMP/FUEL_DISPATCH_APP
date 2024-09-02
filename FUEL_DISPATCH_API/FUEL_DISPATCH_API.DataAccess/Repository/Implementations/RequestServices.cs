@@ -1,4 +1,5 @@
-﻿using FUEL_DISPATCH_API.DataAccess.Models;
+﻿using FUEL_DISPATCH_API.DataAccess.Enums;
+using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Constants;
