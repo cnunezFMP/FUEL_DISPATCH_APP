@@ -57,8 +57,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if (!CheckDispenser(wareHouseMovement))
                 throw new BadRequestException("El dispensador no esta activo. ");
 
+
+            // DONE: Terminar de probar esta validacion. (Simplemente no era el id del item que estaba. )
             if (!CheckIfProductIsInTheWareHouse(wareHouseMovement))
-                throw new BadRequestException(" ");
+                throw new BadRequestException("El articulo indicado no se encuentra en el almacen. ");
 
             UpdateVehicleOdometer(wareHouseMovement);
             PostSAP(wareHouseMovement)
@@ -202,7 +204,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             .AsNoTrackingWithIdentityResolution()
             .Any(x => x.WareHouseId == wareHouseMovement!.WareHouseId &&
             x.ItemId == wareHouseMovement!.ItemId);
-
 
         public bool CheckIfWareHousesHasActiveStatus(WareHouseMovement wareHouseMovement)
         {
