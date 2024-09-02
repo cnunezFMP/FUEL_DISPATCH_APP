@@ -21,6 +21,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             : base(dBContext, httpContextAccessor)
         {
             _DBContext = dBContext;
+            _httpContextAccessor = httpContextAccessor;
             _emailSender = emailSender;
         }
         public override ResultPattern<Driver> Post(Driver entity)
@@ -52,7 +53,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 x.CompanyId == int.Parse(companyId) &&
                 x.BranchOfficeId == int.Parse(branchId));
         }
-
         // DONE: Chequear esta validacion. 
         public bool IsEmailUnique(Driver driver)
         {
@@ -64,7 +64,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             x.CompanyId == int.Parse(companyId) &&
             x.BranchOfficeId == int.Parse(branchId));
         }
-
         // DONE: Implementar esta funcion en el controlador de Driver
         public ResultPattern<List<WareHouseMovement>> GetDriverDispatches(int driverId)
         {

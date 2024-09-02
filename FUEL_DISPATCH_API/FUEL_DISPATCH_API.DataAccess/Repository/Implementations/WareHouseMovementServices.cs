@@ -205,7 +205,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             .AsNoTrackingWithIdentityResolution()
             .Any(x => x.WareHouseId == wareHouseMovement!.WareHouseId &&
             x.ItemId == wareHouseMovement!.ItemId);
-
         public bool CheckIfWareHousesHasActiveStatus(WareHouseMovement wareHouseMovement)
         {
             string? companyId, branchId;

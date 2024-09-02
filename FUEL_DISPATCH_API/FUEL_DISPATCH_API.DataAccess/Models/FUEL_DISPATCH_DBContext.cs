@@ -400,18 +400,23 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .ValueGeneratedOnAdd()
             .HasValueGenerator<CompanyIdGenerator>();
 
+            entity.Property(x => x.CompanyId)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<CompanyIdGenerator>();
+
             entity.Property(x => x.BranchOfficeId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnUpdate()
             .HasValueGenerator<BranchOfficeIdGenerator>();
 
             entity.Property(x => x.UpdatedAt)
             .ValueGeneratedOnUpdate()
             .HasValueGenerator<DateTimeGenerator>();
+
             entity.HasMany(r => r.DriverMethodsOfComsuption)
                 .WithMany(d => d.Drivers)
                 .UsingEntity<EmployeeConsumptionLimits>(x => x.HasOne(x => x.DriverMethodOfComsuption)
                 .WithMany().HasForeignKey(x => x.DriverMethodOfComsuptionId),
-            x => x.HasOne(x => x.Driver)
+                x => x.HasOne(x => x.Driver)
                 .WithMany()
                 .HasForeignKey(x => x.DriverId));
 
