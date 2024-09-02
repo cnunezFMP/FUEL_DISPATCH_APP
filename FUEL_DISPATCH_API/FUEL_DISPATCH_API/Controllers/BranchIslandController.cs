@@ -73,7 +73,8 @@ namespace FUEL_DISPATCH_API.Controllers
                 x.CompanyId == int.Parse(companyId) &&
                 x.BranchOfficeId == int.Parse(branchId);
 
-            return Ok(_branchIslandServices.Update(predicate, branchIsland));
+            return Ok(_branchIslandServices.Update(predicate,
+                branchIsland));
         }
     }
 }

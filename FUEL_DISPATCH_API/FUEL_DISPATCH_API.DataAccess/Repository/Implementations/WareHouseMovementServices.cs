@@ -42,7 +42,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if (!QtyCantBeZero(wareHouseMovement))
                 throw new BadRequestException("No se puede dispensar con cero. ");
 
-            if (!CheckPreviousVehicleDispatch(wareHouseMovement))
+            if (!CheckVehicleOdometer(wareHouseMovement))
                 throw new BadRequestException("El odometro es menor o igual al del vehiculo. ");
 
             if (!CheckVehicle(wareHouseMovement))
@@ -61,21 +61,31 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 throw new BadRequestException(" ");
 
             UpdateVehicleOdometer(wareHouseMovement);
-            PostSAP(wareHouseMovement).Wait();
+            PostSAP(wareHouseMovement)
+                .Wait();
             return base.Post(wareHouseMovement);
         }
         #region Logic
         public bool SetDriverIdByVehicle(WareHouseMovement wareHouseMovement)
         {
-            string? companyId, branchOfficeId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            string? companyId,
+                    branchOfficeId;
+
+            companyId = _httpContextAccessor
+                .HttpContext?
+                .Items["CompanyId"]?
+                .ToString();
+
+            branchOfficeId = _httpContextAccessor
+                .HttpContext?
+                .Items["BranchOfficeId"]?
+                .ToString();
 
             var vehicleDriver = _DBContext.Vehicle
-                .AsNoTrackingWithIdentityResolution()
-                .Where(x => x.CompanyId == int.Parse(companyId) &&
-                x.BranchOfficeId == int.Parse(branchOfficeId))
-                .FirstOrDefault(x => x.Id == wareHouseMovement.VehicleId);
+                .FirstOrDefault(x => x.Id == wareHouseMovement.VehicleId &&
+                x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchOfficeId)) ??
+                throw new NotFoundException("El vehiculo indicado no se a encontrado. ");
 
             if (vehicleDriver?.DriverId is not null)
             {
@@ -87,17 +97,17 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
         public bool QtyCantBeZero(WareHouseMovement wareHouseMovement)
             => wareHouseMovement.Qty > ValidationConstants.ZeroGallons;
-        public bool CheckPreviousVehicleDispatch(WareHouseMovement wareHouseMovement)
+        public bool CheckVehicleOdometer(WareHouseMovement wareHouseMovement)
         {
             string? companyId, branchOfficeId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
             var vehicleForDispatch = _DBContext.Vehicle
-                .Where(x => x.Id == wareHouseMovement.VehicleId &&
-                x.BranchOfficeId == int.Parse(branchOfficeId))
                 .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault() ??
+                .FirstOrDefault(x => x.Id == wareHouseMovement.VehicleId &&
+                x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchOfficeId)) ??
                 throw new NotFoundException("No se encontro el vehiculo para el despacho. ");
 
             return wareHouseMovement.Odometer > vehicleForDispatch!.Odometer;
@@ -164,7 +174,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             .FirstOrDefault(dp => dp.Id == wareHouseMovement.DispenserId &&
             dp.BranchOfficeId == int.Parse(branchId) &&
             dp.CompanyId == int.Parse(companyId))
-            ?? throw new NotFoundException("No dispenser found. ");
+            ?? throw new NotFoundException("No se encontro el dispensador. ");
 
             return dispenser.Status is not ValidationConstants.InactiveStatus;
 

@@ -8,7 +8,7 @@ namespace FUEL_DISPATCH_API.Utils.Constants
 {
     public struct AppConstants
     {
-        public const string NOT_FOUND_MESSAGE = "Data not found. ";
+        public const string NOT_FOUND_MESSAGE = "Datos no encontrador. ";
         public const string DATA_SAVED_MESSAGE = "Data saved succesfully!. ";
         public const string DATA_OBTAINED_MESSAGE = "Data obtained succesfully!. ";
         public const string DATA_DELETED_MESSAGE = "Data deleted succesfully!. ";

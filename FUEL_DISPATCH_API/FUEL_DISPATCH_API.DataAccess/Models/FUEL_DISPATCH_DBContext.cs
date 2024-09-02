@@ -235,8 +235,11 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(x => x.UpdatedAt)
             .ValueGeneratedOnUpdate()
             .HasValueGenerator<DateTimeGenerator>();
-            entity.Property(x => x.Type).HasConversion<EnumToStringConverter<MovementsTypesEnum>>();
-            entity.HasOne(e => e.Vehicle).WithMany(e => e.WareHouseMovements).HasForeignKey(e => e.VehicleId);
+            entity.Property(x => x.Type)
+            .HasConversion<EnumToStringConverter<MovementsTypesEnum>>();
+            entity.HasOne(e => e.Vehicle)
+            .WithMany(e => e.WareHouseMovements)
+            .HasForeignKey(e => e.VehicleId);
             entity.HasOne(d => d.Driver).WithMany(p => p.WareHouseMovements).HasForeignKey(d => d.DriverId);
             entity.HasOne(e => e.BranchOffice).WithMany(e => e.WareHouseMovements).HasForeignKey(e => e.BranchOfficeId);
             entity.HasOne(d => d.Dispenser).WithMany(p => p.WareHouseMovements).HasForeignKey(d => d.DispenserId);
@@ -302,7 +305,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.ToTable("BranchIsland");
 
             entity.HasKey(e => e.Id);
-
             entity.Property(x => x.CreatedBy)
                   .ValueGeneratedOnAdd()
                   .HasValueGenerator<UserNameGenerator>();
@@ -696,9 +698,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .ValueGeneratedOnAdd()
             .HasValueGenerator<UserNameGenerator>();
 
-            entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd();
-            //.HasValueGenerator<CompanyIdGenerator>();
+            entity.Property(x => x.CompanyId);
 
             entity.Property(x => x.CreatedAt)
             .ValueGeneratedOnAdd()

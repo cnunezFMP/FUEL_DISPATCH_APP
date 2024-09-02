@@ -17,14 +17,14 @@ namespace FUEL_DISPATCH_API.Controllers
     {
         private readonly IWareHouseServices _wareHouseServices;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IValidator<WareHouse> _wareHouseValidator;
+        // private readonly IValidator<WareHouse> _wareHouseValidator;
 
         public WareHouseController(IWareHouseServices wareHouseServices,
-                                   IValidator<WareHouse> wareHouseValidator,
+                                   //IValidator<WareHouse> wareHouseValidator,
                                    IHttpContextAccessor httpContextAccessor)
         {
             _wareHouseServices = wareHouseServices;
-            _wareHouseValidator = wareHouseValidator;
+           // _wareHouseValidator = wareHouseValidator;
             _httpContextAccessor = httpContextAccessor;
         }
         [HttpGet, Authorize]

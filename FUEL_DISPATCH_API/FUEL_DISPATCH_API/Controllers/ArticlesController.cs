@@ -26,9 +26,8 @@ namespace FUEL_DISPATCH_API.Controllers
         }
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<ArticleDataMaster>>> GetArticles([FromQuery] GridifyQuery query)
-        {
-            return Ok(_articleServices.GetAll(query));
-        }
+            => Ok(_articleServices.GetAll(query));
+
 
         [HttpGet("{id:int}")]
         public ActionResult<ResultPattern<ArticleDataMaster>> GetArticle(int id)

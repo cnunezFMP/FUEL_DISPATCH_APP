@@ -47,7 +47,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                 .Items["BranchOfficeId"] as string ??
                 string.Empty;
 
-            if (companyId is null && branchId is null)
+            if (string.IsNullOrEmpty(companyId))
             {
                 return ResultPattern<Paging<T>>.Success(new Paging<T>(),
                     StatusCodes.Status401Unauthorized,
@@ -59,8 +59,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
             {
                 var entitiesByCompAndBranch = _DBContext.Set<T>()
                     .AsNoTrackingWithIdentityResolution()
-                    .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId!) && EF.Property<int>(x, "BranchOfficeId") == int.Parse(branchId!) ||
-                    EF.Property<int>(x, "CompanyId") == int.Parse(companyId!) ||
+                    .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId!) &&
                     EF.Property<int>(x, "BranchOfficeId") == int.Parse(branchId!))
                     .ApplyFilteringAndOrdering(query);
 
@@ -70,17 +69,22 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                     Count = entitiesByCompAndBranch.Count()
                 };
 
+                if(responseComBr.Count == 0)
+                    return ResultPattern<Paging<T>>.Success(new Paging<T>(),
+                                       StatusCodes.Status400BadRequest,
+                                       "No hay datos en tu sucursal. ");
+
                 return ResultPattern<Paging<T>>.Success(responseComBr,
                                        StatusCodes.Status200OK,
                                        AppConstants.DATA_OBTAINED_MESSAGE);
             }
-            if (typeof(T).GetProperty("CompanyId") is not null)
+            if (typeof(T)
+                .GetProperty("BranchOfficeId") is not null)
             {
                 var entitiesComp = _DBContext.Set<T>()
                     .AsNoTrackingWithIdentityResolution()
                     .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId!))
                     .ApplyFilteringAndOrdering(query);
-
 
                 var responseComp = new Paging<T>
                 {
@@ -120,12 +124,18 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
         public virtual ResultPattern<T> Update(Func<T, bool> predicate, T updatedEntity)
         {
             // UNDONE: Buscar el objeto por compañia y sucursal. 
-            var entityToUpdate = _DBContext.Set<T>().FirstOrDefault(predicate)
+            var entityToUpdate = _DBContext
+                .Set<T>()
+                .FirstOrDefault(predicate)
                 ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
-            _DBContext.Entry(entityToUpdate).CurrentValues.SetValues(updatedEntity);
+            _DBContext.Entry(entityToUpdate)
+                .CurrentValues
+                .SetValues(updatedEntity);
             _DBContext.Update(entityToUpdate);
             _DBContext.SaveChanges();
-            return ResultPattern<T>.Success(entityToUpdate, StatusCodes.Status200OK, AppConstants.DATA_UPDATED_MESSAGE);
+            return ResultPattern<T>.Success(entityToUpdate,
+                StatusCodes.Status200OK,
+                AppConstants.DATA_UPDATED_MESSAGE);
         }
     }
 }

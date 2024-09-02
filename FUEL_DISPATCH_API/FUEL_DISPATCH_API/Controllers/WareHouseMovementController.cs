@@ -46,15 +46,8 @@ namespace FUEL_DISPATCH_API.Controllers
 
         [HttpPost, Authorize]
         public ActionResult<ResultPattern<WareHouseMovement>> PostMovement([FromBody] WareHouseMovement wareHouseMovement)
-        {
-            //var validationResult = _wareHouseMovementValidator.Validate(wareHouseMovement);
-            //if (!validationResult.IsValid)
-            //{
-            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            //}
-
-            return Created(string.Empty, _wareHouseMovementServices.Post(wareHouseMovement));
-        }
+            => Created(string.Empty, _wareHouseMovementServices.Post(wareHouseMovement));
+        
 
         [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<WareHouseMovement>> UpdateMovement(int id,

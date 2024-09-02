@@ -50,6 +50,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 FullDirection = entity.FullDirection,
                 Password = entity.Password,
                 DriverId = entity.DriverId,
+                CompanyId = entity.CompanyId,
                 CreatedAt = DateTime.Today,
                 UpdatedAt = DateTime.Today,
                 CreatedBy = entity.CreatedBy,
@@ -82,8 +83,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             companyId = _httpContextAccesor.HttpContext?.Items["CompanyId"]?.ToString();
 
 
-            return _DBContext.User.Any(x=>x.Username == user.Username &&
-            x.CompanyId == int.Parse(companyId));
+            return _DBContext.User.Any(x=>x.Username == user.Username /*&&
+            x.CompanyId == int.Parse(companyId)*/);
         }
            
         public bool IsEmailUnique(UserRegistrationDto user)

@@ -19,7 +19,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _usersServices = usersServices;
             _httpContextAccessor = httpContextAccessor;
         }
-        [HttpGet, Authorize(Roles = "Administrador")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<User>>> GetUsers([FromQuery] GridifyQuery query)
         {
             return Ok(_usersServices.GetAll(query));

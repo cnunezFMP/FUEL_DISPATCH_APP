@@ -45,7 +45,7 @@ namespace FUEL_DISPATCH_API.Controllers
         }
 
         // DONE: Corregir exception. (Cannot insert duplicate key in object 'dbo.UsersBranchOffices'. The duplicate key Value is (1, 1)). Solution: Quite la llave primaria compuesta de la tabla UsersBranchOffices.
-        [HttpPost, Authorize(Roles = "Administrador")]
+        [HttpPost, Authorize]
         public ActionResult<ResultPattern<UsersBranchOffices>> SetUsersBranchOffices([FromBody] UsersBranchOffices usersBranchOffice)
         {
             //var validationResult = _validator.Validate(usersBranchOffice);

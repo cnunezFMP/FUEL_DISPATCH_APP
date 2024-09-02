@@ -18,7 +18,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
                 .NotEmpty()
                 .NotNull()
                 .NotEqual(0)
-                .Must((x, _) => wareHouseMovementServices.CheckPreviousVehicleDispatch(x))
+                .Must((x, _) => wareHouseMovementServices.CheckVehicleOdometer(x))
                 .WithMessage("El odometro es menor o igual al del vehiculo. ");
 
             RuleFor(x => x.DriverId)

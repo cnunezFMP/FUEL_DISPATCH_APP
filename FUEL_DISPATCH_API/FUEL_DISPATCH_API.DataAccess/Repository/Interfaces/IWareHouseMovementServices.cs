@@ -5,7 +5,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
     public interface IWareHouseMovementServices : IGenericInterface<WareHouseMovement>
     {
-        bool CheckPreviousVehicleDispatch(WareHouseMovement wareHouseMovement);
+        bool CheckVehicleOdometer(WareHouseMovement wareHouseMovement);
         bool UpdateVehicleOdometer(WareHouseMovement wareHouseMovement);
         bool CheckVehicle(WareHouseMovement movement);
         // DONE: Corregirlo en los servicios y testear lo de los movimientos a mas no poder. 
