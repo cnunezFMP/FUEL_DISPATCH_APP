@@ -13,7 +13,7 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             _reportService = reportsServics;
         }
-        [HttpGet, Authorize(Roles = "Reportero")]
+        [HttpGet, Authorize]
         public async Task<ActionResult> Get
             (
                 DateTime fromDate,

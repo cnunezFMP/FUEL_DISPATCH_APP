@@ -18,18 +18,21 @@ namespace FUEL_DISPATCH_API.Controllers
         private readonly IRequestServices _requestServices;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IValidator<WareHouseMovementRequest> _validator;
-        public WareHouseMovementRequestController(IRequestServices requestServices, IValidator<WareHouseMovementRequest> validator)
+        public WareHouseMovementRequestController(IRequestServices requestServices,
+            IValidator<WareHouseMovementRequest> validator,
+            IHttpContextAccessor _httpContextAccessor)
         {
             _requestServices = requestServices;
             _validator = validator;
+            this._httpContextAccessor = _httpContextAccessor;
         }
 
-        [HttpGet, Authorize(Roles = "Despachador")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<WareHouseMovementRequest>>> GetRequests([FromQuery] GridifyQuery query)
         {
             return Ok(_requestServices.GetAll(query));
         }
-        [HttpGet("{id:int}", Authorize(Roles = "Despachador")]
+        [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<WareHouseMovementRequest>> GetRequest(int id)
         {
             string? companyId, branchId;

@@ -25,19 +25,19 @@ namespace FUEL_DISPATCH_API.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        [HttpGet, Authorize(Roles = "Administrador")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Driver>>> GetDrivers([FromQuery] GridifyQuery query)
         {
             return Ok(_driverServices.GetAll(query));
         }
 
-        [HttpGet("{driverId:int}/WareHouseMovement"), Authorize(Roles = "Administrador")]
+        [HttpGet("{driverId:int}/WareHouseMovement"), Authorize]
         public ActionResult<ResultPattern<Paging<Driver>>> GetDriverWareHouseMovements(int driverId)
         {
             return Ok(_driverServices.GetDriverDispatches(driverId));
         }
 
-        [HttpGet("{id:int}"), Authorize(Roles = "Adminitrador")]
+        [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Driver>> GetDriver(int id)
         {
             string? companyId, branchId;
@@ -73,7 +73,7 @@ namespace FUEL_DISPATCH_API.Controllers
         /// <response code="201">Conductor registrado</response>
         /// <response code="400">Si alguna validacion falla</response>
         /// <returns></returns>
-        [HttpPost, Authorize(Roles = "Administrador")]
+        [HttpPost, Authorize]
         public ActionResult<ResultPattern<Driver>> PostDriver([FromBody] Driver driver)
         {
             //var validationResult = _driverValidator.Validate(driver);
@@ -85,7 +85,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Created(string.Empty, _driverServices.Post(driver));
         }
 
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
+        [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Driver>> UpdateDriver(int id, [FromBody] Driver driver)
         {
             string? companyId, branchId;

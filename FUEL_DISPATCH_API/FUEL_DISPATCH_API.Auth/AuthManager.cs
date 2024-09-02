@@ -11,13 +11,11 @@ public class AuthManager
 {
     private readonly FUEL_DISPATCH_DBContext _dbContext;
     private readonly string _secretKey;
-
     public AuthManager(FUEL_DISPATCH_DBContext dbContext, string secretKey)
     {
         _dbContext = dbContext;
         _secretKey = secretKey;
     }
-
     public object AuthToken(LoginDto usuario)
     {
         var username = usuario.Username;
@@ -40,7 +38,7 @@ public class AuthManager
 
             var userFullName = credenciales.FullName;
 
-            // TODO: Revisar esto. 
+            // DONE: Revisar esto. 
             var keyBytes = Encoding.UTF8.GetBytes(_secretKey);
             var claims = new ClaimsIdentity();
             claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, usuario.Username!));
@@ -60,7 +58,7 @@ public class AuthManager
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = claims,
-                Expires = DateTime.UtcNow.AddHours(2),
+                Expires = DateTime.UtcNow.AddHours(3),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256Signature)
             };
             var tokenHandler = new JwtSecurityTokenHandler();

@@ -16,12 +16,12 @@ namespace FUEL_DISPATCH_API.Controllers
     public class CompanyController : ControllerBase
     {
         private readonly ICompaniesServices _companiesServices;
-        private readonly IValidator<Companies> _companiesValidator;
+        // private readonly IValidator<Companies> _companiesValidator;
 
-        public CompanyController(ICompaniesServices companiesServices, IValidator<Companies> companiesValidator)
+        public CompanyController(ICompaniesServices companiesServices/*, IValidator<Companies> companiesValidator*/)
         {
             _companiesServices = companiesServices;
-            _companiesValidator = companiesValidator;
+            // _companiesValidator = companiesValidator;
         }
 
         [HttpGet, Authorize(Roles = "Administrador")]
@@ -40,22 +40,15 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             return Ok(_companiesServices.GetCompanyBranchOfficess(companyId));
         }
-        [HttpGet("{id:int}"), Authorize(Roles = "Administrador")]
+        [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Companies>> GetCompany(int id)
-        {
-            return Ok(_companiesServices.Get(x => x.Id == id));
-        }
+            => Ok(_companiesServices.Get(x => x.Id == id));
 
-        [HttpPost, Authorize(Roles = "Administrador")]
+
+        [HttpPost, AllowAnonymous]
         public ActionResult<ResultPattern<Companies>> PostCompany([FromBody] Companies company)
-        {
-            var validationResult = _companiesValidator.Validate(company);
-            if (!validationResult.IsValid)
-            {
-                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            }
-            return Created(string.Empty, _companiesServices.Post(company));
-        }
+            => Created(string.Empty, _companiesServices.Post(company));
+
 
         [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Companies>> UpdateCompanie(int id, [FromBody] Companies company)

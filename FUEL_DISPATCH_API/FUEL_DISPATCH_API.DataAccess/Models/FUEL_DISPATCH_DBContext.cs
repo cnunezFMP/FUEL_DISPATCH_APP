@@ -476,7 +476,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         modelBuilder.Entity<Make>(entity =>
         {
             entity.HasKey(e => e.Id);
-
             entity.ToTable("Make");
 
         });
@@ -515,7 +514,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.ToTable("Part");
             entity.Property(x => x.CreatedBy)
             .ValueGeneratedOnAdd()
-            .HasValueGenerator<UserNameGenerator>();                                                                                                                           
+            .HasValueGenerator<UserNameGenerator>();
 
             entity.Property(x => x.CreatedAt)
             .ValueGeneratedOnAdd()
@@ -689,15 +688,17 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         {
             entity.HasKey(e => e.Id);
 
-            entity.HasIndex(e => e.Username, "U_Username").IsUnique();
+            entity
+            .HasIndex(e => e.Username, "U_Username")
+            .IsUnique();
 
             entity.Property(x => x.CreatedBy)
             .ValueGeneratedOnAdd()
             .HasValueGenerator<UserNameGenerator>();
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
-            .HasValueGenerator<CompanyIdGenerator>();
+            .ValueGeneratedOnAdd();
+            //.HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.CreatedAt)
             .ValueGeneratedOnAdd()
@@ -740,7 +741,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.Driver).WithMany(p => p.User)
+            entity
+                .HasOne(d => d.Driver).WithMany(p => p.User)
                 .HasForeignKey(d => d.DriverId)
                 .HasConstraintName("FK__Users__DriverId__1B9317B3");
 

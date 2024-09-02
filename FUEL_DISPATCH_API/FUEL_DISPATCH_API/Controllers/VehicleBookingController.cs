@@ -26,12 +26,12 @@ namespace FUEL_DISPATCH_API.Controllers
             _httpContextAccessor = httpContextAccessor;
 
         }
-        [HttpGet, Authorize(Roles = "Despachador")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Booking>>> GetBookings([FromQuery] GridifyQuery query)
         {
             return Ok(_bookingServices.GetAll(query));
         }
-        [HttpGet("{id:int}"), Authorize(Roles = "Despachador")]
+        [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Booking>> GetBooking(int id)
         {
             string? companyId, branchId;

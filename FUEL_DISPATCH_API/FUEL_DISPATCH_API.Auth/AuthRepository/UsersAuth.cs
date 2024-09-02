@@ -13,6 +13,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     public class UsersAuth : GenericRepository<User>, IUsersAuth
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
+        private readonly IHttpContextAccessor _httpContextAccesor;
         private readonly IEmailSender _emailSender;
         private readonly string? _secretKey;
         public UsersAuth(IConfiguration config, FUEL_DISPATCH_DBContext DBContext,
@@ -21,6 +22,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             : base(DBContext, httpContextAccessor)
         {
             _DBContext = DBContext;
+            _httpContextAccesor = httpContextAccessor;
             _emailSender = emailSender;
             _secretKey = config.GetSection("settings:secretkey").Value; //Obtener llave y valor
         }
@@ -29,15 +31,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if (IsUserNameUnique(entity))
                 throw new BadRequestException("User with this user name exist. ");
 
-            if (IsEmailUnique(entity))
-                throw new BadRequestException("User with this user name exist. ");
+            if (entity.Email is not null)
+                if (IsEmailUnique(entity))
+                    throw new BadRequestException("User with this email exist. ");
 
             if (entity.DriverId.HasValue)
                 DriverIdHasValue(entity);
 
             var passwordHash = PasswordHashing(entity.Password);
             entity.Password = passwordHash;
-
             var newUser = new User
             {
                 Email = entity.Email,
@@ -48,8 +50,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 FullDirection = entity.FullDirection,
                 Password = entity.Password,
                 DriverId = entity.DriverId,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
+                CreatedAt = DateTime.Today,
+                UpdatedAt = DateTime.Today,
                 CreatedBy = entity.CreatedBy,
                 UpdatedBy = entity.UpdatedBy
             };
@@ -57,18 +59,33 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             _DBContext.User.Add(newUser);
             _DBContext.SaveChanges();
             if (entity.Email is not null)
-                _emailSender.SendEmailAsync(entity.Email, AppConstants.ACCOUNT_CREATED_MESSAGE, $"Hello {entity.FullName} your account in the app was created successfully at {DateTime.Now}");
+                _emailSender.SendEmailAsync(entity.Email,
+                    AppConstants.ACCOUNT_CREATED_MESSAGE,
+                    $"Hola {entity.FullName} tu cuenta en la app a sido creada. {DateTime.Today}");
 
-            return ResultPattern<User>.Success(newUser, StatusCodes.Status200OK, "Usuario registrado correctamente. ");
+            return ResultPattern<User>.Success(newUser,
+                StatusCodes.Status200OK,
+                "Usuario registrado correctamente. ");
         }
         public ResultPattern<object> Login(LoginDto loginDto)
         {
-            var authManager = new AuthManager(_DBContext, _secretKey!); // Instancia de AuthManager
-            var result = authManager.AuthToken(loginDto); // Validar usuario)
-            return ResultPattern<object>.Success(result, StatusCodes.Status200OK, "Token obtenido correctamente. "); // Devolver token
+            var authManager = new AuthManager(_DBContext, _secretKey!);
+            var result = authManager.AuthToken(loginDto);
+            return ResultPattern<object>.Success(result,
+                StatusCodes.Status200OK,
+                "Sesion iniciada correctamente. ");
         }
         public bool IsUserNameUnique(UserRegistrationDto user)
-           => _DBContext.User.Any(x => x.Username == user.Username);
+        {
+            string? companyId;
+
+            companyId = _httpContextAccesor.HttpContext?.Items["CompanyId"]?.ToString();
+
+
+            return _DBContext.User.Any(x=>x.Username == user.Username &&
+            x.CompanyId == int.Parse(companyId));
+        }
+           
         public bool IsEmailUnique(UserRegistrationDto user)
             => _DBContext.User.Any(x => x.Email == user.Email);
         string PasswordHashing(string password)

@@ -19,7 +19,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _odometerMeasureServices = odometerMeasureServices;
         }
 
-        [HttpGet, Authorize(Roles = "Administrador")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<BranchIsland>>> GetOdometerMeasures([FromQuery] GridifyQuery query)
         {
             return Ok(_odometerMeasureServices.GetAll(query));

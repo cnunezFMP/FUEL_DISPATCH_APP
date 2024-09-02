@@ -16,34 +16,34 @@ namespace FUEL_DISPATCH_API.Controllers
     public class UsersRolesController : ControllerBase
     {
         private readonly IUsersRolesServices _userRolesServices;
-        private readonly IValidator<UsersRols> _validator;
-        public UsersRolesController(IUsersRolesServices userRolesServices, IValidator<UsersRols> validator)
+        // private readonly IValidator<UsersRols> _validator;
+        public UsersRolesController(IUsersRolesServices userRolesServices)
         {
             _userRolesServices = userRolesServices;
-            _validator = validator;
+            //_validator = validator;
 
         }
 
-        [HttpPut("{userId:int}/Roles/{rolId:int}"), Authorize(Roles = "Administrador")]
+        [HttpPut("{userId:int}/Roles/{rolId:int}"), Authorize]
         public ActionResult<ResultPattern<UsersRols>> UpdateUserRol(int userId, int rolId, UsersRols userRol)
         {
             Func<UsersRols, bool> predicate = x => x.UserId == userId && x.RolId == rolId;
-            var validationResult = _validator.Validate(userRol);
+            //var validationResult = _validator.Validate(userRol);
 
-            if (!validationResult.IsValid)
-                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            //if (!validationResult.IsValid)
+            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             return Ok(_userRolesServices.UpdateUserRol(predicate, userRol));
         }
-        [HttpPost, Authorize("Administrador")]
+        [HttpPost, Authorize]
         public ActionResult<ResultPattern<UsersRols>> PostUserRol([FromBody] UsersRols userRol)
         {
-            var validationResult = _validator.Validate(userRol);
+            // var validationResult = _validator.Validate(userRol);
 
-            if (!validationResult.IsValid)
-                return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            //if (!validationResult.IsValid)
+            //    return Valida     tionProblem(ModelStateResult.GetModelStateDic(validationResult));
             return Created(string.Empty, _userRolesServices.Post(userRol));
         }
-        [HttpDelete("{userId}/Roles/{rolId}"), Authorize(Roles = "Administrador")]
+        [HttpDelete("{userId}/Roles/{rolId}"), Authorize(Roles = "Administrador")] 
         public ActionResult<ResultPattern<UsersRols>> DeleteUserRol(int userId, int rolId)
         {
             Func<UsersRols, bool> predicate = x => x.UserId == userId && x.RolId == rolId;

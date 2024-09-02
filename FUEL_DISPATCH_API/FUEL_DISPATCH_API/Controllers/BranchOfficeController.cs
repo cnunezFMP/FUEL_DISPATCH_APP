@@ -27,12 +27,12 @@ namespace FUEL_DISPATCH_API.Controllers
             _branchOfficeServices = branchOfficeServices;
             _httpContextAccessor = httpContextAccessor;
         }
-        [HttpGet, Authorize(Roles = "Administrador")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<BranchOffices>>> GetBranchOfficess([FromQuery] GridifyQuery query)
         {
             return Ok(_branchOfficeServices.GetAll(query));
         }
-        [HttpGet("{id:int}"), Authorize(Roles = "Administrador")]
+        [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<BranchOffices>> GetBranchOffice(int id)
         {
             string? companyId;
@@ -45,13 +45,12 @@ namespace FUEL_DISPATCH_API.Controllers
                                                x.CompanyId == int.Parse(companyId);
             return Ok(_branchOfficeServices.Get(predicate));
         }
-        [HttpPost, Authorize(Roles = "Administrador")]
+        [HttpPost, Authorize]
         public ActionResult<ResultPattern<BranchOffices>> PostBranchOffice([FromBody] BranchOffices branchOffice)
-        {
+            => Created(string.Empty, _branchOfficeServices.Post(branchOffice));
             // DONE: Fix this, currently throws exception 'InvalidOperationException: No route matches the supplied values.'
-            return Created(string.Empty, _branchOfficeServices.Post(branchOffice));
-        }
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
+
+        [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<BranchOffices>> UpdateBranchOffice(int id, [FromBody] BranchOffices branchOffice)
         {
             string? companyId;

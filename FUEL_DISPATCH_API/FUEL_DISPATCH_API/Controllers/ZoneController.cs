@@ -40,7 +40,7 @@ namespace FUEL_DISPATCH_API.Controllers
 
             return Ok(_zoneServices.Get(predicate));
         }
-        [HttpPost, Authorize(Roles = "Administrador")]
+        [HttpPost, Authorize]
         public ActionResult<ResultPattern<Zone>> PostZone([FromBody] Zone zone)
         {
             // DONE: Hacer validador de Zonas.
@@ -51,7 +51,7 @@ namespace FUEL_DISPATCH_API.Controllers
             //}
             return Created(string.Empty, _zoneServices.Post(zone));
         }
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
+        [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Zone>> UpdateZone(int id, [FromBody] Zone zone)
         {
             string? companyId;

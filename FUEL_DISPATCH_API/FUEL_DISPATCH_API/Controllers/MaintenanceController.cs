@@ -20,12 +20,12 @@ namespace FUEL_DISPATCH_API.Controllers
             _maintenanceServices = maintenanceServices;
             _httpContextAccessor = httpContextAccessor;
         }
-        [HttpGet, Authorize(Roles = "AdminMantenimiento")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Maintenance>>> GetMaintenances([FromQuery] GridifyQuery query)
         {
             return Ok(_maintenanceServices.GetAll(query));
         }
-        [HttpGet("{id:int}"), Authorize(Roles = "AdminMantenimiento")]
+        [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Maintenance>> GetMaintenance(int id)
         {
             string? companyId, branchId;
@@ -38,10 +38,10 @@ namespace FUEL_DISPATCH_API.Controllers
 
             return Ok(_maintenanceServices.Get(predicate));
         }
-        [HttpPost, Authorize(Roles = "AdminMantenimiento")]
+        [HttpPost, Authorize]
         public ActionResult<ResultPattern<Maintenance>> PostMaintenance([FromBody] Maintenance maintenance)
             => Created(string.Empty, _maintenanceServices.Post(maintenance));
-        [HttpPut("{id:int}"), Authorize(Roles = "AdminMantenimiento")]
+        [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Maintenance>> UpdateMaintenance(int id, [FromBody] Maintenance maintenance)
         {
             string? companyId, branchId;

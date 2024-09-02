@@ -28,7 +28,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _httpContextAccessor = httpContextAccessor;
 
         }
-        [HttpGet, Authorize(Roles = "Administrador")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Road>>> GetRoads([FromQuery] GridifyQuery query)
         {
             return Ok(_roadServices.GetAll(query));

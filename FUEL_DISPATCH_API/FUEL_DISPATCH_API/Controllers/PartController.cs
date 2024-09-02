@@ -25,13 +25,13 @@ namespace FUEL_DISPATCH_API.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
         // Hola mundo 
-        [HttpGet, Authorize("Administrador")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Part>>> GetParts([FromQuery] GridifyQuery query)
         {
             return Ok(_partServices.GetAll(query));
         }
 
-        [HttpGet("{id:int}"), Authorize("Administrador")]
+        [HttpGet("{id:int}")]
         public ActionResult<ResultPattern<Part>> GetPart(int id)
         {
             string? companyId;
@@ -51,7 +51,7 @@ namespace FUEL_DISPATCH_API.Controllers
         /// <response code="400">Si se intenta agregar un articulo con el codigo de una ya existente. </response>
         /// <response code="400">Si se envia el numero de articulo nulo. </response>
         /// <returns></returns>
-        [HttpPost, Authorize("Administrador")]
+        [HttpPost, Authorize]
         public ActionResult<ResultPattern<Part>> PostPart([FromBody] Part part)
         {
             //var validationResult = _validator.Validate(part);
@@ -63,7 +63,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Created(string.Empty, _partServices.Post(part));
         }
 
-        [HttpPut("{id:int}"), Authorize("Administrador")]
+        [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Part>> UpdatePart(int id, [FromBody] Part part)
         {
             //var validationResult = _validator.Validate(part);

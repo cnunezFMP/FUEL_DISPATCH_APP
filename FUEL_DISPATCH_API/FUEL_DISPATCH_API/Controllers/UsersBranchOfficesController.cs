@@ -24,7 +24,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _validator = validator;
             _httpContextAccessor = httpContextAccessor;
         }
-        [HttpGet, Authorize(Roles = "Administrador")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<UsersBranchOffices>>> GetUsersBranchOfficess([FromQuery] GridifyQuery query)
         {
             return Ok(_usersBranchOfficesServices.GetAll(query));

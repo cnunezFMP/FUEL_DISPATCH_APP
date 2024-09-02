@@ -27,12 +27,12 @@ namespace FUEL_DISPATCH_API.Controllers
             _branchIslandValidator = branchIslandValidator;
             _httpContextAccessor = httpContextAccessor;
         }
-        [HttpGet, Authorize(Roles = "Administrador")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<BranchIsland>>> GetBranchIslands([FromQuery] GridifyQuery query)
         {
             return Ok(_branchIslandServices.GetAll(query));
         }
-        [HttpGet("{id:int}"), Authorize(Roles = "Administrador")]
+        [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<BranchIsland>> GetBranchIsland(int id)
         {
             string? companyId, branchId;
@@ -51,7 +51,7 @@ namespace FUEL_DISPATCH_API.Controllers
 
             return Ok(_branchIslandServices.Get(predicate));
         }
-        [HttpPost, Authorize(Roles = "Administrador")]
+        [HttpPost, Authorize]
         public ActionResult<ResultPattern<BranchIsland>> PostBranchIsland([FromBody] BranchIsland branchIsland)
         {
             //var validationResult = _branchIslandValidator.Validate(branchIsland);
@@ -62,7 +62,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Created(string.Empty,
                            _branchIslandServices.Post(branchIsland));
         }
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
+        [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<User>> UpdateBranchIsland(int id, [FromBody] BranchIsland branchIsland)
         {
             string? companyId, branchId;

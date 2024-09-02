@@ -19,7 +19,7 @@ namespace FUEL_DISPATCH_API.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IValidator<WareHouse> _wareHouseValidator;
 
-        public WareHouseController(IWareHouseServices wareHouseServices, 
+        public WareHouseController(IWareHouseServices wareHouseServices,
                                    IValidator<WareHouse> wareHouseValidator,
                                    IHttpContextAccessor httpContextAccessor)
         {
@@ -27,12 +27,12 @@ namespace FUEL_DISPATCH_API.Controllers
             _wareHouseValidator = wareHouseValidator;
             _httpContextAccessor = httpContextAccessor;
         }
-        [HttpGet, Authorize(Roles = "Administrador"]
+        [HttpGet, Authorize]
         public async Task<ActionResult<ResultPattern<Paging<WareHouse>>>> GetWareHouses([FromQuery] GridifyQuery query)
         {
             return Ok(_wareHouseServices.GetAll(query));
         }
-        [HttpGet("{id:int}"), Authorize(Roles = "Administrador")]
+        [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<WareHouse>> GetWareHouse(int id)
         {
             string? companyId, branchId;
@@ -44,12 +44,12 @@ namespace FUEL_DISPATCH_API.Controllers
                                            x.BranchOfficeId == int.Parse(branchId);
             return Ok(_wareHouseServices.Get(predicate));
         }
-        [HttpPost, Authorize(Roles = "Administrador")]
+        [HttpPost, Authorize]
         public ActionResult<ResultPattern<WareHouse>> PostWareHouse([FromBody] WareHouse warehouse)
         {
             //var validationResult = _wareHouseValidator.Validate(warehouse);
             //if (!validationResult.IsValid)
-            //{
+            //{         
             //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
             //}
             return Created(string.Empty, _wareHouseServices.Post(warehouse));

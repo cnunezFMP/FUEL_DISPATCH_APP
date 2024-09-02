@@ -20,33 +20,14 @@ namespace FUEL_DISPATCH_API.Controllers
             _userValidator = userValidator;
             _usersAuth = usersAuth;
         }
-        /// <summary>
-        /// Registrar un nuevo usuario
-        /// </summary>
-        /// <remarks>
-        /// Tanto el "DriverId" como el "Email" pueden ser nulos. Las propiedades "CreatedBy" y "UpdatedBy" se quitan del JSON.
-        /// </remarks>
-        /// <param name="user"></param>
-        /// <returns></returns>
+        
         [HttpPost("Register")]
         public ActionResult<ResultPattern<User>> Register([FromBody] UserRegistrationDto user)
-        {
-            //var result = _userValidator.Validate(user);
-            //if (!result.IsValid)
-            //{
-            //    var modelstateDictionary = new ModelStateDictionary();
-            //    foreach (ValidationFailure validationFailure in result.Errors)
-            //    {
-            //        modelstateDictionary.AddModelError(validationFailure.PropertyName, validationFailure.ErrorMessage);
-            //    }
-            //    return ValidationProblem(modelstateDictionary);
-            //}
-            return Created(string.Empty, _usersAuth.UserRegistration(user));
-        }
+            => Created(string.Empty, _usersAuth.UserRegistration(user));
+
         [HttpPost("Login")]
         public ActionResult<ResultPattern<User>> Login([FromBody] LoginDto loginDto)
-        {
-            return Ok(_usersAuth.Login(loginDto));
-        }
+            => Ok(_usersAuth.Login(loginDto));
+
     }
 }

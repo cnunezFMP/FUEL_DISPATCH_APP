@@ -16,7 +16,10 @@ namespace FUEL_DISPATCH_API.DataAccess.ValueGenerators
                 as string
                 ?? string.Empty;
 
-            return int.Parse(companyId);
+            if(!string.IsNullOrEmpty(companyId))
+                return int.Parse(companyId);
+
+            return 0;
         }
     }
 }
