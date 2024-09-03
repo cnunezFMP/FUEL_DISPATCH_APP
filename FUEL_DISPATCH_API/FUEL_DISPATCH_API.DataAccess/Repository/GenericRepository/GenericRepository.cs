@@ -126,8 +126,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
             // UNDONE: Buscar el objeto por compañia y sucursal. 
             var entityToUpdate = _DBContext
                 .Set<T>()
+                .AsTracking()
                 .FirstOrDefault(predicate)
                 ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
+
+
             _DBContext.Entry(entityToUpdate)
                 .CurrentValues
                 .SetValues(updatedEntity);

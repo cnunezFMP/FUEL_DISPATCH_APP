@@ -2,6 +2,8 @@
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.ValueGenerators;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 public partial class FUEL_DISPATCH_DBContext : DbContext
@@ -9,7 +11,49 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public FUEL_DISPATCH_DBContext(DbContextOptions<FUEL_DISPATCH_DBContext> options)
         : base(options)
     {
+        SavingChanges += FUEL_DISPATCH_DBContext_SavingChanges; ;
     }
+
+    private static void GenerateOnUpdate(EntityEntry entry)
+    {
+        foreach (var property in entry.Properties)
+        {
+            if (!(property.Metadata.ValueGenerated == ValueGenerated.OnUpdateSometimes ||
+                property.Metadata.ValueGenerated == ValueGenerated.OnUpdate ||
+                property.Metadata.ValueGenerated == ValueGenerated.OnAddOrUpdate))
+                continue;
+
+
+            var valueGeneratorFactory = property.Metadata.GetValueGeneratorFactory();
+
+            if (valueGeneratorFactory == null)
+                continue;
+
+            property.CurrentValue =
+                valueGeneratorFactory.
+                Invoke(property.Metadata,
+                entry.Metadata)
+                .Next(entry);
+        }
+    }
+
+    private void FUEL_DISPATCH_DBContext_SavingChanges(object? sender, SavingChangesEventArgs e)
+    {
+        var changes = ChangeTracker
+            .Entries()
+            .ToList();
+
+        changes
+            .ForEach(e =>
+        {
+            if (e.State == EntityState.Modified)
+            {
+                GenerateOnUpdate(e);
+            }
+        });
+
+    }
+
     public virtual DbSet<AllComsuption> AllComsuption { get; set; }
     public virtual DbSet<ArticleDataMaster> ArticleDataMaster { get; set; }
     public virtual DbSet<UsersBranchOffices> UsersBranchOffices { get; set; }
@@ -198,7 +242,10 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(x => x.UpdatedAt)
             .ValueGeneratedOnUpdate()
             .HasValueGenerator<DateTimeGenerator>();
-            entity.HasOne(x => x.Vehicle).WithMany(x => x.Bookings).HasForeignKey(x => x.VehicleId);
+            entity
+            .HasOne(x => x.Vehicle)
+            .WithMany(x => x.Bookings)
+            .HasForeignKey(x => x.VehicleId);
             entity.HasOne(x => x.Driver).WithMany(x => x.Bookings).HasForeignKey(x => x.DriverId);
             entity.HasOne(x => x.Company).WithMany(x => x.Bookings).HasForeignKey(x => x.CompanyId);
             entity.HasOne(x => x.BranchOffice).WithMany(x => x.Bookings).HasForeignKey(x => x.BranchOfficeId);
@@ -300,7 +347,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .WithMany(e => e.WareHouses)
             .HasForeignKey(e => e.BranchOfficeId);
         });
-
         modelBuilder.Entity<BranchIsland>(entity =>
         {
             entity.ToTable("BranchIsland");
@@ -388,22 +434,28 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .ValueGeneratedOnAdd()
             .HasValueGenerator<UserNameGenerator>();
 
-            entity.Property(x => x.CreatedAt)
+            entity
+            .Property(x => x.CreatedAt)
             .ValueGeneratedOnAdd()
             .HasValueGenerator<DateTimeGenerator>();
 
-            entity.Property(x => x.UpdatedBy)
+            entity
+            .Property(x => x.UpdatedBy)
             .ValueGeneratedOnUpdate()
             .HasValueGenerator<UserNameGenerator>();
 
-            entity.Property(x => x.CompanyId)
+            entity
+            .Property(x => x.CompanyId)
             .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>()
-            .Metadata.SetAfterSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Save);
+            .Metadata
+            .SetBeforeSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Save);
 
             entity.Property(x => x.BranchOfficeId)
             .ValueGeneratedOnAddOrUpdate()
-            .HasValueGenerator<BranchOfficeIdGenerator>();
+            .HasValueGenerator<BranchOfficeIdGenerator>()
+            .Metadata
+            .SetAfterSaveBehavior(Microsoft.EntityFrameworkCore.Metadata.PropertySaveBehavior.Save);
 
             entity.Property(x => x.UpdatedAt)
             .ValueGeneratedOnUpdate()
@@ -985,14 +1037,12 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .WithMany(x => x.Zones)
             .HasForeignKey(x => x.CompanyId);
         });
-
         modelBuilder.Entity<CompanySAPParams>(entity =>
         {
             entity.ToTable("CompanySAPParams");
 
             entity.HasKey(x => x.CompanyId);
         });
-
         OnModelCreatingGeneratedProcedures(modelBuilder);
         OnModelCreatingGeneratedFunctions(modelBuilder);
         OnModelCreatingPartial(modelBuilder);
