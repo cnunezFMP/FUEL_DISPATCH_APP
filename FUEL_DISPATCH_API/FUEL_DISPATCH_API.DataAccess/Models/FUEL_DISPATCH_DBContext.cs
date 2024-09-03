@@ -89,6 +89,11 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<UsersRols> UsersRols { get; set; }
     public virtual DbSet<Vehicle> Vehicle { get; set; }
     public virtual DbSet<Zone> Zone { get; set; }
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        base.ConfigureConventions(configurationBuilder);
+        configurationBuilder.Properties<Enum>().HaveConversion<string>();
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AllComsuption>(entity =>
@@ -609,7 +614,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasKey(e => e.Id);
 
             entity.ToTable("Maintenance");
-
             entity.Property(x => x.CreatedBy)
             .ValueGeneratedOnAdd()
             .HasValueGenerator<UserNameGenerator>();
@@ -634,7 +638,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .ValueGeneratedOnUpdate()
             .HasValueGenerator<DateTimeGenerator>();
 
-            entity.Property(x => x.Status)
+            entity
+            .Property(x => x.Status)
             .HasConversion<EnumToStringConverter<MaitenanceStatusEnum>>();
 
             entity.HasOne(x => x.Vehicle)
