@@ -89,11 +89,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<UsersRols> UsersRols { get; set; }
     public virtual DbSet<Vehicle> Vehicle { get; set; }
     public virtual DbSet<Zone> Zone { get; set; }
-    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
-    {
-        base.ConfigureConventions(configurationBuilder);
-        configurationBuilder.Properties<Enum>().HaveConversion<string>();
-    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AllComsuption>(entity =>
@@ -943,8 +939,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false);
             entity.Property(e => e.Status)
-                .HasMaxLength(15)
-                .IsUnicode(false);
+            .HasConversion<EnumToStringConverter<VehicleStatussesEnum>>();
+
             entity.Property(e => e.Ficha)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -1015,9 +1011,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         modelBuilder.Entity<Zone>(entity =>
         {
             entity.HasKey(e => e.Id);
-
-
-            entity.Property(e => e.Status).IsUnicode(false);
+            entity.Property(e => e.Status);
             entity.Property(x => x.CreatedBy)
             .ValueGeneratedOnAdd()
             .HasValueGenerator<UserNameGenerator>();

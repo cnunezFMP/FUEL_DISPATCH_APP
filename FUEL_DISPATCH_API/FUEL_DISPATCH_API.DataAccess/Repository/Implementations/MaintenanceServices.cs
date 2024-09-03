@@ -23,6 +23,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             SetCurrentOdometerByVehicle(entity);
             SetNextMaintenanceOdometer(entity);
+            SetVehicleStatus(entity);
             _DBContext.Maintenance.Add(entity);
             _DBContext.SaveChanges();
             SetNextMaintenanceDate(entity);
@@ -35,6 +36,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             SetCurrentOdometerByVehicle(updatedEntity);
             SetNextMaintenanceOdometer(updatedEntity);
+            SetVehicleStatus(updatedEntity);
+            SetVehicleStatusToActive(updatedEntity);
             _DBContext.Entry(updatedEntity).CurrentValues.SetValues(updatedEntity);
             _DBContext.Update(updatedEntity);
             _DBContext.SaveChanges();
@@ -101,6 +104,55 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             maintenance.PartCode = part.Code;
             maintenance.OdometerUpcomingMaintenance = maintenance.CurrentOdometer + part!.MaintenanceOdometerInt;
+            return true;
+        }
+        public bool SetVehicleStatus(Maintenance maintenance)
+        {
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?
+                .Items["CompanyId"]?
+                .ToString();
+
+            branchId = _httpContextAccessor.HttpContext?
+                .Items["BranchOfficeId"]?
+                .ToString();
+
+            var vehicle = _DBContext
+                .Vehicle
+                .FirstOrDefault(x => x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchId) &&
+                x.Id == maintenance.VehicleId) ??
+                throw new NotFoundException("Vehiculo especificado no encontrado. ");
+
+            if (maintenance.Status is Enums.MaitenanceStatusEnum.InProgress)
+                vehicle.Status = Enums.VehicleStatussesEnum.NotAvailable;
+
+            return true;
+        }
+
+
+        public bool SetVehicleStatusToActive(Maintenance maintenance)
+        {
+            string? companyId, branchId;
+            companyId = _httpContextAccessor.HttpContext?
+                .Items["CompanyId"]?
+                .ToString();
+
+            branchId = _httpContextAccessor.HttpContext?
+                .Items["BranchOfficeId"]?
+                .ToString();
+
+            var vehicle = _DBContext
+                .Vehicle
+                .FirstOrDefault(x => x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchId) &&
+                x.Id == maintenance.VehicleId) ??
+                throw new NotFoundException("Vehiculo especificado no encontrado. ");
+
+            if (maintenance.Status is Enums.MaitenanceStatusEnum.Canceled ||
+                maintenance.Status is Enums.MaitenanceStatusEnum.Completed)
+                vehicle.Status = Enums.VehicleStatussesEnum.Active;
+
             return true;
         }
     }

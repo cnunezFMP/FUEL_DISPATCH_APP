@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
+using FUEL_DISPATCH_API.DataAccess.Enums;
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 public partial class Vehicle
 {
@@ -12,7 +13,7 @@ public partial class Vehicle
     [Required] public string? VIN { get; set; }
     [Required] public int? ModEngineId { get; set; }
     public int? DriverId { get; set; }
-    public string? Status { get; set; }
+    public VehicleStatussesEnum? Status { get; set; }
     public string? CreatedBy { get; set; }
     [Required] public int CompanyId { get; set; }
     [Required] public int BranchOfficeId { get; set; }

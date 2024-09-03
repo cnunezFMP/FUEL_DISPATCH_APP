@@ -129,8 +129,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 v.BranchOfficeId == int.Parse(branchId))
                 ?? throw new NotFoundException("No vehicle found. ");
 
-            return (vehicleForDispatch.Status is not ValidationConstants.InactiveStatus
-                && vehicleForDispatch!.Status is not ValidationConstants.NotAvailableStatus);
+            return (vehicleForDispatch.Status is not VehicleStatussesEnum.Inactive
+                && vehicleForDispatch!.Status is not VehicleStatussesEnum.NotAvailable);
         }
         public bool CheckDriver(WareHouseMovement wareHouseMovement)
         {
