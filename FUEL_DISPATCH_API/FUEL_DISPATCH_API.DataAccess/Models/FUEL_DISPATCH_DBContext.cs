@@ -11,7 +11,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public FUEL_DISPATCH_DBContext(DbContextOptions<FUEL_DISPATCH_DBContext> options)
         : base(options)
     {
-        SavingChanges += FUEL_DISPATCH_DBContext_SavingChanges; ;
+        SavingChanges += FUEL_DISPATCH_DBContext_SavingChanges;
     }
 
     private static void GenerateOnUpdate(EntityEntry entry)
@@ -20,7 +20,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         {
             if (!(property.Metadata.ValueGenerated == ValueGenerated.OnUpdateSometimes ||
                 property.Metadata.ValueGenerated == ValueGenerated.OnUpdate ||
-                property.Metadata.ValueGenerated == ValueGenerated.OnAddOrUpdate))
+                property.Metadata.ValueGenerated == ValueGenerated.OnAddOrUpdate ||
+                property.Metadata.ValueGenerated == ValueGenerated.OnAdd))
                 continue;
 
 
@@ -36,24 +37,18 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
                 .Next(entry);
         }
     }
-
     private void FUEL_DISPATCH_DBContext_SavingChanges(object? sender, SavingChangesEventArgs e)
     {
         var changes = ChangeTracker
             .Entries()
             .ToList();
 
-        changes
-            .ForEach(e =>
+        changes.ForEach(e =>
         {
             if (e.State == EntityState.Modified)
-            {
                 GenerateOnUpdate(e);
-            }
         });
-
     }
-
     public virtual DbSet<AllComsuption> AllComsuption { get; set; }
     public virtual DbSet<ArticleDataMaster> ArticleDataMaster { get; set; }
     public virtual DbSet<UsersBranchOffices> UsersBranchOffices { get; set; }
@@ -69,6 +64,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<Dispenser> Dispenser { get; set; }
     public virtual DbSet<Driver> Driver { get; set; }
     public virtual DbSet<Part> Part { get; set; }
+    public virtual DbSet<Permission> Permissions { get; set; }
     public virtual DbSet<Maintenance> Maintenance { get; set; }
     public virtual DbSet<EmployeeConsumptionLimits> EmployeeConsumptionLimits { get; set; }
     public virtual DbSet<Generation> Generation { get; set; }
@@ -79,6 +75,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<Model> Model { get; set; }
     public virtual DbSet<Road> Road { get; set; }
     public virtual DbSet<Role> Role { get; set; }
+    public virtual DbSet<RolsPermissions> RolsPermissions { get; set; }
     public virtual DbSet<Stock> Stock { get; set; }
     public virtual DbSet<WareHouse> WareHouse { get; set; }
     public virtual DbSet<WareHouseMovement> WareHouseMovement { get; set; }
@@ -734,17 +731,25 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         {
             entity.HasKey(e => e.Id);
 
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+            entity.Property(e => e.CreatedAt)
+            .HasValueGenerator<DateTimeGenerator>();
+
             entity.Property(e => e.CreatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
+            .HasValueGenerator<UserNameGenerator>();
             entity.Property(e => e.RolName)
                 .HasMaxLength(30)
                 .IsUnicode(false);
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedAt)
+            .HasValueGenerator<DateTimeGenerator>();
             entity.Property(e => e.UpdatedBy)
-                .HasMaxLength(100)
-                .IsUnicode(false);
+                  .HasValueGenerator<UserNameGenerator>();
+            entity.Property(x => x.CompanyId)
+            .HasValueGenerator<CompanyIdGenerator>();
+
+            entity.HasOne(x => x.Company)
+            .WithMany(x => x.Roles)
+            .HasForeignKey(x => x.CompanyId);
+
         });
         modelBuilder.Entity<Stock>(entity =>
         {
@@ -1043,6 +1048,57 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(x => x.Company)
             .WithMany(x => x.Zones)
             .HasForeignKey(x => x.CompanyId);
+        });
+        modelBuilder.Entity<Permission>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.ToTable("Permission");
+
+
+            entity.HasMany(x => x.Rols)
+            .WithMany(x => x.Permissions)
+            .UsingEntity<RolsPermissions>(x => x.HasOne(x => x.Role)
+            .WithMany()
+            .HasForeignKey(x => x.RolId),
+            x => x.HasOne(x => x.Permission)
+            .WithMany()
+            .HasForeignKey(x => x.PermissionId));
+
+
+        });
+        modelBuilder.Entity<RolsPermissions>(entity =>
+        {
+            entity
+            .HasOne(d => d.Role)
+            .WithMany(p => p.RolsPermissions)
+            .HasForeignKey(d => d.RolId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+            entity
+            .HasOne(d => d.Permission)
+            .WithMany(p => p.RolsPermissions)
+            .HasForeignKey(d => d.PermissionId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+            entity.Property(x => x.CompanyId)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<CompanyIdGenerator>();
+
+            entity.Property(x => x.CreatedBy)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.CreatedAt)
+            .ValueGeneratedOnAdd()
+            .HasValueGenerator<DateTimeGenerator>();
+
+            entity.Property(x => x.UpdatedBy)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<UserNameGenerator>();
+
+            entity.Property(x => x.UpdatedAt)
+            .ValueGeneratedOnUpdate()
+            .HasValueGenerator<DateTimeGenerator>();
         });
         modelBuilder.Entity<CompanySAPParams>(entity =>
         {

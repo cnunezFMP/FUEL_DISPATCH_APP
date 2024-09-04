@@ -27,11 +27,9 @@ namespace FUEL_DISPATCH_API.Controllers
             _branchIslandValidator = branchIslandValidator;
             _httpContextAccessor = httpContextAccessor;
         }
-        [HttpGet, Authorize]
+        [HttpGet, Authorize()]
         public ActionResult<ResultPattern<Paging<BranchIsland>>> GetBranchIslands([FromQuery] GridifyQuery query)
-        {
-            return Ok(_branchIslandServices.GetAll(query));
-        }
+            => Ok(_branchIslandServices.GetAll(query));
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<BranchIsland>> GetBranchIsland(int id)
         {

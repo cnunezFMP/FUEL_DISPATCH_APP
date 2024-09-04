@@ -29,10 +29,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             await sapService.PostGenExit(wareHouseMovement);
         }
-
         public override ResultPattern<WareHouseMovement> Post(WareHouseMovement wareHouseMovement)
         {
-            if (CheckIfWareHousesHasActiveStatus(wareHouseMovement))
+            if (!CheckIfWareHousesHasActiveStatus(wareHouseMovement))
                 throw new BadRequestException("Este almacen esta inactivo. ");
             if (wareHouseMovement.RequestId.HasValue)
                 SetRequestForMovement(wareHouseMovement);
@@ -57,8 +56,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             if (!CheckDispenser(wareHouseMovement))
                 throw new BadRequestException("El dispensador no esta activo. ");
-
-
             // DONE: Terminar de probar esta validacion. (Simplemente no era el id del item que estaba. )
             if (!CheckIfProductIsInTheWareHouse(wareHouseMovement))
                 throw new BadRequestException("El articulo indicado no se encuentra en el almacen. ");
@@ -67,6 +64,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             PostSAP(wareHouseMovement)
                 .Wait();
             return base.Post(wareHouseMovement);
+        }
+
+        public override ResultPattern<WareHouseMovement> Update(Func<WareHouseMovement, bool> predicate, WareHouseMovement updatedEntity)
+        {
+            UpdateVehicleOdometer(updatedEntity);
+            return base.Update(predicate, updatedEntity);
         }
         #region Logic
         public bool SetDriverIdByVehicle(WareHouseMovement wareHouseMovement)
@@ -97,7 +100,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             }
             return false;
         }
-
         public bool QtyCantBeZero(WareHouseMovement wareHouseMovement)
             => wareHouseMovement.Qty > ValidationConstants.ZeroGallons;
         public bool CheckVehicleOdometer(WareHouseMovement wareHouseMovement)
@@ -354,12 +356,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                                                       x.BranchOfficeId == int.Parse(branchOfficeId))
                                       ?? throw new NotFoundException("Request not found. ");
 
-            if (requestForMovement.Status == ValidationConstants.PendingStatus ||
-                requestForMovement.Status == ValidationConstants.RejectedStatus ||
-                requestForMovement.Status == ValidationConstants.CanceledStatus)
-            {
-                throw new BadRequestException($"This request is {requestForMovement.Status}");
-            }
+            if (requestForMovement.Status == RequestStatussesEnum.Rejected ||
+                requestForMovement.Status == RequestStatussesEnum.Canceled)
+                throw new BadRequestException($"Esta solicitud esta {requestForMovement.Status}");
+
 
             wareHouseMovement.Qty = requestForMovement.Qty;
 
@@ -369,7 +369,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if (requestForMovement.VehicleId.HasValue)
                 wareHouseMovement.VehicleId = requestForMovement.VehicleId;
 
-            requestForMovement.Status = ValidationConstants.CompletedStatus;
+            requestForMovement.Status = RequestStatussesEnum.Completed;
             _DBContext.WareHouseMovementRequest.Update(requestForMovement);
             _DBContext.SaveChanges();
 

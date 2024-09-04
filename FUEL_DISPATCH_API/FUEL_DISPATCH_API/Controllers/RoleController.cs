@@ -20,5 +20,10 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize("Administrador")]
         public ActionResult<ResultPattern<Role>> GetRols([FromQuery] GridifyQuery query)
             => Ok(_roleServices.GetAll(query));
+
+
+        [HttpPost]
+        public ActionResult<ResultPattern<Role>> CreateRol([FromBody] Role role)
+            => Created(string.Empty, _roleServices.Post(role));
     }
 }

@@ -44,7 +44,7 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_wareHouseMovementServices.Get(predicate));
         }
 
-        [HttpPost, Authorize]
+        [HttpPost, Authorize("Dispatcher")]
         public ActionResult<ResultPattern<WareHouseMovement>> PostMovement([FromBody] WareHouseMovement wareHouseMovement)
             => Created(string.Empty, _wareHouseMovementServices.Post(wareHouseMovement));
         

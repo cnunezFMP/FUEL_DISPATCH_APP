@@ -16,12 +16,12 @@ namespace FUEL_DISPATCH_API.Controllers
     public class UsersRolesController : ControllerBase
     {
         private readonly IUsersRolesServices _userRolesServices;
-        // private readonly IValidator<UsersRols> _validator;
-        public UsersRolesController(IUsersRolesServices userRolesServices)
+        private readonly IHttpContextAccessor _httpContextAccessor;        // private readonly IValidator<UsersRols> _validator;
+        public UsersRolesController(IUsersRolesServices userRolesServices,
+            IHttpContextAccessor httpContextAccessor)
         {
             _userRolesServices = userRolesServices;
-            //_validator = validator;
-
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpPut("{userId:int}/Roles/{rolId:int}"), Authorize]
@@ -36,17 +36,15 @@ namespace FUEL_DISPATCH_API.Controllers
         }
         [HttpPost, Authorize]
         public ActionResult<ResultPattern<UsersRols>> PostUserRol([FromBody] UsersRols userRol)
-        {
-            // var validationResult = _validator.Validate(userRol);
+            => Created(string.Empty, _userRolesServices.Post(userRol));
 
-            //if (!validationResult.IsValid)
-            //    return Valida     tionProblem(ModelStateResult.GetModelStateDic(validationResult));
-            return Created(string.Empty, _userRolesServices.Post(userRol));
-        }
-        [HttpDelete("{userId}/Roles/{rolId}"), Authorize(Roles = "Administrador")] 
+        [HttpDelete("{userId}/Roles/{rolId}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<UsersRols>> DeleteUserRol(int userId, int rolId)
         {
-            Func<UsersRols, bool> predicate = x => x.UserId == userId && x.RolId == rolId;
+            string? companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            Func<UsersRols, bool> predicate = x => x.UserId == userId &&
+            x.RolId == rolId && 
+            x.CompanyId == int.Parse(companyId);
             return Ok(_userRolesServices.Delete(predicate));
         }
     }

@@ -47,23 +47,13 @@ namespace FUEL_DISPATCH_API.Controllers
         // DONE: Corregir exception. (Cannot insert duplicate key in object 'dbo.UsersBranchOffices'. The duplicate key Value is (1, 1)). Solution: Quite la llave primaria compuesta de la tabla UsersBranchOffices.
         [HttpPost, Authorize]
         public ActionResult<ResultPattern<UsersBranchOffices>> SetUsersBranchOffices([FromBody] UsersBranchOffices usersBranchOffice)
-        {
-            //var validationResult = _validator.Validate(usersBranchOffice);
-
-            //if (!validationResult.IsValid)
-            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            return Created(string.Empty, _usersBranchOfficesServices.Post(usersBranchOffice));
-        }
+            => Created(string.Empty, _usersBranchOfficesServices.Post(usersBranchOffice));
+        
         // DONE: Luego de resolver los problemas aqui, aplicarlo en los demas servicios. 
         [HttpPut("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<UsersBranchOffices>> UpdateUserCompany(int userId,
             UsersBranchOffices usersBranchOffices)
         {
-            //var validationResult = _validator.Validate(usersBranchOffices);
-
-            //if (!validationResult.IsValid)
-            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-
             string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();

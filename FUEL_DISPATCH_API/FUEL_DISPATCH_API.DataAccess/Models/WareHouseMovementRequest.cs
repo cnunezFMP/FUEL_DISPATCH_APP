@@ -15,7 +15,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public int? VehicleId { get; set; }
         public int? CompanyId { get; set; }
         public int? BranchOfficeId { get; set; }
-        public string? Status { get; set; } = ValidationConstants.PendingStatus;
+        public RequestStatussesEnum? Status { get; set; }
         [Required] public decimal Qty { get; set; } // Quantity (decimal for precision)
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

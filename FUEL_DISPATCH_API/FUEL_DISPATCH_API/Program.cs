@@ -1,6 +1,5 @@
 using FluentValidation;
 using FMP_DISPATCH_API.Services.Emails;
-using FUEL_DISPATCH_API;
 using FUEL_DISPATCH_API.Auth;
 using FUEL_DISPATCH_API.Auth.AuthRepository;
 using FUEL_DISPATCH_API.DataAccess.DTOs;
@@ -13,6 +12,7 @@ using FUEL_DISPATCH_API.Middlewares;
 using FUEL_DISPATCH_API.Swagger;
 using FUEL_DISPATCH_API.Swagger.SwaggerExamples;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -20,7 +20,6 @@ using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
-using Twilio.Rest.Voice.V1.DialingPermissions;
 var builder = WebApplication.CreateBuilder(args);
 const string swaggerTitle = "FUEL_DISPATCH_API";
 const string swaggerVersion = "v1";
@@ -34,11 +33,22 @@ builder.Services.AddControllers()
     {
         opt.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
-
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddSwaggerExamplesFromAssemblyOf<UserSwaggerExample>()
                 .AddSwaggerExamplesFromAssemblyOf<ArticleSwaggerExample>();
+
+
+builder.Services.AddAuthorization((x) =>
+{
+    x.AddPolicy("AdminRequired", (x) => x.RequireRole("Administrator"));
+    x.AddPolicy("Reporter", (x) => x.RequireClaim("CanGenerateReport"));
+    x.AddPolicy("RegisterData", (x) => x.RequireClaim("CanCreate"));
+    x.AddPolicy("Dispatcher", (x) => x.RequireClaim("CanGenerateDispatch"));
+    x.AddPolicy("Reader", (x) => x.RequireClaim("CanReadData"));
+    x.AddPolicy("Updater", (x) => x.RequireClaim("CanUpdateData"));
+    x.AddPolicy("UsersManagement", (x) => x.RequireClaim("CanManageUsers"));
+    x.AddPolicy("VehicleManagement", (x) => x.RequireClaim("CanManageVehicles"));
+});
 
 builder.Services.AddSwaggerGen(
     info =>
@@ -86,10 +96,8 @@ builder.Services.AddAuthentication(config =>
 {
     config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-    .AddJwtBearer(config =>
+}).AddJwtBearer(config =>
     {
-        // Other configs...
         config.Events = new JwtBearerEvents
         {
             OnChallenge = async context =>
@@ -100,15 +108,14 @@ builder.Services.AddAuthentication(config =>
                 // DONE: Ver si puedo enviar un JSON como respuesta.
                 var unauthorizedObj = new
                 {
-                    Title = "User not authenticated. ",
-                    Description = "You are not authorized to perform this action. Please log in to get access.",
+                    Title = "Usuario no autenticado. ",
+                    Description = "Por favor, logeate para obtener acceso. ",
                     Status = StatusCodes.Status401Unauthorized,
                 };
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 await context.Response.WriteAsJsonAsync(unauthorizedObj);
             }
         };
-
         config.RequireHttpsMetadata = false;
         config.SaveToken = true;
         config.TokenValidationParameters = new TokenValidationParameters()
@@ -119,7 +126,6 @@ builder.Services.AddAuthentication(config =>
             ValidateAudience = false,
         };
     });
-
 #region ServicesContainers
 builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IValidator<Vehicle>, VehiclesValidator>()
@@ -129,8 +135,6 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IValidator<BranchIsland>, BranchIslandValidator>()
                 .AddScoped<IValidator<Dispenser>, DispenserValidator>()
                 .AddScoped<IValidator<Road>, RoadValidator>()
-                //.AddScoped<IValidator<Companies>, CompanyValidator>()
-                //.AddScoped<IValidator<WareHouse>, WareHouseValidator>()
                 .AddScoped<IValidator<WareHouseMovementRequest>, RequestValidator>()
                 .AddScoped<IValidator<Driver>, DriverValidator>()
                 .AddScoped<IValidator<WareHouseMovement>, WareHouseMovementValidator>()
@@ -140,6 +144,7 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IValidator<UsersBranchOffices>, UsersBranchOfficeValidator>()
                 .AddScoped<IValidator<EmployeeConsumptionLimits>, EmployeeComsuptionLimitsValidator>()
                 .AddScoped<IEmployeeComsuptionLimitsServices, EmployeeComsuptionLimitsServices>()
+                .AddScoped<IRolsPermissionsServices, RolsPermissionsServices>()
                 .AddScoped<IZoneServices, ZoneServices>()
                 .AddScoped<IBookingServices, BookingServices>()
                 .AddScoped<IOdometerMeasureServices, OdometerMeasureServices>()
@@ -171,6 +176,7 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IArticleServices, ArticleDataMasterServices>()
                 .AddScoped<IRequestServices, RequestServices>()
                 .AddScoped<IWareHouseServices, WareHouseServices>()
+                .AddScoped<IPermissionsServices, PermissionsServices>()
                 .AddScoped<IVehiclesServices, VehiclesServices>()
                 .AddScoped<IDriversServices, DriversServices>()
                 .AddScoped<IUsersAuth, UsersAuth>()
@@ -214,8 +220,6 @@ app.UseExceptionHandler();
         branchId = c.Claims
         .FirstOrDefault(x => x.Type == "BranchOfficeId")?
         .WarehouseItemStockValue;
-
-
     }
     await next();
 });*/
@@ -240,6 +244,33 @@ app.UseReDoc(c =>
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.Use(async (context, next) =>
+{
+    if (context.Response.StatusCode == StatusCodes.Status403Forbidden)
+    {
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync("{\"message\": \"Acceso denegado. No tienes permisos suficientes.\"}");
+    }
+    else
+    {
+        await next();
+    }
+});
 app.UseMiddleware<AuthMiddleware>();
+app.UseStatusCodePages(async (x) =>
+{
+    if (x.HttpContext.Response.StatusCode == 403)
+    {
+        var noAuthorizedObj = new
+        {
+            Titulo = "Usuario no autorizado.",
+            Message = "No esta autorizado para hacer esta accion. ",
+            Status = 403
+
+        };
+
+        await x.HttpContext.Response.WriteAsJsonAsync(noAuthorizedObj);
+    };
+});
 app.MapControllers();
 app.Run();

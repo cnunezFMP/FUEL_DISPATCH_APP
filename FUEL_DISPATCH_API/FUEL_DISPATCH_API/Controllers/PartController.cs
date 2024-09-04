@@ -20,14 +20,10 @@ namespace FUEL_DISPATCH_API.Controllers
             _partServices = partServices;
             _httpContextAccessor = httpContextAccessor;
         }
-        // Hola mundo 
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Part>>> GetParts([FromQuery] GridifyQuery query)
-        {
-            return Ok(_partServices.GetAll(query));
-        }
-
-        [HttpGet("{id:int}")]
+            => Ok(_partServices.GetAll(query));
+        [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Part>> GetPart(int id)
         {
             string? companyId;
@@ -43,7 +39,6 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize]
         public ActionResult<ResultPattern<Part>> PostPart([FromBody] Part part)
            => Created(string.Empty, _partServices.Post(part));
-
         [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Part>> UpdatePart(int id, [FromBody] Part part)
         {
