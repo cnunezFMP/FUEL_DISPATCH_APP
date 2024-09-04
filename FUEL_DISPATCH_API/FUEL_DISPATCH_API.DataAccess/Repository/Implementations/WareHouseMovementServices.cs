@@ -146,8 +146,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                                        d.BranchOfficeId == int.Parse(branchOfficeId))
                     ?? throw new NotFoundException("No driver found. ");
 
-                return (driverForDispatch!.Status is not ValidationConstants.InactiveStatus &&
-                        driverForDispatch!.Status is not ValidationConstants.NotAvailableStatus);
+                return (driverForDispatch!.Status is not ActiveInactiveStatussesEnum.Inactive);
             }
 
             return true;
@@ -179,7 +178,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             dp.CompanyId == int.Parse(companyId))
             ?? throw new NotFoundException("No se encontro el dispensador. ");
 
-            return dispenser.Status is not ValidationConstants.InactiveStatus;
+            return dispenser.Status is not ActiveInactiveStatussesEnum.Inactive;
 
         }
         // DONE: Corregir la excepcion aqui
@@ -217,7 +216,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                             ?? throw new NotFoundException("No warehouse found. ");
 
 
-            return wareHouse!.Status is not ValidationConstants.ActiveStatus;
+            return wareHouse!.Status is not ActiveInactiveStatussesEnum.Inactive;
         }
         /*public bool WillStockFallBelowMinimum(WareHouseMovement wareHouseMovement)
         {

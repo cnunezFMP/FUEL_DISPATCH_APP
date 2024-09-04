@@ -1,4 +1,5 @@
-﻿using FUEL_DISPATCH_API.Utils.Constants;
+﻿using FUEL_DISPATCH_API.DataAccess.Enums;
+using FUEL_DISPATCH_API.Utils.Constants;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 namespace FUEL_DISPATCH_API.DataAccess.Models
@@ -31,7 +32,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
 
         [Required] public string? Representative { get; set; }
 
-        public string? Status { get; set; } = ValidationConstants.ActiveStatus;
+        public ActiveInactiveStatussesEnum? Status { get; set; } = ActiveInactiveStatussesEnum.Active;
 
 
         [JsonIgnore] public virtual ICollection<Stock>? Stocks { get; set; } = new List<Stock>();

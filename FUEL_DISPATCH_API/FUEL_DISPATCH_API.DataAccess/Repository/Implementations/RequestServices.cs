@@ -47,11 +47,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 x.BranchOfficeId == int.Parse(branchId))
                 ?? throw new NotFoundException("No destination warehouse found. ");
 
-            if (wareHouseMovementRequest.Type is MovementsTypesEnum.Transferencia)
-                return wareHouse!.Status is not ValidationConstants.InactiveStatus
-                    && toWareHouse!.Status is not ValidationConstants.InactiveStatus;
+            //if (wareHouseMovementRequest.Type is MovementsTypesEnum.Transferencia)
+            //    return wareHouse!.Status is not ValidationConstants.InactiveStatus
+            //        && toWareHouse!.Status is not ValidationConstants.InactiveStatus;
 
-            return wareHouse!.Status is not ValidationConstants.InactiveStatus;
+            return wareHouse!.Status is not ActiveInactiveStatussesEnum.Inactive;
         }
         public bool CheckVehicle(WareHouseMovementRequest newRequest)
         {
@@ -82,8 +82,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 x.BranchOfficeId == int.Parse(branchId))
                 ?? throw new NotFoundException("This driver doesn't exist. ");
 
-            return (driverForDispatch!.Status is not ValidationConstants.InactiveStatus &&
-                driverForDispatch!.Status is not ValidationConstants.NotAvailableStatus);
+            return (driverForDispatch!.Status is not ActiveInactiveStatussesEnum.Inactive);
         }
     }
 }

@@ -321,7 +321,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(x => x.CreatedBy)
             .ValueGeneratedOnAdd()
             .HasValueGenerator<UserNameGenerator>();
-
+            entity.Property(x => x.Status)
+            .HasConversion<EnumToStringConverter<ActiveInactiveStatussesEnum>>();
             entity.Property(x => x.CompanyId)
             .ValueGeneratedOnAdd()
             .HasValueGenerator<CompanyIdGenerator>();
@@ -393,6 +394,9 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(x => x.CreatedBy)
             .ValueGeneratedOnAdd()
             .HasValueGenerator<UserNameGenerator>();
+            entity
+            .Property(x => x.Status)
+            .HasConversion<EnumToStringConverter<ActiveInactiveStatussesEnum>>();
 
             entity.Property(x => x.CreatedAt)
             .ValueGeneratedOnAdd()
@@ -434,6 +438,10 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(x => x.CreatedBy)
             .ValueGeneratedOnAdd()
             .HasValueGenerator<UserNameGenerator>();
+
+            entity
+            .Property(x => x.Status)
+            .HasConversion<EnumToStringConverter<ActiveInactiveStatussesEnum>>();
 
             entity
             .Property(x => x.CreatedAt)

@@ -83,19 +83,19 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             companyId = _httpContextAccesor.HttpContext?.Items["CompanyId"]?.ToString();
 
 
-            return _DBContext.User.Any(x=>x.Username == user.Username /*&&
+            return _DBContext.User.Any(x => x.Username == user.Username /*&&
             x.CompanyId == int.Parse(companyId)*/);
         }
-           
+
         public bool IsEmailUnique(UserRegistrationDto user)
             => _DBContext.User.Any(x => x.Email == user.Email);
         string PasswordHashing(string password)
             => BCrypt.Net.BCrypt.HashPassword(password, 13);
         public bool DriverIdHasValue(UserRegistrationDto user)
         {
-            var driver = _DBContext.Driver.FirstOrDefault(x => x.Id == user.DriverId);
-            if (driver!.Status is ValidationConstants.InactiveStatus)
-                throw new BadRequestException("This driver is Inactive. ");
+            var driver = _DBContext.Driver.FirstOrDefault(x => x.Id == user.DriverId) ?? throw new NotFoundException("El conductor indicado no se encontro. ");
+            if (driver!.Status is Enums.ActiveInactiveStatussesEnum.Inactive)
+                throw new BadRequestException("El conductor esta inactivo. ");
 
             user.FullName = driver?.FullName!;
             user.Email = driver?.Email;

@@ -31,7 +31,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 StatusCodes.Status201Created,
                 AppConstants.DATA_SAVED_MESSAGE);
         }
-
         public override ResultPattern<Maintenance> Update(Func<Maintenance, bool> predicate, Maintenance updatedEntity)
         {
             SetCurrentOdometerByVehicle(updatedEntity);
@@ -129,8 +128,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             return true;
         }
-
-
         public bool SetVehicleStatusToActive(Maintenance maintenance)
         {
             string? companyId, branchId;
@@ -150,7 +147,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 throw new NotFoundException("Vehiculo especificado no encontrado. ");
 
             if (maintenance.Status is Enums.MaitenanceStatusEnum.Canceled ||
-                maintenance.Status is Enums.MaitenanceStatusEnum.Completed)
+                maintenance.Status is Enums.MaitenanceStatusEnum.Completed ||
+                maintenance.Status is Enums.MaitenanceStatusEnum.NotStarted)
                 vehicle.Status = Enums.VehicleStatussesEnum.Active;
 
             return true;

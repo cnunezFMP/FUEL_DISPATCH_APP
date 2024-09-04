@@ -32,7 +32,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                 .FirstOrDefault(predicate)
                 ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
 
-            return ResultPattern<T>.Success(entity!, StatusCodes.Status200OK, AppConstants.DATA_OBTAINED_MESSAGE);
+            return ResultPattern<T>.Success(entity!,
+                StatusCodes.Status200OK,
+                AppConstants.DATA_OBTAINED_MESSAGE);
         }
         public virtual ResultPattern<Paging<T>> GetAll(GridifyQuery query)
         {

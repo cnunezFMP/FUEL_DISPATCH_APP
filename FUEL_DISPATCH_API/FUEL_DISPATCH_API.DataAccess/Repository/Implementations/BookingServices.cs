@@ -39,8 +39,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 d.CompanyId == int.Parse(companyId))
                 ?? throw new NotFoundException("No driver found. ");
 
-            return (driverForBook!.Status is not ValidationConstants.InactiveStatus &&
-                    driverForBook!.Status is not ValidationConstants.NotAvailableStatus);
+            return (driverForBook!.Status is not ActiveInactiveStatussesEnum.Inactive);
         }
         public bool CheckVehicle(Booking book)
         {
