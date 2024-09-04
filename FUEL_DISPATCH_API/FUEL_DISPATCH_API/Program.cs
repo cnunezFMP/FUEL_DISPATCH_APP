@@ -40,7 +40,7 @@ builder.Services.AddSwaggerExamplesFromAssemblyOf<UserSwaggerExample>()
 
 builder.Services.AddAuthorization((x) =>
 {
-    x.AddPolicy("AdminRequired", (x) => x.RequireRole("Administrator"));
+    x.AddPolicy("AdminRequired", (x) => x.RequireRole("Administrador"));
     x.AddPolicy("Reporter", (x) => x.RequireClaim("CanGenerateReport"));
     x.AddPolicy("RegisterData", (x) => x.RequireClaim("CanCreate"));
     x.AddPolicy("Dispatcher", (x) => x.RequireClaim("CanGenerateDispatch"));

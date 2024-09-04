@@ -15,7 +15,7 @@ namespace FUEL_DISPATCH_API.DataAccess.ValueGenerators
                 .HttpContext?
                 .Items["CompanyId"]
                 as string
-                ?? string.Empty;
+                ?? throw new BadHttpRequestException("Al parecer el usuario no esta en una compañia. ");
 
 
             return int.Parse(companyId);

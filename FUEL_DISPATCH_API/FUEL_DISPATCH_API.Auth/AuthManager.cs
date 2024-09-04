@@ -18,9 +18,9 @@ public class AuthManager
         _secretKey = secretKey;
     }
     public object AuthToken(LoginDto usuario)
-    {
-        var username = usuario.Username;
-        var password = usuario.Password;
+        {
+            var username = usuario.Username;
+            var password = usuario.Password;
         var credenciales = _dbContext.User
             .Include(x => x.Rols)
             .SingleOrDefault(x => x.Username == username);
