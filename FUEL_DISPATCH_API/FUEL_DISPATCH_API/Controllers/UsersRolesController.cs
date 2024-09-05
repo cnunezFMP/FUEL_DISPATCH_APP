@@ -11,12 +11,11 @@ using System.Security.Claims;
 
 namespace FUEL_DISPATCH_API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+    [ApiController, Route("api/[controller]"), Authorize(Policy = "UsersManagement")]
     public class UsersRolesController : ControllerBase
     {
         private readonly IUsersRolesServices _userRolesServices;
-        private readonly IHttpContextAccessor _httpContextAccessor;        // private readonly IValidator<UsersRols> _validator;
+        private readonly IHttpContextAccessor _httpContextAccessor;    
         public UsersRolesController(IUsersRolesServices userRolesServices,
             IHttpContextAccessor httpContextAccessor)
         {
@@ -27,18 +26,14 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{userId:int}/Roles/{rolId:int}"), Authorize]
         public ActionResult<ResultPattern<UsersRols>> UpdateUserRol(int userId, int rolId, UsersRols userRol)
         {
-            Func<UsersRols, bool> predicate = x => x.UserId == userId && x.RolId == rolId;
-            //var validationResult = _validator.Validate(userRol);
-
-            //if (!validationResult.IsValid)
-            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
+            bool predicate(UsersRols x) => x.UserId == userId && x.RolId == rolId;
             return Ok(_userRolesServices.UpdateUserRol(predicate, userRol));
         }
         [HttpPost, Authorize]
         public ActionResult<ResultPattern<UsersRols>> PostUserRol([FromBody] UsersRols userRol)
             => Created(string.Empty, _userRolesServices.Post(userRol));
 
-        [HttpDelete("{userId}/Roles/{rolId}"), Authorize(Roles = "Administrador")]
+        [HttpDelete("{userId}/Roles/{rolId}"), Authorize]
         public ActionResult<ResultPattern<UsersRols>> DeleteUserRol(int userId, int rolId)
         {
             string? companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();

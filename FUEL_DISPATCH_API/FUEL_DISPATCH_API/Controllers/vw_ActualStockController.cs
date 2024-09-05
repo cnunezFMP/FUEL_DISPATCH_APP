@@ -8,8 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FUEL_DISPATCH_API.Controllers
 {
     // DONE: un endpoint donde yo especifique el almacen y me traiga todos los articulos de este, este tendria como parametron el almacen y el tipo de articulo.
-    [ApiController]
-    [Route("api/[controller]")]
+    [ApiController, Route("api/[controller]")]
     public class vw_ActualStockController : ControllerBase
     {
         private readonly IHttpContextAccessor _httpContextAccessor;

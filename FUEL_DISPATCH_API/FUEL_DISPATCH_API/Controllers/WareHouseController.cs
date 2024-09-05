@@ -12,21 +12,16 @@ namespace FUEL_DISPATCH_API.Controllers
     {
         private readonly IWareHouseServices _wareHouseServices;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        // private readonly IValidator<WareHouse> _wareHouseValidator;
-
         public WareHouseController(IWareHouseServices wareHouseServices,
-                                   //IValidator<WareHouse> wareHouseValidator,
                                    IHttpContextAccessor httpContextAccessor)
         {
             _wareHouseServices = wareHouseServices;
-           // _wareHouseValidator = wareHouseValidator;
             _httpContextAccessor = httpContextAccessor;
         }
         [HttpGet, Authorize]
-        public async Task<ActionResult<ResultPattern<Paging<WareHouse>>>> GetWareHouses([FromQuery] GridifyQuery query)
-        {
-            return Ok(_wareHouseServices.GetAll(query));
-        }
+        public ActionResult<ResultPattern<Paging<WareHouse>>> GetWareHouses([FromQuery] GridifyQuery query)
+            => Ok(_wareHouseServices.GetAll(query));
+        
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<WareHouse>> GetWareHouse(int id)
         {
@@ -39,17 +34,11 @@ namespace FUEL_DISPATCH_API.Controllers
                                            x.BranchOfficeId == int.Parse(branchId);
             return Ok(_wareHouseServices.Get(predicate));
         }
-        [HttpPost, Authorize]
+        [HttpPost, Authorize(Policy = "RegisterData, AdminRequired")]
         public ActionResult<ResultPattern<WareHouse>> PostWareHouse([FromBody] WareHouse warehouse)
-        {
-            //var validationResult = _wareHouseValidator.Validate(warehouse);
-            //if (!validationResult.IsValid)
-            //{         
-            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            //}
-            return Created(string.Empty, _wareHouseServices.Post(warehouse));
-        }
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
+            => Created(string.Empty, _wareHouseServices.Post(warehouse));
+        
+        [HttpPut("{id:int}"), Authorize(Policy = "Updater, AdminRequired")]
         public ActionResult<ResultPattern<WareHouse>> UpdateStore(int id, [FromBody] WareHouse warehouse)
         {
             string? companyId, branchId;

@@ -18,10 +18,8 @@ namespace FUEL_DISPATCH_API.Controllers
             _calculatedComsuptionServices = calculatedComsuptionServices;
         }
 
-        [HttpGet, Authorize]
+        [HttpGet, Authorize(Policy = "CanReadData, Reporter")]
         public ActionResult<ResultPattern<Paging<CalculatedComsuptionReport>>> GetCalculatedComsuption([FromQuery] GridifyQuery query)
-        {
-            return Ok(_calculatedComsuptionServices.GetAll(query));
-        }
+            => Ok(_calculatedComsuptionServices.GetAll(query));
     }
 }

@@ -23,6 +23,7 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Part>>> GetParts([FromQuery] GridifyQuery query)
             => Ok(_partServices.GetAll(query));
+
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Part>> GetPart(int id)
         {
@@ -36,10 +37,10 @@ namespace FUEL_DISPATCH_API.Controllers
                                       x.CompanyId == int.Parse(companyId);
             return Ok(_partServices.Get(predicate));
         }
-        [HttpPost, Authorize]
+        [HttpPost, Authorize(Policy = "RegisterData, AdminRequired")]
         public ActionResult<ResultPattern<Part>> PostPart([FromBody] Part part)
            => Created(string.Empty, _partServices.Post(part));
-        [HttpPut("{id:int}"), Authorize]
+        [HttpPut("{id:int}"), Authorize(Policy = "Updater, AdminRequired")]
         public ActionResult<ResultPattern<Part>> UpdatePart(int id, [FromBody] Part part)
         {
             string? companyId;

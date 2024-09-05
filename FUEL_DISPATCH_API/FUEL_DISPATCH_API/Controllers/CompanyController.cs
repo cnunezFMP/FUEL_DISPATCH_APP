@@ -21,36 +21,32 @@ namespace FUEL_DISPATCH_API.Controllers
         public CompanyController(ICompaniesServices companiesServices/*, IValidator<Companies> companiesValidator*/)
         {
             _companiesServices = companiesServices;
-            // _companiesValidator = companiesValidator;
         }
 
-        [HttpGet, Authorize(Roles = "Administrador")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Companies>>> GetComanies([FromQuery] GridifyQuery query)
-        {
-            return Ok(_companiesServices.GetAll(query));
-        }
+            => Ok(_companiesServices.GetAll(query));
+
 
         /// <summary>
         /// Obtener todas las sucursales de una compañia. 
         /// </summary>
         /// <param name="companyId"></param>
         /// <returns></returns>
-        [HttpGet("{companyId}/BranchOffice"), Authorize(Roles = "Administrador")]
+        [HttpGet("{companyId}/BranchOffice"), Authorize]
         public ActionResult<ResultPattern<BranchOffices>> GetCompanyBranchOfficess(int companyId)
-        {
-            return Ok(_companiesServices.GetCompanyBranchOfficess(companyId));
-        }
+            => Ok(_companiesServices.GetCompanyBranchOfficess(companyId));
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Companies>> GetCompany(int id)
             => Ok(_companiesServices.Get(x => x.Id == id));
 
 
-        [HttpPost, AllowAnonymous]
+        [HttpPost, Authorize]
         public ActionResult<ResultPattern<Companies>> PostCompany([FromBody] Companies company)
             => Created(string.Empty, _companiesServices.Post(company));
 
 
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
+        [HttpPut("{id:int}"), Authorize(Policy = "AdminRequired, Updater")]
         public ActionResult<ResultPattern<Companies>> UpdateCompanie(int id, [FromBody] Companies company)
         {
             return Ok(_companiesServices.Update(x => x.Id == id, company));

@@ -1,19 +1,13 @@
 ﻿using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
-using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
-using FUEL_DISPATCH_API.DataAccess.Validators;
-using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-
 namespace FUEL_DISPATCH_API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+    [ApiController, Route("api/[controller]"), Authorize(Policy = "AdminRequired")]
     public class EmployeeConsumptionLimitsController : ControllerBase
     {
         private readonly IEmployeeComsuptionLimitsServices _employeeComsuptionLimitsServices;
@@ -28,18 +22,17 @@ namespace FUEL_DISPATCH_API.Controllers
         }
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<EmployeeConsumptionLimits>>> GetEmployeeComsuptionMethods([FromQuery] GridifyQuery query)
-        {
-            return Ok(_employeeComsuptionLimitsServices.GetAll(query));
-        }
+            => Ok(_employeeComsuptionLimitsServices.GetAll(query));
+
         [HttpDelete("{driverId:int}, {methodId:int}"), Authorize]
         public ActionResult<ResultPattern<DriverMethodOfComsuption>> DeleteUserCompany(int driverId, int methodId)
         {
             string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
-            bool predicate(EmployeeConsumptionLimits x) => x.DriverId == driverId && 
-                                                           x.DriverMethodOfComsuptionId == methodId && 
-                                                           x.CompanyId == int.Parse(companyId) && 
+            bool predicate(EmployeeConsumptionLimits x) => x.DriverId == driverId &&
+                                                           x.DriverMethodOfComsuptionId == methodId &&
+                                                           x.CompanyId == int.Parse(companyId) &&
                                                            x.BranchOfficeId == int.Parse(branchId);
             return Ok(_employeeComsuptionLimitsServices.Delete(predicate));
         }

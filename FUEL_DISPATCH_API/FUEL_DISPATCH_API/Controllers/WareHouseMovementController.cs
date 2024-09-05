@@ -1,18 +1,13 @@
 using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
-using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
-using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-
 namespace FUEL_DISPATCH_API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+    [ApiController, Route("api/[controller]")]
     public class WareHouseMovementController : ControllerBase
     {
         private readonly IWareHouseMovementServices _wareHouseMovementServices;
@@ -27,9 +22,7 @@ namespace FUEL_DISPATCH_API.Controllers
 
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<WareHouseMovement>>> GetMovements([FromQuery] GridifyQuery query)
-        {
-            return Ok(_wareHouseMovementServices.GetAll(query));
-        }
+            => Ok(_wareHouseMovementServices.GetAll(query));
 
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<WareHouseMovement>> GetMovement(int id)
@@ -43,13 +36,10 @@ namespace FUEL_DISPATCH_API.Controllers
                                            x.BranchOfficeId == int.Parse(branchId);
             return Ok(_wareHouseMovementServices.Get(predicate));
         }
-
-        [HttpPost, Authorize("Dispatcher")]
+        [HttpPost, Authorize(Policy = "Dispatcher, AdminRequired, RegisterData")]
         public ActionResult<ResultPattern<WareHouseMovement>> PostMovement([FromBody] WareHouseMovement wareHouseMovement)
             => Created(string.Empty, _wareHouseMovementServices.Post(wareHouseMovement));
-        
-
-        [HttpPut("{id:int}"), Authorize]
+        [HttpPut("{id:int}"), Authorize(Policy = "Dispatcher, AdminRequired, Updater")]
         public ActionResult<ResultPattern<WareHouseMovement>> UpdateMovement(int id,
             [FromBody] WareHouseMovement wareHouseMovement)
         {

@@ -2,6 +2,7 @@
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FUEL_DISPATCH_API.Controllers
@@ -15,7 +16,7 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             this.permissionsServices = permissionsServices;
         }
-        [HttpGet]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Permission>>> GetPermissions([FromQuery]GridifyQuery query)
             => Ok(permissionsServices.GetAll(query));
     }

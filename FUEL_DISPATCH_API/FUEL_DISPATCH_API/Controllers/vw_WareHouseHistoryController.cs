@@ -11,27 +11,23 @@ using Microsoft.AspNetCore.Mvc;
 namespace FUEL_DISPATCH_API.Controllers
 {
     // DONE: un endpoint donde yo especifique el almacen y me traiga todo el historial de este, este tendria como parametron el almacen.
-    [ApiController]
-    [Route("api/[controller]")]
+    [ApiController, Route("api/[controller]"), Authorize("AdminRequired, Reporter")]
     public class vw_WareHouseHistoryController : ControllerBase
     {
         private readonly IWareHouseHistoryServices _wareHouseHistoryServices;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public vw_WareHouseHistoryController(IWareHouseHistoryServices wareHouseHistoryServices, 
+        public vw_WareHouseHistoryController(IWareHouseHistoryServices wareHouseHistoryServices,
                                             IHttpContextAccessor httpContextAccessor)
         {
             _wareHouseHistoryServices = wareHouseHistoryServices;
             _httpContextAccessor = httpContextAccessor;
         }
-        [HttpGet, Authorize(Roles = "Administrador")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<vw_WareHouseHistory>>> GetVwWareHouseHistory([FromQuery] GridifyQuery query)
-        {
-            return Ok(_wareHouseHistoryServices.GetAll(query));
-        }
-        [HttpGet("{wareHouseId:int}"), Authorize(Roles = "Administrador")]
+             => Ok(_wareHouseHistoryServices.GetAll(query));
+        
+        [HttpGet("{wareHouseId:int}"), Authorize]
         public ActionResult<ResultPattern<vw_WareHouseHistory>> GetHistoryFromWareHouse(int wareHouseId)
-        {
-            return Ok(_wareHouseHistoryServices.GetHistoryFromSpecificWareHouse(wareHouseId));
-        }
+            => Ok(_wareHouseHistoryServices.GetHistoryFromSpecificWareHouse(wareHouseId));
     }
 }

@@ -4,12 +4,9 @@ using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-
 namespace FUEL_DISPATCH_API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [ApiController, Route("api/[controller]"), Authorize(Policy = "MaitenanceManagement")]
     public class MaintenanceController : ControllerBase
     {
         private readonly IMaintenanceServices _maintenanceServices;
@@ -22,9 +19,8 @@ namespace FUEL_DISPATCH_API.Controllers
         }
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Maintenance>>> GetMaintenances([FromQuery] GridifyQuery query)
-        {
-            return Ok(_maintenanceServices.GetAll(query));
-        }
+            => Ok(_maintenanceServices.GetAll(query));
+        
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Maintenance>> GetMaintenance(int id)
         {
@@ -41,6 +37,7 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize]
         public ActionResult<ResultPattern<Maintenance>> PostMaintenance([FromBody] Maintenance maintenance)
             => Created(string.Empty, _maintenanceServices.Post(maintenance));
+
         [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Maintenance>> UpdateMaintenance(int id, [FromBody] Maintenance maintenance)
         {

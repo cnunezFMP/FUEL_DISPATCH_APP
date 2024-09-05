@@ -29,10 +29,7 @@ namespace FUEL_DISPATCH_API.Controllers
 
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Dispenser>>> GetDispensers([FromQuery] GridifyQuery query)
-        {
-
-            return Ok(_dispenserServices.GetAll(query));
-        }
+            => Ok(_dispenserServices.GetAll(query));
 
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Dispenser>> GetDispenser(int id)
@@ -47,18 +44,12 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_dispenserServices.Get(predicate));
         }
 
-        [HttpPost, Authorize]
+        [HttpPost, Authorize(Policy = "RegisterData, AdminRequired")]
         public ActionResult<ResultPattern<Dispenser>> PostDispenser([FromBody] Dispenser dispenser)
-        {
-            //var validationResult = _dispenserValidator.Validate(dispenser);
-            //if (!validationResult.IsValid)
-            //{
-            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            //}
-            return Created(string.Empty, _dispenserServices.Post(dispenser));
-        }
+            => Created(string.Empty, _dispenserServices.Post(dispenser));
+        
 
-        [HttpPut("{id:int}"), Authorize]
+        [HttpPut("{id:int}"), Authorize(Policy = "Updater, AdminRequired")]
         public ActionResult<ResultPattern<Dispenser>> UpdateDispenser(int id, [FromBody] Dispenser dispenser)
         {
             string? companyId, branchId;

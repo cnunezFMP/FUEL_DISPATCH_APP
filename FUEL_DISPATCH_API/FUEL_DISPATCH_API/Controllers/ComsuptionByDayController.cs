@@ -17,10 +17,9 @@ namespace FUEL_DISPATCH_API.Controllers
             _comsuptionByDayServices = comsuptionByDayServices;
         }
 
-        [HttpGet, Authorize]
+        [HttpGet, Authorize("Reporter, AdminRequired, Reader")]
         public ActionResult<ResultPattern<Paging<CalculatedComsuptionReport>>> GetCalculatedComsuptionByDay([FromQuery] GridifyQuery query)
-        {
-            return Ok(_comsuptionByDayServices.GetAll(query));
-        }
+            => Ok(_comsuptionByDayServices.GetAll(query));
+
     }
 }

@@ -48,17 +48,19 @@ builder.Services.AddAuthorization((x) =>
     x.AddPolicy("Updater", (x) => x.RequireClaim("CanUpdateData"));
     x.AddPolicy("UsersManagement", (x) => x.RequireClaim("CanManageUsers"));
     x.AddPolicy("VehicleManagement", (x) => x.RequireClaim("CanManageVehicles"));
+    x.AddPolicy("MaitenanceManagement", (x) => x.RequireClaim("ManageMaitenAance"));
 });
 
 builder.Services.AddSwaggerGen(
     info =>
 {
-    info.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = swaggerTitle,
-        Version = swaggerVersion,
-        Description = SwaggerSpecs.GetSwaggerSpecs()
-    });
+    info.SwaggerDoc("v1",
+        new OpenApiInfo
+        {
+            Title = swaggerTitle,
+            Version = swaggerVersion,
+            Description = SwaggerSpecs.GetSwaggerSpecs()
+        });
     info.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
         Name = "Authorization",

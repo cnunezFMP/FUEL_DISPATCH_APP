@@ -5,12 +5,9 @@ using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-
 namespace FUEL_DISPATCH_API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+    [ApiController, Route("api/[controller]")]
     public class ArticlesController : ControllerBase
     {
         private readonly IArticleServices _articleServices;
@@ -29,14 +26,15 @@ namespace FUEL_DISPATCH_API.Controllers
             => Ok(_articleServices.GetAll(query));
 
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<ArticleDataMaster>> GetArticle(int id)
         {
             string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
             bool predicate(ArticleDataMaster x) => x.Id == id &&
-                                                   x.CompanyId == int.Parse(companyId);
+                 x.CompanyId == int.Parse(companyId);
+
             return Ok(_articleServices.Get(predicate));
         }
 
@@ -48,24 +46,12 @@ namespace FUEL_DISPATCH_API.Controllers
         /// <response code="400">Si se intenta agregar un articulo con el codigo de una ya existente. </response>
         /// <response code="400">Si se envia el numero de articulo nulo. </response>
         /// <returns></returns>
-        [HttpPost, Authorize]
+        [HttpPost, Authorize(Policy = "Updater, AdminRequired")]
         public ActionResult<ResultPattern<ArticleDataMaster>> PostArticle([FromBody] ArticleDataMaster article)
-        {
-            //var validationResult = _validator.Validate(article);
-            //if (!validationResult.IsValid)
-            //{
-            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            //}
-            return Created(string.Empty, _articleServices.Post(article));
-        }
+            => Created(string.Empty, _articleServices.Post(article));
         [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Part>> UpdateArticle(int id, [FromBody] ArticleDataMaster article)
         {
-            //var validationResult = _validator.Validate(article);
-            //if (!validationResult.IsValid)
-            //{
-            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            //}
             string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();

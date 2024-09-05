@@ -7,8 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FUEL_DISPATCH_API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+    [ApiController, Route("api/[controller]"), Authorize("UsersManagement")]
     public class UsersController : ControllerBase
     {
         private readonly IUserServices _usersServices;
@@ -21,10 +20,9 @@ namespace FUEL_DISPATCH_API.Controllers
         }
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<User>>> GetUsers([FromQuery] GridifyQuery query)
-        {
-            return Ok(_usersServices.GetAll(query));
-        }
-        [HttpGet("{id:int}"), Authorize(Roles = "Administrador")]
+            => Ok(_usersServices.GetAll(query));
+
+        [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<User>> GetUser(int id)
         {
             string? companyId;
@@ -35,7 +33,7 @@ namespace FUEL_DISPATCH_API.Controllers
 
             return Ok(_usersServices.Get(predicate));
         }
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
+        [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<User>> UpdateUser(int id, [FromBody] User user)
         {
             string? companyId;
@@ -45,7 +43,7 @@ namespace FUEL_DISPATCH_API.Controllers
                                       x.CompanyId == int.Parse(companyId);
             return Ok(_usersServices.Update(predicate, user));
         }
-        [HttpDelete("{id:int}"), Authorize(Roles = "Administrador")]
+        [HttpDelete("{id:int}"), Authorize]
         public ActionResult<ResultPattern<User>> DeleteUser(int id)
         {
             string? companyId;

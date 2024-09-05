@@ -27,15 +27,12 @@ namespace FUEL_DISPATCH_API.Controllers
 
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Driver>>> GetDrivers([FromQuery] GridifyQuery query)
-        {
-            return Ok(_driverServices.GetAll(query));
-        }
+            => Ok(_driverServices.GetAll(query));
+        
 
-        [HttpGet("{driverId:int}/WareHouseMovement"), Authorize]
+        [HttpGet("{driverId:int}/WareHouseMovement"), Authorize(Policy = "AdminRequired, Reporter, Reader")]
         public ActionResult<ResultPattern<Paging<Driver>>> GetDriverWareHouseMovements(int driverId)
-        {
-            return Ok(_driverServices.GetDriverDispatches(driverId));
-        }
+            => Ok(_driverServices.GetDriverDispatches(driverId));
 
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Driver>> GetDriver(int id)
@@ -75,17 +72,10 @@ namespace FUEL_DISPATCH_API.Controllers
         /// <returns></returns>
         [HttpPost, Authorize]
         public ActionResult<ResultPattern<Driver>> PostDriver([FromBody] Driver driver)
-        {
-            //var validationResult = _driverValidator.Validate(driver);
-            //if (!validationResult.IsValid)
-            //{
-            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            //}
+            => Created(string.Empty, _driverServices.Post(driver));
+        
 
-            return Created(string.Empty, _driverServices.Post(driver));
-        }
-
-        [HttpPut("{id:int}"), Authorize]
+        [HttpPut("{id:int}"), Authorize(Policy = "Updater, AdminRequired")]
         public ActionResult<ResultPattern<Driver>> UpdateDriver(int id, [FromBody] Driver driver)
         {
             string? companyId, branchId;

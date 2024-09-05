@@ -7,8 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace FUEL_DISPATCH_API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+    [ApiController, Route("api/[controller]")]
     public class VehicleController : ControllerBase
     {
         private readonly IVehiclesServices _vehicleServices;
@@ -22,24 +21,23 @@ namespace FUEL_DISPATCH_API.Controllers
             _vehicleValidator = validator;
             this._httpContextAccessor = _httpContextAccessor;
         }
-        [HttpGet]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Vehicle>>> GetVehicles([FromQuery] GridifyQuery query)
             => Ok(_vehicleServices.GetAll(query));
 
         [HttpGet("{vehicleId:int}/WareHouseMovement"), Authorize]
         public ActionResult<ResultPattern<Paging<Vehicle>>> GetVehicleWareHouseMovements(int vehicleId)
-        {
-            return Ok(_vehicleServices.GetVehicleDispatches(vehicleId));
-        }
+            => Ok(_vehicleServices.GetVehicleDispatches(vehicleId));
+        
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Vehicle>> GetVehicle(int id)
             => Ok(_vehicleServices.Get(x => x.Id == id));
-        
-        [HttpPost, Authorize]
+
+        [HttpPost, Authorize("VehicleManagement")]
         public ActionResult<ResultPattern<Vehicle>> PostVehicle([FromBody] Vehicle vehicle)
             => Created(string.Empty, _vehicleServices.Post(vehicle));
 
-        [HttpPut("{id:int}"), Authorize]
+        [HttpPut("{id:int}"), Authorize("VehicleManagement")]
         public ActionResult<ResultPattern<Vehicle>> UpdateVehicle(int id, [FromBody] Vehicle vehicle)
         {
             string? companyId, branchId;

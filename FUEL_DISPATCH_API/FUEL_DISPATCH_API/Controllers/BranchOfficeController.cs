@@ -29,9 +29,8 @@ namespace FUEL_DISPATCH_API.Controllers
         }
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<BranchOffices>>> GetBranchOfficess([FromQuery] GridifyQuery query)
-        {
-            return Ok(_branchOfficeServices.GetAll(query));
-        }
+            => Ok(_branchOfficeServices.GetAll(query));
+        
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<BranchOffices>> GetBranchOffice(int id)
         {
@@ -45,12 +44,12 @@ namespace FUEL_DISPATCH_API.Controllers
                                                x.CompanyId == int.Parse(companyId);
             return Ok(_branchOfficeServices.Get(predicate));
         }
-        [HttpPost, Authorize]
+        [HttpPost, Authorize(Policy = "RegisterDate, AdminRequired")]
         public ActionResult<ResultPattern<BranchOffices>> PostBranchOffice([FromBody] BranchOffices branchOffice)
             => Created(string.Empty, _branchOfficeServices.Post(branchOffice));
             // DONE: Fix this, currently throws exception 'InvalidOperationException: No route matches the supplied values.'
 
-        [HttpPut("{id:int}"), Authorize]
+        [HttpPut("{id:int}"), Authorize(Policy = "Updater, AdminRequired")]
         public ActionResult<ResultPattern<BranchOffices>> UpdateBranchOffice(int id, [FromBody] BranchOffices branchOffice)
         {
             string? companyId;

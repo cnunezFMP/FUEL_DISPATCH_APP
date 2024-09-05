@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Twilio.Rest.Voice.V1;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FUEL_DISPATCH_API.Controllers
 {
@@ -27,7 +28,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _branchIslandValidator = branchIslandValidator;
             _httpContextAccessor = httpContextAccessor;
         }
-        [HttpGet, Authorize()]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<BranchIsland>>> GetBranchIslands([FromQuery] GridifyQuery query)
             => Ok(_branchIslandServices.GetAll(query));
         [HttpGet("{id:int}"), Authorize]
@@ -49,18 +50,11 @@ namespace FUEL_DISPATCH_API.Controllers
 
             return Ok(_branchIslandServices.Get(predicate));
         }
-        [HttpPost, Authorize]
+        [HttpPost, Authorize(Policy = "RegisterData, AdminRequired")]
         public ActionResult<ResultPattern<BranchIsland>> PostBranchIsland([FromBody] BranchIsland branchIsland)
-        {
-            //var validationResult = _branchIslandValidator.Validate(branchIsland);
-            //if (!validationResult.IsValid)
-            //{
-            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            //}
-            return Created(string.Empty,
-                           _branchIslandServices.Post(branchIsland));
-        }
-        [HttpPut("{id:int}"), Authorize]
+            => Created(string.Empty, _branchIslandServices.Post(branchIsland));
+        
+        [HttpPut("{id:int}"), Authorize(Policy = "Updater, AdminRequired")]
         public ActionResult<ResultPattern<User>> UpdateBranchIsland(int id, [FromBody] BranchIsland branchIsland)
         {
             string? companyId, branchId;

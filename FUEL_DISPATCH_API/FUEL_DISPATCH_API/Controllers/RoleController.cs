@@ -7,8 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FUEL_DISPATCH_API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Route("api/[controller]"), ApiController, Authorize("AdminRequired")]
     public class RoleController : ControllerBase
     {
         private readonly IRoleServices _roleServices;
@@ -19,16 +18,16 @@ namespace FUEL_DISPATCH_API.Controllers
             _roleServices = roleServices;
             _httpContextAccessor = httpContextAccessor;
         }
-        [HttpGet, Authorize("Administrador")]
+        [HttpGet, Authorize]
         public ActionResult<ResultPattern<Role>> GetRols([FromQuery] GridifyQuery query)
             => Ok(_roleServices.GetAll(query));
 
 
-        [HttpPost]
+        [HttpPost, Authorize]
         public ActionResult<ResultPattern<Role>> CreateRol([FromBody] Role role)
             => Created(string.Empty, _roleServices.Post(role));
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Role>> UpdateRol(int id, [FromBody] Role role)
         {
             string? companyid = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
