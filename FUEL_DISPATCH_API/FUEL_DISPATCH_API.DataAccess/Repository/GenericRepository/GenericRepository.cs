@@ -21,7 +21,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
         {
             var entityToDelete = _DBContext.Set<T>().FirstOrDefault(predicate)
                 ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
-            _DBContext.Set<T>().Remove(entityToDelete!);
+            _DBContext
+                .Set<T>()
+                .Remove(entityToDelete!);
+
             _DBContext.SaveChanges();
             return ResultPattern<T>.Success(entityToDelete!, StatusCodes.Status200OK, AppConstants.DATA_DELETED_MESSAGE);
         }
@@ -132,6 +135,33 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                 .FirstOrDefault(predicate)
                 ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
 
+            var createdBy = entityToUpdate
+                .GetType()
+                .GetProperty("CreatedBy");
+
+            if (createdBy is not null)
+                createdBy.GetValue(entityToUpdate)?
+                         .ToString();
+
+            var createdAt = entityToUpdate
+                .GetType()
+                .GetProperty("CreatedAt");
+
+            if(createdAt is not null)
+                createdAt.GetValue(entityToUpdate)?
+                         .ToString();
+
+            DateTime? dateCreatedAt = Convert.ToDateTime(createdAt);
+
+            updatedEntity
+                .GetType()
+                .GetProperty("CreatedBy")?
+                .SetValue(updatedEntity, createdBy);
+
+            updatedEntity
+                .GetType()
+                .GetProperty("CreatedAt")?
+                .SetValue(updatedEntity, dateCreatedAt);
 
             _DBContext.Entry(entityToUpdate)
                 .CurrentValues

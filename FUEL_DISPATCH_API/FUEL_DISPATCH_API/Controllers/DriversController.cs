@@ -75,7 +75,7 @@ namespace FUEL_DISPATCH_API.Controllers
             => Created(string.Empty, _driverServices.Post(driver));
         
 
-        [HttpPut("{id:int}"), Authorize(Policy = "Updater, AdminRequired")]
+        [HttpPut("{id:int}"), Authorize(Policy = "AdminRequired")]
         public ActionResult<ResultPattern<Driver>> UpdateDriver(int id, [FromBody] Driver driver)
         {
             string? companyId, branchId;

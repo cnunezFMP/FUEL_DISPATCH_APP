@@ -38,7 +38,7 @@ namespace FUEL_DISPATCH_API.Controllers
         public ActionResult<ResultPattern<WareHouse>> PostWareHouse([FromBody] WareHouse warehouse)
             => Created(string.Empty, _wareHouseServices.Post(warehouse));
         
-        [HttpPut("{id:int}"), Authorize(Policy = "Updater, AdminRequired")]
+        [HttpPut("{id:int}"), Authorize(Policy = "AdminRequired")]
         public ActionResult<ResultPattern<WareHouse>> UpdateStore(int id, [FromBody] WareHouse warehouse)
         {
             string? companyId, branchId;

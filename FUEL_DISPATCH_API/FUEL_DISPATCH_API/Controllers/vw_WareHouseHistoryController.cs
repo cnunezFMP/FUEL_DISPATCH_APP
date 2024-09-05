@@ -1,13 +1,9 @@
-using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
-using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
-using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 namespace FUEL_DISPATCH_API.Controllers
 {
     // DONE: un endpoint donde yo especifique el almacen y me traiga todo el historial de este, este tendria como parametron el almacen.
@@ -17,14 +13,13 @@ namespace FUEL_DISPATCH_API.Controllers
         private readonly IWareHouseHistoryServices _wareHouseHistoryServices;
         private readonly IHttpContextAccessor _httpContextAccessor;
         public vw_WareHouseHistoryController(IWareHouseHistoryServices wareHouseHistoryServices,
-                                            IHttpContextAccessor httpContextAccessor)
+                                             IHttpContextAccessor httpContextAccessor)
         {
             _wareHouseHistoryServices = wareHouseHistoryServices;
             _httpContextAccessor = httpContextAccessor;
         }
         [HttpGet, Authorize]
-        public ActionResult<ResultPattern<Paging<vw_WareHouseHistory>>> GetVwWareHouseHistory([FromQuery] GridifyQuery query)
-             => Ok(_wareHouseHistoryServices.GetAll(query));
+        public ActionResult<ResultPattern<Paging<vw_WareHouseHistory>>> GetVwWareHouseHistory([FromQuery] GridifyQuery query) => Ok(_wareHouseHistoryServices.GetAll(query));
         
         [HttpGet("{wareHouseId:int}"), Authorize]
         public ActionResult<ResultPattern<vw_WareHouseHistory>> GetHistoryFromWareHouse(int wareHouseId)

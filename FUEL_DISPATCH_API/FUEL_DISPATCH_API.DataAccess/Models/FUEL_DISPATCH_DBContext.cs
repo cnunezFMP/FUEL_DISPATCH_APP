@@ -12,16 +12,14 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     {
         SavingChanges += FUEL_DISPATCH_DBContext_SavingChanges;
     }
-
     private static void GenerateOnUpdate(EntityEntry entry)
     {
         foreach (var property in entry.Properties)
         {
-            if (!(property.Metadata.ValueGenerated == ValueGenerated.OnUpdateSometimes ||
+            if ((property.Metadata.ValueGenerated == ValueGenerated.OnUpdateSometimes ||
                 property.Metadata.ValueGenerated == ValueGenerated.OnUpdate ||
                 property.Metadata.ValueGenerated == ValueGenerated.OnAddOrUpdate))
                 continue;
-
 
             var valueGeneratorFactory = property.Metadata.GetValueGeneratorFactory();
 
@@ -84,7 +82,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<UsersRols> UsersRols { get; set; }
     public virtual DbSet<Vehicle> Vehicle { get; set; }
     public virtual DbSet<Zone> Zone { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AllComsuption>(entity =>
@@ -111,7 +108,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasValueGenerator<UserNameGenerator>();
 
             entity.Property(x => x.CompanyId)
-           .ValueGeneratedOnAdd()
+           .ValueGeneratedOnAddOrUpdate()
            .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.UpdatedAt)
@@ -132,7 +129,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasValueGenerator<UserNameGenerator>();
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.CreatedAt)
@@ -228,7 +225,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasValueGenerator<UserNameGenerator>();
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.BranchOfficeId)
@@ -249,15 +246,10 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         modelBuilder.Entity<WareHouseMovement>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.ToTable
-                (
-                    "WareHouseMovement",
-                    entity =>
-                    entity.HasTrigger("trg_UpdateStock")
-                );
+            entity.ToTable("WareHouseMovement", entity => entity.HasTrigger("trg_UpdateStock"));
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.BranchOfficeId)
@@ -319,14 +311,12 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(x => x.Status)
             .HasConversion<EnumToStringConverter<ActiveInactiveStatussesEnum>>();
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.BranchOfficeId)
             .ValueGeneratedOnAdd()
             .HasValueGenerator<BranchOfficeIdGenerator>();
-
-
             entity.Property(x => x.CreatedAt)
             .ValueGeneratedOnAdd()
             .HasValueGenerator<DateTimeGenerator>();
@@ -354,7 +344,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
                   .HasValueGenerator<UserNameGenerator>();
 
             entity.Property(x => x.CompanyId)
-                  .ValueGeneratedOnAdd()
+                  .ValueGeneratedOnAddOrUpdate()
                   .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.BranchOfficeId)
@@ -410,7 +400,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasForeignKey(e => e.BranchIslandId);
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.BranchOfficeId)
@@ -450,14 +440,15 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
             entity
             .Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.BranchOfficeId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<BranchOfficeIdGenerator>();
 
-            entity.Property(x => x.UpdatedAt)
+            entity
+            .Property(x => x.UpdatedAt)
             .ValueGeneratedOnUpdate()
             .HasValueGenerator<DateTimeGenerator>();
 
@@ -494,7 +485,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasValueGenerator<UserNameGenerator>();
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.BranchOfficeId)
@@ -586,7 +577,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasValueGenerator<DateTimeGenerator>();
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.HasOne(x => x.Company)
@@ -618,10 +609,11 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasValueGenerator<DateTimeGenerator>();
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedNever()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.BranchOfficeId)
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<BranchOfficeIdGenerator>();
 
             entity.Property(x => x.UpdatedBy)
@@ -669,7 +661,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasValueGenerator<DateTimeGenerator>();
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
             entity.HasOne(x => x.Company)
             .WithMany(x => x.Roads)
@@ -688,7 +680,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasValueGenerator<UserNameGenerator>();
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.BranchOfficeId)
@@ -706,7 +698,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(x => x.UpdatedAt)
             .HasValueGenerator<DateTimeGenerator>();
             entity.HasOne(e => e.Vehicle).WithMany(e => e.Requests).HasForeignKey(e => e.VehicleId);
-            entity.HasOne(e => e.Driver).WithMany(e => e.Requests).HasForeignKey(e => e.DriverId);
+            entity.HasOne(e => e.Driver)
+            .WithMany(e => e.Requests).HasForeignKey(e => e.DriverId);
             entity.Property(x => x.Type).HasConversion<EnumToStringConverter<MovementsTypesEnum>>();
             entity.HasOne(e => e.WareHouse)
             .WithMany(e => e.WareHouseMovementRequests)
@@ -742,7 +735,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .ValueGeneratedOnAdd()
             .HasValueGenerator<UserNameGenerator>();
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.HasOne(x => x.Company)
@@ -770,7 +763,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasValueGenerator<UserNameGenerator>();
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.CreatedAt)
@@ -861,7 +854,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasValueGenerator<DateTimeGenerator>();
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.BranchOfficeId)
@@ -887,7 +880,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         modelBuilder.Entity<UsersRols>(entity =>
         {
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.BranchOfficeId)
@@ -974,7 +967,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasValueGenerator<DateTimeGenerator>();
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.BranchOfficeId)
@@ -1042,7 +1035,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasValueGenerator<DateTimeGenerator>();
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.HasOne(x => x.Company)
@@ -1079,7 +1072,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .OnDelete(DeleteBehavior.SetNull);
 
             entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAdd()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
 
             entity.Property(x => x.CreatedBy)

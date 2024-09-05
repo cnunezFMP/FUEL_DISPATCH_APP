@@ -9,7 +9,7 @@ public partial class Driver
     public string? Email { get; set; }
     [Required] public string? FullName { get; set; }
     public int? CompanyId { get; set; }
-    [Required] public int? BranchOfficeId { get; set; }
+    public int? BranchOfficeId { get; set; }
     [Required, Phone] public string? PhoneNumber { get; set; }
     // DONE: Hacer que la fecha no pueda ser menor de edad ni que sea la del mismo dia en un validador de FluentValidation.
     [Required] public DateTime? BirthDate { get; set; }
