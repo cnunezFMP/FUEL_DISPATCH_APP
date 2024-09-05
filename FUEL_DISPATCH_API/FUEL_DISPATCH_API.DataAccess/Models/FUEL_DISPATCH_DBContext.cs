@@ -16,7 +16,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     {
         foreach (var property in entry.Properties)
         {
-            if ((property.Metadata.ValueGenerated == ValueGenerated.OnUpdateSometimes ||
+            if (!(property.Metadata.ValueGenerated == ValueGenerated.OnUpdateSometimes ||
                 property.Metadata.ValueGenerated == ValueGenerated.OnUpdate ||
                 property.Metadata.ValueGenerated == ValueGenerated.OnAddOrUpdate))
                 continue;
@@ -41,8 +41,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
         changes.ForEach(e =>
         {
-            if (e.State == EntityState.Modified)
-                GenerateOnUpdate(e);
+            //if (e.State == EntityState.Modified)
+            GenerateOnUpdate(e);
         });
     }
     public virtual DbSet<AllComsuption> AllComsuption { get; set; }
@@ -844,7 +844,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         });
         modelBuilder.Entity<UsersBranchOffices>(entity =>
         {
-
+            entity.HasKey(x => new { x.UserId, x.BranchOfficeId });
             entity.Property(x => x.CreatedBy)
             .ValueGeneratedOnAdd()
             .HasValueGenerator<UserNameGenerator>();
@@ -868,8 +868,13 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(x => x.UpdatedAt)
             .ValueGeneratedOnUpdate()
             .HasValueGenerator<DateTimeGenerator>();
-            entity.HasOne(e => e.User).WithMany(e => e.UsersBranchOffices).HasForeignKey(e => e.UserId);
-            entity.HasOne(e => e.BranchOffice).WithMany(e => e.UsersBranchOffices).HasForeignKey(e => e.BranchOfficeId);
+            entity.HasOne(e => e.User)
+            .WithMany(e => e.UsersBranchOffices)
+            .HasForeignKey(e => e.UserId);
+
+            entity.HasOne(e => e.BranchOffice)
+            .WithMany(e => e.UsersBranchOffices)
+            .HasForeignKey(e => e.BranchOfficeId);
 
             entity.HasOne(e => e.Company).WithMany(e => e.UsersBranches).HasForeignKey(e => e.CompanyId);
 
@@ -879,6 +884,9 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         });
         modelBuilder.Entity<UsersRols>(entity =>
         {
+
+            entity.HasKey(x => new { x.UserId, x.RolId });
+
             entity.Property(x => x.CompanyId)
             .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();
@@ -1059,17 +1067,17 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         });
         modelBuilder.Entity<RolsPermissions>(entity =>
         {
+            entity.HasKey(x => new { x.RolId, x.PermissionId });
+
             entity
             .HasOne(d => d.Role)
             .WithMany(p => p.RolsPermissions)
-            .HasForeignKey(d => d.RolId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .HasForeignKey(d => d.RolId);
 
             entity
             .HasOne(d => d.Permission)
             .WithMany(p => p.RolsPermissions)
-            .HasForeignKey(d => d.PermissionId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .HasForeignKey(d => d.PermissionId);
 
             entity.Property(x => x.CompanyId)
             .ValueGeneratedOnAddOrUpdate()
@@ -1090,6 +1098,10 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(x => x.UpdatedAt)
             .ValueGeneratedOnUpdate()
             .HasValueGenerator<DateTimeGenerator>();
+
+            entity.HasOne(x => x.Company)
+            .WithMany(x => x.RolsPermissions)
+            .HasForeignKey(x => x.CompanyId);
         });
         modelBuilder.Entity<CompanySAPParams>(entity =>
         {

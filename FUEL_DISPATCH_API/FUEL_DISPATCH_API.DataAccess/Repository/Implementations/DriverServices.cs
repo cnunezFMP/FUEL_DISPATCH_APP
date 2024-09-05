@@ -7,8 +7,6 @@ using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using RestSharp;
-using Twilio.TwiML.Voice;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class DriversServices : GenericRepository<Driver>, IDriversServices

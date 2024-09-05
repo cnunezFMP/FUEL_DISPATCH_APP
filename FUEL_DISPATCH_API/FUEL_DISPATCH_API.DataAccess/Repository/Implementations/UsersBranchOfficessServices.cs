@@ -11,10 +11,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     public class UsersBranchOfficessServices : GenericRepository<UsersBranchOffices>, IUsersBranchOfficesServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public UsersBranchOfficessServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor)
             : base(dbContext, httpContextAccessor)
         {
             _DBContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public override ResultPattern<UsersBranchOffices> Post(UsersBranchOffices entity)
@@ -52,7 +54,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         // Verificar si el usuario pertenece a la sucursal.
         public bool IsUserInBranchOffice(int userId, int? branchOfficeId)
-            => _DBContext.UsersBranchOffices.Any(x => x.UserId == userId &&
-                       x.BranchOfficeId == branchOfficeId);
+        {
+            string? companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+
+            return _DBContext.UsersBranchOffices.Any(x => x.UserId == userId &&
+                       x.BranchOfficeId == branchOfficeId &&
+                       x.CompanyId == int.Parse(companyId));
+        }
     }
 }

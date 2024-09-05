@@ -18,10 +18,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     public class UsersRolesServices : GenericRepository<UsersRols>, IUsersRolesServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public UsersRolesServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor)
             : base(dbContext, httpContextAccessor)
         {
             _DBContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
         }
         public override ResultPattern<UsersRols> Post(UsersRols entity)
         {
@@ -60,7 +62,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         // Verificar si el usuario tiene el rol.
         public bool IsUserRol(int userId, int rolId)
-            => _DBContext.UsersRols.Any(x => x.UserId == userId &&
-                                  x.RolId == rolId);
+        {
+            string? companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString(); 
+            return _DBContext.UsersRols.Any(x => x.UserId == userId &&
+                                  x.RolId == rolId &&
+                                  x.CompanyId == int.Parse(companyId));
+        }
+             
     }
 }

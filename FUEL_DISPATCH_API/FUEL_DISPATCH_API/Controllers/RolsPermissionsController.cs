@@ -33,6 +33,7 @@ namespace FUEL_DISPATCH_API.Controllers
                 .HttpContext?
                 .Items["CompanyId"]?
                 .ToString();
+
             bool predicate(RolsPermissions x) => x.RolId == rolid &&
                                                  x.CompanyId == int.Parse(companyId);
             return Ok(rolsPermissionsServices.Get(predicate));

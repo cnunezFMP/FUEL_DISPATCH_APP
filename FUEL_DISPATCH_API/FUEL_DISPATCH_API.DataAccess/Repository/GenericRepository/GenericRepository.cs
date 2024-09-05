@@ -147,7 +147,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                 .GetType()
                 .GetProperty("CreatedAt");
 
-            if(createdAt is not null)
+            if (createdAt is not null)
                 createdAt.GetValue(entityToUpdate)?
                          .ToString();
 
