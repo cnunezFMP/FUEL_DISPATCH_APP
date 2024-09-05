@@ -36,10 +36,10 @@ namespace FUEL_DISPATCH_API.Controllers
                                            x.BranchOfficeId == int.Parse(branchId);
             return Ok(_wareHouseMovementServices.Get(predicate));
         }
-        [HttpPost, Authorize(Policy = "Dispatcher, AdminRequired, RegisterData")]
+        [HttpPost, Authorize(Roles = "CanGenerateDispatch, Administrador")]
         public ActionResult<ResultPattern<WareHouseMovement>> PostMovement([FromBody] WareHouseMovement wareHouseMovement)
             => Created(string.Empty, _wareHouseMovementServices.Post(wareHouseMovement));
-        [HttpPut("{id:int}"), Authorize(Policy = "Dispatcher, AdminRequired, Updater")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrador, CanUpdateData")]
         public ActionResult<ResultPattern<WareHouseMovement>> UpdateMovement(int id,
             [FromBody] WareHouseMovement wareHouseMovement)
         {

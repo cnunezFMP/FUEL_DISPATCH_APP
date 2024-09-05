@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace FUEL_DISPATCH_API.Controllers
 {
-    [ApiController, Route("api/[controller]"), Authorize(Policy = "UsersManagement")]
+    [ApiController, Route("api/[controller]"), Authorize(Roles = "CanManageUsers, Administrador")]
     public class UsersRolesController : ControllerBase
     {
         private readonly IUsersRolesServices _userRolesServices;

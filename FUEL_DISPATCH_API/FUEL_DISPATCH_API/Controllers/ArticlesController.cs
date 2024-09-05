@@ -29,11 +29,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<ArticleDataMaster>> GetArticle(int id)
         {
-            string? companyId, branchId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
-            bool predicate(ArticleDataMaster x) => x.Id == id &&
-                 x.CompanyId == int.Parse(companyId);
+            //string? companyId, branchId;
+            //companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            //branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            bool predicate(ArticleDataMaster x) => x.Id == id /*&&
+                 x.CompanyId == int.Parse(companyId)*/;
 
             return Ok(_articleServices.Get(predicate));
         }
@@ -46,17 +46,18 @@ namespace FUEL_DISPATCH_API.Controllers
         /// <response code="400">Si se intenta agregar un articulo con el codigo de una ya existente. </response>
         /// <response code="400">Si se envia el numero de articulo nulo. </response>
         /// <returns></returns>
-        [HttpPost, Authorize(Policy = "Updater, AdminRequired")]
+        [HttpPost, Authorize(Roles = "CanCreate, Administrador")]
         public ActionResult<ResultPattern<ArticleDataMaster>> PostArticle([FromBody] ArticleDataMaster article)
             => Created(string.Empty, _articleServices.Post(article));
-        [HttpPut("{id:int}"), Authorize]
+        [HttpPut("{id:int}"), Authorize(Roles = "CanUpdateData, Administrador")]
         public ActionResult<ResultPattern<Part>> UpdateArticle(int id, [FromBody] ArticleDataMaster article)
         {
-            string? companyId, branchId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
-            bool predicate(ArticleDataMaster x) => x.Id == id &&
-                x.CompanyId == int.Parse(companyId);
+
+            //string? companyId, branchId;
+            //companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            //branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            bool predicate(ArticleDataMaster x) => x.Id == id /*&&
+                x.CompanyId == int.Parse(companyId)*/;
 
             return Ok(_articleServices.Update(predicate, article));
         }

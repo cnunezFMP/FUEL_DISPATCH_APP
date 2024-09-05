@@ -41,65 +41,65 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
         }
         public virtual ResultPattern<Paging<T>> GetAll(GridifyQuery query)
         {
-            string? companyId, branchId;
-            companyId = _httpContextAccesor
-                .HttpContext?
-                .Items["CompanyId"] as string ??
-                string.Empty;
+            //string? companyId, branchId;
+            //companyId = _httpContextAccesor
+            //    .HttpContext?
+            //    .Items["CompanyId"] as string ??
+            //    string.Empty;
 
-            branchId = _httpContextAccesor
-                .HttpContext?
-                .Items["BranchOfficeId"] as string ??
-                string.Empty;
+            //branchId = _httpContextAccesor
+            //    .HttpContext?
+            //    .Items["BranchOfficeId"] as string ??
+            //    string.Empty;
 
-            if (string.IsNullOrEmpty(companyId))
-            {
-                return ResultPattern<Paging<T>>.Success(new Paging<T>(),
-                    StatusCodes.Status401Unauthorized,
-                    "This user isn't in a company. ");
-            }
+            //if (string.IsNullOrEmpty(companyId))
+            //{
+            //    return ResultPattern<Paging<T>>.Success(new Paging<T>(),
+            //        StatusCodes.Status401Unauthorized,
+            //        "This user isn't in a company. ");
+            //}
 
-            if (typeof(T).GetProperty("CompanyId") is not null &&
-                typeof(T).GetProperty("BranchOfficeId") is not null)
-            {
-                var entitiesByCompAndBranch = _DBContext.Set<T>()
-                    .AsNoTrackingWithIdentityResolution()
-                    .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId!) &&
-                    EF.Property<int>(x, "BranchOfficeId") == int.Parse(branchId!))
-                    .ApplyFilteringAndOrdering(query);
+            //if (typeof(T).GetProperty("CompanyId") is not null &&
+            //    typeof(T).GetProperty("BranchOfficeId") is not null)
+            //{
+            //    var entitiesByCompAndBranch = _DBContext.Set<T>()
+            //        .AsNoTrackingWithIdentityResolution()
+            //        .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId!) &&
+            //        EF.Property<int>(x, "BranchOfficeId") == int.Parse(branchId!))
+            //        .ApplyFilteringAndOrdering(query);
 
-                var responseComBr = new Paging<T>
-                {
-                    Data = entitiesByCompAndBranch,
-                    Count = entitiesByCompAndBranch.Count()
-                };
+            //    var responseComBr = new Paging<T>
+            //    {
+            //        Data = entitiesByCompAndBranch,
+            //        Count = entitiesByCompAndBranch.Count()
+            //    };
 
-                if (responseComBr.Count == 0)
-                    return ResultPattern<Paging<T>>.Success(new Paging<T>(),
-                                       StatusCodes.Status400BadRequest,
-                                       "No hay datos en tu sucursal. ");
+            //    if (responseComBr.Count == 0)
+            //        return ResultPattern<Paging<T>>.Success(new Paging<T>(),
+            //                           StatusCodes.Status400BadRequest,
+            //                           "No hay datos en tu sucursal. ");
 
-                return ResultPattern<Paging<T>>.Success(responseComBr,
-                                       StatusCodes.Status200OK,
-                                       AppConstants.DATA_OBTAINED_MESSAGE);
-            }
-            if (typeof(T)
-                .GetProperty("BranchOfficeId") is not null)
-            {
-                var entitiesComp = _DBContext.Set<T>()
-                    .AsNoTrackingWithIdentityResolution()
-                    .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId!))
-                    .ApplyFilteringAndOrdering(query);
+            //    return ResultPattern<Paging<T>>.Success(responseComBr,
+            //                           StatusCodes.Status200OK,
+            //                           AppConstants.DATA_OBTAINED_MESSAGE);
+            //}
+            //if (typeof(T)
+            //    .GetProperty("BranchOfficeId") is not null)
+            //{
+            //    var entitiesComp = _DBContext.Set<T>()
+            //        .AsNoTrackingWithIdentityResolution()
+            //        .Where(x => EF.Property<int>(x, "CompanyId") == int.Parse(companyId!))
+            //        .ApplyFilteringAndOrdering(query);
 
-                var responseComp = new Paging<T>
-                {
-                    Data = entitiesComp,
-                    Count = entitiesComp.Count()
-                };
-                return ResultPattern<Paging<T>>.Success(responseComp,
-                    StatusCodes.Status200OK,
-                    AppConstants.DATA_OBTAINED_MESSAGE);
-            }
+            //    var responseComp = new Paging<T>
+            //    {
+            //        Data = entitiesComp,
+            //        Count = entitiesComp.Count()
+            //    };
+            //    return ResultPattern<Paging<T>>.Success(responseComp,
+            //        StatusCodes.Status200OK,
+            //        AppConstants.DATA_OBTAINED_MESSAGE);
+            //}
 
             var entities = _DBContext.Set<T>()
                 .AsNoTrackingWithIdentityResolution()

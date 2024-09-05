@@ -41,8 +41,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
         changes.ForEach(e =>
         {
-            //if (e.State == EntityState.Modified)
-            GenerateOnUpdate(e);
+            if (e.State == EntityState.Modified || e.State == EntityState.Added)
+                GenerateOnUpdate(e);
         });
     }
     public virtual DbSet<AllComsuption> AllComsuption { get; set; }
@@ -60,7 +60,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<Dispenser> Dispenser { get; set; }
     public virtual DbSet<Driver> Driver { get; set; }
     public virtual DbSet<Part> Part { get; set; }
-    public virtual DbSet<Permission> Permissions { get; set; }
     public virtual DbSet<Maintenance> Maintenance { get; set; }
     public virtual DbSet<EmployeeConsumptionLimits> EmployeeConsumptionLimits { get; set; }
     public virtual DbSet<Generation> Generation { get; set; }
@@ -71,7 +70,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<Model> Model { get; set; }
     public virtual DbSet<Road> Road { get; set; }
     public virtual DbSet<Role> Role { get; set; }
-    public virtual DbSet<RolsPermissions> RolsPermissions { get; set; }
     public virtual DbSet<Stock> Stock { get; set; }
     public virtual DbSet<WareHouse> WareHouse { get; set; }
     public virtual DbSet<WareHouseMovement> WareHouseMovement { get; set; }
@@ -734,13 +732,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(e => e.UpdatedBy)
             .ValueGeneratedOnAdd()
             .HasValueGenerator<UserNameGenerator>();
-            entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAddOrUpdate()
-            .HasValueGenerator<CompanyIdGenerator>();
-
-            entity.HasOne(x => x.Company)
-            .WithMany(x => x.Roles)
-            .HasForeignKey(x => x.CompanyId);
 
         });
         modelBuilder.Entity<Stock>(entity =>
@@ -1048,59 +1039,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
             entity.HasOne(x => x.Company)
             .WithMany(x => x.Zones)
-            .HasForeignKey(x => x.CompanyId);
-        });
-        modelBuilder.Entity<Permission>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.ToTable("Permission");
-            entity.HasMany(x => x.Rols)
-            .WithMany(x => x.Permissions)
-            .UsingEntity<RolsPermissions>(x => x.HasOne(x => x.Role)
-            .WithMany()
-            .HasForeignKey(x => x.RolId),
-            x => x.HasOne(x => x.Permission)
-            .WithMany()
-            .HasForeignKey(x => x.PermissionId));
-
-
-        });
-        modelBuilder.Entity<RolsPermissions>(entity =>
-        {
-            entity.HasKey(x => new { x.RolId, x.PermissionId });
-
-            entity
-            .HasOne(d => d.Role)
-            .WithMany(p => p.RolsPermissions)
-            .HasForeignKey(d => d.RolId);
-
-            entity
-            .HasOne(d => d.Permission)
-            .WithMany(p => p.RolsPermissions)
-            .HasForeignKey(d => d.PermissionId);
-
-            entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAddOrUpdate()
-            .HasValueGenerator<CompanyIdGenerator>();
-
-            entity.Property(x => x.CreatedBy)
-            .ValueGeneratedOnAdd()
-            .HasValueGenerator<UserNameGenerator>();
-
-            entity.Property(x => x.CreatedAt)
-            .ValueGeneratedOnAdd()
-            .HasValueGenerator<DateTimeGenerator>();
-
-            entity.Property(x => x.UpdatedBy)
-            .ValueGeneratedOnUpdate()
-            .HasValueGenerator<UserNameGenerator>();
-
-            entity.Property(x => x.UpdatedAt)
-            .ValueGeneratedOnUpdate()
-            .HasValueGenerator<DateTimeGenerator>();
-
-            entity.HasOne(x => x.Company)
-            .WithMany(x => x.RolsPermissions)
             .HasForeignKey(x => x.CompanyId);
         });
         modelBuilder.Entity<CompanySAPParams>(entity =>

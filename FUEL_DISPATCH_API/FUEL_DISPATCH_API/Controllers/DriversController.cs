@@ -30,7 +30,7 @@ namespace FUEL_DISPATCH_API.Controllers
             => Ok(_driverServices.GetAll(query));
         
 
-        [HttpGet("{driverId:int}/WareHouseMovement"), Authorize(Policy = "AdminRequired, Reporter, Reader")]
+        [HttpGet("{driverId:int}/WareHouseMovement"), Authorize(Roles = "CanReadData, Administrador, CanGenerateReport")]
         public ActionResult<ResultPattern<Paging<Driver>>> GetDriverWareHouseMovements(int driverId)
             => Ok(_driverServices.GetDriverDispatches(driverId));
 
@@ -70,12 +70,12 @@ namespace FUEL_DISPATCH_API.Controllers
         /// <response code="201">Conductor registrado</response>
         /// <response code="400">Si alguna validacion falla</response>
         /// <returns></returns>
-        [HttpPost, Authorize]
+        [HttpPost, Authorize(Roles = "CanCreate, Administrador")]
         public ActionResult<ResultPattern<Driver>> PostDriver([FromBody] Driver driver)
             => Created(string.Empty, _driverServices.Post(driver));
         
 
-        [HttpPut("{id:int}"), Authorize(Policy = "AdminRequired")]
+        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Driver>> UpdateDriver(int id, [FromBody] Driver driver)
         {
             string? companyId, branchId;

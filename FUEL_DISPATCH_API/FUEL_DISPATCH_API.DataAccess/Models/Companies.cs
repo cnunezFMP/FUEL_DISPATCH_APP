@@ -34,7 +34,6 @@ public partial class Companies
 
     public string? UpdatedBy { get; set; }
     [JsonIgnore] public virtual ICollection<Zone>? Zones { get; set; } = [];
-    [JsonIgnore] public virtual ICollection<Role>? Roles { get; set; } = [];
     [JsonIgnore] public virtual ICollection<WareHouseMovement>? WareHouseMovements { get; set; } = [];
     [JsonIgnore] public virtual ICollection<Vehicle>? Vehicles { get; set; } = [];
     [JsonIgnore] public virtual ICollection<Road>? Roads { get; set; } = [];
@@ -46,11 +45,10 @@ public partial class Companies
     [JsonIgnore] public virtual ICollection<Part>? Parts { get; set; } = [];
     [JsonIgnore] public virtual ICollection<Booking>? Bookings { get; set; } = [];
     [JsonIgnore] public virtual ICollection<BranchIsland>? BranchIslands { get; set; } = [];
-    [JsonIgnore] public virtual ICollection<RolsPermissions>? RolsPermissions { get; set; } = [];
     [JsonIgnore] public virtual ICollection<Dispenser>? Dispensers { get; set; } = [];
     public CompanySAPParams? CompanySAPParams { get; set; }
     [JsonIgnore] public virtual ICollection<EmployeeConsumptionLimits> EmployeeConsumptionLimits { get; set; } = [];
     [JsonIgnore] public virtual ICollection<UsersBranchOffices> UsersBranches { get; set; } = [];
     [JsonIgnore] public virtual ICollection<WareHouseMovementRequest> WareHouseMovementRequests { get; set; } = [];
-    [JsonIgnore] public virtual ICollection<UsersRols> UsersRols{ get; set; } = [];
+    [JsonIgnore] public virtual ICollection<UsersRols> UsersRols { get; set; } = [];
 }

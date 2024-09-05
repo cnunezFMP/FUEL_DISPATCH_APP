@@ -26,9 +26,8 @@ namespace FUEL_DISPATCH_API.Controllers
         }
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Zone>>> GetZones([FromQuery] GridifyQuery query)
-        {
-            return Ok(_zoneServices.GetAll(query));
-        }
+            => Ok(_zoneServices.GetAll(query));
+        
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Zone>> GetZone(int id)
         {
@@ -40,18 +39,11 @@ namespace FUEL_DISPATCH_API.Controllers
 
             return Ok(_zoneServices.Get(predicate));
         }
-        [HttpPost, Authorize]
+        [HttpPost, Authorize(Roles = "CanCreate, Administrador")]
         public ActionResult<ResultPattern<Zone>> PostZone([FromBody] Zone zone)
-        {
-            // DONE: Hacer validador de Zonas.
-            //var validationResult = _validator.Validate(zone);
-            //if (!validationResult.IsValid)
-            //{
-            //    return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            //}
-            return Created(string.Empty, _zoneServices.Post(zone));
-        }
-        [HttpPut("{id:int}"), Authorize]
+            => Created(string.Empty, _zoneServices.Post(zone));
+        
+        [HttpPut("{id:int}"), Authorize(Roles = "CanUpdateData, Administrador")]
         public ActionResult<ResultPattern<Zone>> UpdateZone(int id, [FromBody] Zone zone)
         {
             string? companyId;

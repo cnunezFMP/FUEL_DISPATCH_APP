@@ -29,9 +29,8 @@ namespace FUEL_DISPATCH_API.Controllers
 
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<WareHouseMovementRequest>>> GetRequests([FromQuery] GridifyQuery query)
-        {
-            return Ok(_requestServices.GetAll(query));
-        }
+            => Ok(_requestServices.GetAll(query));
+
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<WareHouseMovementRequest>> GetRequest(int id)
         {

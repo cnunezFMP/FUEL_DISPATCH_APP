@@ -11,7 +11,7 @@ namespace FUEL_DISPATCH_API.Controllers
     [ApiController]
     public class Vw_LicenseExpDateAlertController : ControllerBase
     {
-        private readonly  ILicenseExpDateAlertServices _licenseExpDateAlertServices;
+        private readonly ILicenseExpDateAlertServices _licenseExpDateAlertServices;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public Vw_LicenseExpDateAlertController(ILicenseExpDateAlertServices licenseExpDateAlertServices, IHttpContextAccessor httpContextAccessor)
@@ -23,6 +23,6 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<ArticleDataMaster>>> GetDriverWithExpLicence([FromQuery] GridifyQuery query)
             => Ok(_licenseExpDateAlertServices.GetAll(query));
-       
+
     }
 }

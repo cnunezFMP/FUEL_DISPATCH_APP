@@ -38,18 +38,18 @@ builder.Services.AddSwaggerExamplesFromAssemblyOf<UserSwaggerExample>()
                 .AddSwaggerExamplesFromAssemblyOf<ArticleSwaggerExample>();
 
 
-builder.Services.AddAuthorization((x) =>
-{
-    x.AddPolicy("AdminRequired", (x) => x.RequireRole("Administrador"));
-    x.AddPolicy("Reporter", (x) => x.RequireClaim("CanGenerateReport"));
-    x.AddPolicy("RegisterData", (x) => x.RequireClaim("CanCreate"));
-    x.AddPolicy("Dispatcher", (x) => x.RequireClaim("CanGenerateDispatch"));
-    x.AddPolicy("Reader", (x) => x.RequireClaim("CanReadData"));
-    x.AddPolicy("Updater", (x) => x.RequireClaim("CanUpdateData"));
-    x.AddPolicy("UsersManagement", (x) => x.RequireClaim("CanManageUsers"));
-    x.AddPolicy("VehicleManagement", (x) => x.RequireClaim("CanManageVehicles"));
-    x.AddPolicy("MaitenanceManagement", (x) => x.RequireClaim("ManageMaitenAance"));
-});
+//builder.Services.AddAuthorization((x) =>
+//{
+//    x.AddPolicy("AdminRequired", (x) => x.RequireRole("Administrador"));
+//    x.AddPolicy("Reporter", (x) => x.RequireClaim("CanGenerateReport"));
+//    x.AddPolicy("RegisterData", (x) => x.RequireClaim("CanCreate"));
+//    x.AddPolicy("Dispatcher", (x) => x.RequireClaim("CanGenerateDispatch"));
+//    x.AddPolicy("Reader", (x) => x.RequireClaim("CanReadData"));
+//    x.AddPolicy("Updater", (x) => x.RequireClaim("CanUpdateData"));
+//    x.AddPolicy("UsersManagement", (x) => x.RequireClaim("CanManageUsers"));
+//    x.AddPolicy("VehicleManagement", (x) => x.RequireClaim("CanManageVehicles"));
+//    x.AddPolicy("MaitenanceManagement", (x) => x.RequireClaim("ManageMaitenAance"));
+//});
 
 builder.Services.AddSwaggerGen(
     info =>
@@ -146,7 +146,6 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IValidator<UsersBranchOffices>, UsersBranchOfficeValidator>()
                 .AddScoped<IValidator<EmployeeConsumptionLimits>, EmployeeComsuptionLimitsValidator>()
                 .AddScoped<IEmployeeComsuptionLimitsServices, EmployeeComsuptionLimitsServices>()
-                .AddScoped<IRolsPermissionsServices, RolsPermissionsServices>()
                 .AddScoped<IZoneServices, ZoneServices>()
                 .AddScoped<IBookingServices, BookingServices>()
                 .AddScoped<IOdometerMeasureServices, OdometerMeasureServices>()
@@ -178,7 +177,6 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IArticleServices, ArticleDataMasterServices>()
                 .AddScoped<IRequestServices, RequestServices>()
                 .AddScoped<IWareHouseServices, WareHouseServices>()
-                .AddScoped<IPermissionsServices, PermissionsServices>()
                 .AddScoped<IVehiclesServices, VehiclesServices>()
                 .AddScoped<IDriversServices, DriversServices>()
                 .AddScoped<IUsersAuth, UsersAuth>()

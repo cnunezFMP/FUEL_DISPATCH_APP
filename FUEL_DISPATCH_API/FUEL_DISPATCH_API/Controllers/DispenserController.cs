@@ -44,12 +44,12 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_dispenserServices.Get(predicate));
         }
 
-        [HttpPost, Authorize(Policy = "RegisterData, AdminRequired")]
+        [HttpPost, Authorize(Roles = "CanCreate, Administrador")]
         public ActionResult<ResultPattern<Dispenser>> PostDispenser([FromBody] Dispenser dispenser)
             => Created(string.Empty, _dispenserServices.Post(dispenser));
         
 
-        [HttpPut("{id:int}"), Authorize(Policy = "Updater, AdminRequired")]
+        [HttpPut("{id:int}"), Authorize(Roles = "CanUpdateData, Administrador")]
         public ActionResult<ResultPattern<Dispenser>> UpdateDispenser(int id, [FromBody] Dispenser dispenser)
         {
             string? companyId, branchId;

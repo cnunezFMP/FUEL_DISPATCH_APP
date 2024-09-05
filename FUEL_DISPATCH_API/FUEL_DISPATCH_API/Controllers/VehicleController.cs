@@ -33,11 +33,11 @@ namespace FUEL_DISPATCH_API.Controllers
         public ActionResult<ResultPattern<Vehicle>> GetVehicle(int id)
             => Ok(_vehicleServices.Get(x => x.Id == id));
 
-        [HttpPost, Authorize("VehicleManagement")]
+        [HttpPost, Authorize(Roles = "CanManageVehicles, Administrador")]
         public ActionResult<ResultPattern<Vehicle>> PostVehicle([FromBody] Vehicle vehicle)
             => Created(string.Empty, _vehicleServices.Post(vehicle));
 
-        [HttpPut("{id:int}"), Authorize("VehicleManagement")]
+        [HttpPut("{id:int}"), Authorize(Roles = "CanManageVehicles, Administrador")]
         public ActionResult<ResultPattern<Vehicle>> UpdateVehicle(int id, [FromBody] Vehicle vehicle)
         {
             string? companyId, branchId;

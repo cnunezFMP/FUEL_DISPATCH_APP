@@ -18,9 +18,9 @@ public class AuthManager
         _secretKey = secretKey;
     }
     public object AuthToken(LoginDto usuario)
-        {
-            var username = usuario.Username;
-            var password = usuario.Password;
+    {
+        var username = usuario.Username;
+        var password = usuario.Password;
         var credenciales = _dbContext.User
             .Include(x => x.Rols)
             .SingleOrDefault(x => x.Username == username);
@@ -39,34 +39,6 @@ public class AuthManager
 
             var userFullName = credenciales.FullName;
 
-            var permissions = new List<string>();
-            foreach (var rol in credenciales.Rols)
-            {
-                var permissionsFound = _dbContext
-                    .RolsPermissions
-                    .Where(x => x.RolId == rol.Id)
-                    .Select(x => x.PermissionId)
-                    .ToList();
-
-                if (permissionsFound.Any())
-                {
-                    foreach (var permission in permissionsFound)
-                    {
-                        var addPermissions = _dbContext
-                            .Permissions
-                            .Where(x => x.Id == permission)
-                            .Select(x => x.Name)
-                            .ToList();
-
-
-                        addPermissions.ForEach(x => permissions.Add(x));
-
-                    }
-                }
-
-            }
-
-
             // DONE: Revisar esto. 
             var keyBytes = Encoding.UTF8.GetBytes(_secretKey);
             var claims = new ClaimsIdentity();
@@ -82,7 +54,6 @@ public class AuthManager
             if (credenciales.Email is not null)
                 claims.AddClaim(new Claim(ClaimTypes.Email, credenciales.Email));
 
-            permissions.ForEach((x) => claims.AddClaim(new Claim(x, "Permission")));
 
             foreach (var role in credenciales.Rols!)
                 claims.AddClaim(new Claim(ClaimTypes.Role, role.RolName!));

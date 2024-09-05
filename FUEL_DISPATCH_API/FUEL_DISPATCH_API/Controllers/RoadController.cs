@@ -44,11 +44,11 @@ namespace FUEL_DISPATCH_API.Controllers
             return Ok(_roadServices.Get(predicate));
         }
 
-        [HttpPost, Authorize(Policy = "RegisterData, AdminRequired")]
+        [HttpPost, Authorize(Roles  = "CanCreate, Administrador")]
         public ActionResult<ResultPattern<Road>> PostRoad([FromBody] Road road)
             => Created(string.Empty, _roadServices.Post(road));
 
-        [HttpPut("{id:int}"), Authorize(Policy = "Updater, AdminRequired")]
+        [HttpPut("{id:int}"), Authorize(Roles = "CanUpdateData, AdminRequired")]
         public ActionResult<ResultPattern<Road>> UpdateRoad(int id, [FromBody] Road road)
         {
             string? companyId;

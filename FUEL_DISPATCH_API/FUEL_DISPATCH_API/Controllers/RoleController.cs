@@ -22,22 +22,5 @@ namespace FUEL_DISPATCH_API.Controllers
         public ActionResult<ResultPattern<Role>> GetRols([FromQuery] GridifyQuery query)
             => Ok(_roleServices.GetAll(query));
 
-
-        [HttpPost, Authorize]
-        public ActionResult<ResultPattern<Role>> CreateRol([FromBody] Role role)
-            => Created(string.Empty, _roleServices.Post(role));
-
-        [HttpPut("{id:int}"), Authorize]
-        public ActionResult<ResultPattern<Role>> UpdateRol(int id, [FromBody] Role role)
-        {
-            string? companyid = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-
-
-            bool predicate(Role x) => x.Id == id &&
-                x.CompanyId == int.Parse(companyid);
-
-
-            return Ok(_roleServices.Update(predicate, role));
-        }
     }
 }

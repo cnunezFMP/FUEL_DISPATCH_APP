@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FUEL_DISPATCH_API.Controllers
 {
     // DONE: un endpoint donde yo especifique el almacen y me traiga todo el historial de este, este tendria como parametron el almacen.
-    [ApiController, Route("api/[controller]"), Authorize("AdminRequired, Reporter")]
+    [ApiController, Route("api/[controller]"), Authorize(Roles = "Administrador")]
     public class vw_WareHouseHistoryController : ControllerBase
     {
         private readonly IWareHouseHistoryServices _wareHouseHistoryServices;

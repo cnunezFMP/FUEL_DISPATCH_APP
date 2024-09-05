@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace FUEL_DISPATCH_API.Controllers
 {
-    [ApiController, Route("api/[controller]"), Authorize("AdminRequired")]
+    [ApiController, Route("api/[controller]"), Authorize(Roles = "Administrador")]
     public class UsersBranchOfficesController : ControllerBase
     {
         private readonly IUsersBranchOfficesServices _usersBranchOfficesServices;

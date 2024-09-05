@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace FUEL_DISPATCH_API.Controllers
 {
-    [ApiController, Route("api/[controller]"), Authorize(Policy = "MaitenanceManagement")]
+    [ApiController, Route("api/[controller]"), Authorize(Roles = "ManageMateinance")]
     public class MaintenanceController : ControllerBase
     {
         private readonly IMaintenanceServices _maintenanceServices;
