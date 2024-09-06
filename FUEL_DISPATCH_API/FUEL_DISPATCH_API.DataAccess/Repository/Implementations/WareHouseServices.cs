@@ -65,10 +65,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 x.CompanyId == int.Parse(companyId));
         }*/
 
-        public bool SetWareHouseDir(WareHouse wareHouse)
+        /*public bool SetWareHouseDir(WareHouse wareHouse)
         {
-            /*string? companyId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();*/
+            *//*string? companyId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();*//*
 
             var branchOffice = _DBContext.BranchOffices
                 .FirstOrDefault(x => x.Id == wareHouse.BranchOfficeId &&
@@ -76,6 +76,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 throw new NotFoundException("La sucursal indicada no existe. ");
             wareHouse.FullDirection = branchOffice!.FullLocation;
             return true;
-        }
+        }*/
     }
 }
