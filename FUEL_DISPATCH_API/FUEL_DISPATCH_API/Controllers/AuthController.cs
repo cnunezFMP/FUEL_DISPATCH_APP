@@ -11,11 +11,11 @@ namespace FUEL_DISPATCH_API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class Auth : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IValidator<UserRegistrationDto> _userValidator;
         private readonly IUsersAuth _usersAuth;
-        public Auth(IValidator<UserRegistrationDto> userValidator, IUsersAuth usersAuth)
+        public AuthController(IValidator<UserRegistrationDto> userValidator, IUsersAuth usersAuth)
         {
             _userValidator = userValidator;
             _usersAuth = usersAuth;
