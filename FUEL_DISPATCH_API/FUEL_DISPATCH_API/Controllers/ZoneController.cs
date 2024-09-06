@@ -27,30 +27,30 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Zone>>> GetZones([FromQuery] GridifyQuery query)
             => Ok(_zoneServices.GetAll(query));
-        
+
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Zone>> GetZone(int id)
         {
-            string? companyId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            /* string? companyId;
+             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();*/
 
-            bool predicate(Zone x) => x.Id == id &&
-                                      x.CompanyId == int.Parse(companyId);
+            bool predicate(Zone x) => x.Id == id/* &&
+                                      x.CompanyId == int.Parse(companyId)*/;
 
             return Ok(_zoneServices.Get(predicate));
         }
         [HttpPost, Authorize(Roles = "CanCreate, Administrador")]
         public ActionResult<ResultPattern<Zone>> PostZone([FromBody] Zone zone)
             => Created(string.Empty, _zoneServices.Post(zone));
-        
+
         [HttpPut("{id:int}"), Authorize(Roles = "CanUpdateData, Administrador")]
         public ActionResult<ResultPattern<Zone>> UpdateZone(int id, [FromBody] Zone zone)
         {
-            string? companyId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            /*string? companyId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();*/
 
-            bool predicate(Zone x) => x.Id == id &&
-                                      x.CompanyId == int.Parse(companyId);
+            bool predicate(Zone x) => x.Id == id/* &&
+                                      x.CompanyId == int.Parse(companyId)*/;
 
 
             return Ok(_zoneServices.Update(predicate, zone));

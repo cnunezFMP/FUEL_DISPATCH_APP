@@ -25,32 +25,32 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<User>> GetUser(int id)
         {
-            string? companyId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+           /* string? companyId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();*/
 
-            bool predicate(User x) => x.Id == id &&
-                                      x.CompanyId == int.Parse(companyId);
+            bool predicate(User x) => x.Id == id/* &&
+                                      x.CompanyId == int.Parse(companyId)*/;
 
             return Ok(_usersServices.Get(predicate));
         }
         [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<User>> UpdateUser(int id, [FromBody] User user)
         {
-            string? companyId;
+            /*string? companyId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-
-            bool predicate(User x) => x.Id == id &&
-                                      x.CompanyId == int.Parse(companyId);
+*/
+            bool predicate(User x) => x.Id == id/* &&
+                                      x.CompanyId == int.Parse(companyId)*/;
             return Ok(_usersServices.Update(predicate, user));
         }
         [HttpDelete("{id:int}"), Authorize]
         public ActionResult<ResultPattern<User>> DeleteUser(int id)
         {
-            string? companyId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            /*string? companyId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();*/
 
-            bool predicate(User x) => x.Id == id &&
-                                      x.CompanyId == int.Parse(companyId);
+            bool predicate(User x) => x.Id == id/* &&
+                                      x.CompanyId == int.Parse(companyId)*/;
 
             return Ok(_usersServices.Delete(predicate));
         }

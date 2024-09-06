@@ -21,7 +21,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _articleServices = articleServices;
             _validator = validator;
         }
-        [HttpGet, Authorize]
+        [HttpGet]
         public ActionResult<ResultPattern<Paging<ArticleDataMaster>>> GetArticles([FromQuery] GridifyQuery query)
             => Ok(_articleServices.GetAll(query));
 
@@ -32,8 +32,8 @@ namespace FUEL_DISPATCH_API.Controllers
             //string? companyId, branchId;
             //companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             //branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
-            bool predicate(ArticleDataMaster x) => x.Id == id /*&&
-                 x.CompanyId == int.Parse(companyId)*/;
+            bool predicate(ArticleDataMaster x) => x.Id == id; /*&&
+                 x.CompanyId == int.Parse(companyId)*/
 
             return Ok(_articleServices.Get(predicate));
         }

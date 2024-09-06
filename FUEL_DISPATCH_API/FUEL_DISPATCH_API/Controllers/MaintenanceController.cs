@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace FUEL_DISPATCH_API.Controllers
 {
-    [ApiController, Route("api/[controller]"), Authorize(Roles = "ManageMateinance")]
+    [ApiController, Route("api/[controller]"), Authorize(Roles = "ManageMateinance, Administrador")]
     public class MaintenanceController : ControllerBase
     {
         private readonly IMaintenanceServices _maintenanceServices;
@@ -24,13 +24,13 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Maintenance>> GetMaintenance(int id)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            bool predicate(Maintenance x) => x.Id == id &&
+            bool predicate(Maintenance x) => x.Id == id/* &&
                                                x.CompanyId == int.Parse(companyId) &&
-                                               x.BranchOfficeId == int.Parse(branchId);
+                                               x.BranchOfficeId == int.Parse(branchId)*/;
 
             return Ok(_maintenanceServices.Get(predicate));
         }
@@ -41,13 +41,13 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Maintenance>> UpdateMaintenance(int id, [FromBody] Maintenance maintenance)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            bool predicate(Maintenance x) => x.Id == id &&
+            bool predicate(Maintenance x) => x.Id == id /*&&
                                                x.CompanyId == int.Parse(companyId) &&
-                                               x.BranchOfficeId == int.Parse(branchId);
+                                               x.BranchOfficeId == int.Parse(branchId)*/;
 
             return Ok(_maintenanceServices.Update(predicate, maintenance));
         }

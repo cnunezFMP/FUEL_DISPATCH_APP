@@ -28,14 +28,14 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{warehouseId:int}"), Authorize]
         public ActionResult<ResultPattern<Paging<vw_ActualStock>>> GetVwActualStock(int warehouseId)
         {
-            string? companyId, branchId;
+          /*  string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
-
+          */
             bool predicate(vw_ActualStock x) =>
-                x.WareHouseId == warehouseId &&
+                x.WareHouseId == warehouseId/* &&
                 x.CompanyId == int.Parse(companyId) &&
-                x.BranchOfficeId == int.Parse(branchId);
+                x.BranchOfficeId == int.Parse(branchId)*/;
 
             return Ok(_actualStockServices.Get(predicate));
         }

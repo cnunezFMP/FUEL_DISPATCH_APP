@@ -25,14 +25,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool DispenserCodeMustBeUnique(Dispenser dispenser)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
             return _DBContext.Dispenser
-                .Any(x => x.Code == dispenser.Code &&
+                .Any(x => x.Code == dispenser.Code /*&&
                      x.CompanyId == int.Parse(companyId) &&
-                     x.BranchOfficeId == int.Parse(branchId));
+                     x.BranchOfficeId == int.Parse(branchId)*/);
 
         }
 

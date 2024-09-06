@@ -25,13 +25,13 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<WareHouse>> GetWareHouse(int id)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            bool predicate(WareHouse x) => x.Id == id &&
+            bool predicate(WareHouse x) => x.Id == id /*&&
                                            x.CompanyId == int.Parse(companyId) &&
-                                           x.BranchOfficeId == int.Parse(branchId);
+                                           x.BranchOfficeId == int.Parse(branchId)*/;
             return Ok(_wareHouseServices.Get(predicate));
         }
         [HttpPost, Authorize(Roles = "CanCreate, Administrador")]
@@ -41,13 +41,13 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<WareHouse>> UpdateStore(int id, [FromBody] WareHouse warehouse)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            bool predicate(WareHouse x) => x.Id == id &&
+            bool predicate(WareHouse x) => x.Id == id /*&&
                                            x.CompanyId == int.Parse(companyId) &&
-                                           x.BranchOfficeId == int.Parse(branchId);
+                                           x.BranchOfficeId == int.Parse(branchId)*/;
 
             return Ok(_wareHouseServices.Update(predicate, warehouse));
         }

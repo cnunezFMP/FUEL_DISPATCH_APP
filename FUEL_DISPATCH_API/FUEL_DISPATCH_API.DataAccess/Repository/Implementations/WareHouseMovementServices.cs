@@ -33,6 +33,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             if (!CheckIfWareHousesHasActiveStatus(wareHouseMovement))
                 throw new BadRequestException("Este almacen esta inactivo. ");
+
             if (wareHouseMovement.RequestId.HasValue)
                 SetRequestForMovement(wareHouseMovement);
 
@@ -51,8 +52,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if (!CheckDriver(wareHouseMovement))
                 throw new BadRequestException("El conductor esta inactivo, o no esta disponible. ");
 
-            if (!CheckBranchOffice(wareHouseMovement))
-                throw new BadRequestException("El conductor esta inactivo, o no esta disponible. ");
+            /*if (!CheckBranchOffice(wareHouseMovement))
+                throw new BadRequestException("El conductor esta inactivo, o no esta disponible. ");*/
 
             if (!CheckDispenser(wareHouseMovement))
                 throw new BadRequestException("El dispensador no esta activo. ");
@@ -104,31 +105,31 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             => wareHouseMovement.Qty > ValidationConstants.ZeroGallons;
         public bool CheckVehicleOdometer(WareHouseMovement wareHouseMovement)
         {
-            string? companyId, branchOfficeId;
+            /*string? companyId, branchOfficeId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
             var vehicleForDispatch = _DBContext.Vehicle
                 .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault(x => x.Id == wareHouseMovement.VehicleId &&
+                .FirstOrDefault(x => x.Id == wareHouseMovement.VehicleId/* &&
                 x.CompanyId == int.Parse(companyId) &&
-                x.BranchOfficeId == int.Parse(branchOfficeId)) ??
+                x.BranchOfficeId == int.Parse(branchOfficeId)*/) ??
                 throw new NotFoundException("No se encontro el vehiculo para el despacho. ");
 
-            return wareHouseMovement.Odometer > vehicleForDispatch!.Odometer;
+                return wareHouseMovement.Odometer > vehicleForDispatch!.Odometer;
         }
         // DONE: Corregir las funciones "CheckVehicle", "CheckDriver".
         public bool CheckVehicle(WareHouseMovement wareHouseMovement)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
             var vehicleForDispatch = _DBContext.Vehicle
                 .AsNoTrackingWithIdentityResolution()
-                .FirstOrDefault(v => v.Id == wareHouseMovement.VehicleId &&
+                .FirstOrDefault(v => v.Id == wareHouseMovement.VehicleId /*&&
                 v.CompanyId == int.Parse(companyId) &&
-                v.BranchOfficeId == int.Parse(branchId))
+                v.BranchOfficeId == int.Parse(branchId)*/)
                 ?? throw new NotFoundException("No vehicle found. ");
 
             return (vehicleForDispatch.Status is not VehicleStatussesEnum.Inactive
@@ -136,16 +137,16 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool CheckDriver(WareHouseMovement wareHouseMovement)
         {
-            string? companyId, branchOfficeId;
+            /*string? companyId, branchOfficeId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
-
+*/
             if (wareHouseMovement.Type is MovementsTypesEnum.Salida)
             {
                 var driverForDispatch = _DBContext.Driver
                     .AsNoTrackingWithIdentityResolution()
-                    .FirstOrDefault(d => d.Id == wareHouseMovement.DriverId &&
-                                       d.BranchOfficeId == int.Parse(branchOfficeId))
+                    .FirstOrDefault(d => d.Id == wareHouseMovement.DriverId /*&&
+                                       d.BranchOfficeId == int.Parse(branchOfficeId)*/)
                     ?? throw new NotFoundException("No driver found. ");
 
                 return (driverForDispatch!.Status is not ActiveInactiveStatussesEnum.Inactive);
@@ -168,16 +169,16 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool CheckDispenser(WareHouseMovement wareHouseMovement)
         {
-            string? companyId, branchId;
+           /* string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
 
             var dispenser = _DBContext.Dispenser
             .AsNoTrackingWithIdentityResolution()
-            .FirstOrDefault(dp => dp.Id == wareHouseMovement.DispenserId &&
+            .FirstOrDefault(dp => dp.Id == wareHouseMovement.DispenserId /*&&
             dp.BranchOfficeId == int.Parse(branchId) &&
-            dp.CompanyId == int.Parse(companyId))
+            dp.CompanyId == int.Parse(companyId)*/)
             ?? throw new NotFoundException("No se encontro el dispensador. ");
 
             return dispenser.Status is not ActiveInactiveStatussesEnum.Inactive;
@@ -186,9 +187,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         // DONE: Corregir la excepcion aqui
         public bool CheckWareHouseStock(WareHouseMovement wareHouseMovement)
         {
-            string? companyId, branchOfficeId;
+            /*string? companyId, branchOfficeId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
             var wareHouseStock = _DBContext.vw_ActualStock
                 .AsNoTrackingWithIdentityResolution()
@@ -208,13 +209,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             x.ItemId == wareHouseMovement!.ItemId);
         public bool CheckIfWareHousesHasActiveStatus(WareHouseMovement wareHouseMovement)
         {
-            string? companyId, branchId;
+           /* string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
             var wareHouse = _DBContext.WareHouse
                             .AsNoTrackingWithIdentityResolution()
-                            .FirstOrDefault(x => x.CompanyId == int.Parse(companyId) &&
-                            x.BranchOfficeId == int.Parse(companyId))
+                            .FirstOrDefault(x=>x.Id == wareHouseMovement.WareHouseId)
                             ?? throw new NotFoundException("No warehouse found. ");
 
 
@@ -345,15 +345,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         // DONE: Hacer un movimiento con la solicitud que agregue.
         public bool SetRequestForMovement(WareHouseMovement wareHouseMovement)
         {
-            string? companyId, branchOfficeId;
+           /* string? companyId, branchOfficeId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
             // DONE: Test this:
             var requestForMovement = _DBContext
                                       .WareHouseMovementRequest
-                                      .FirstOrDefault(x => x.Id == wareHouseMovement.RequestId &&
+                                      .FirstOrDefault(x => x.Id == wareHouseMovement.RequestId /*&&
                                                       x.CompanyId == int.Parse(companyId) &&
-                                                      x.BranchOfficeId == int.Parse(branchOfficeId))
+                                                      x.BranchOfficeId == int.Parse(branchOfficeId*/)
                                       ?? throw new NotFoundException("Request not found. ");
 
             if (requestForMovement.Status == RequestStatussesEnum.Rejected ||

@@ -20,8 +20,7 @@ namespace FUEL_DISPATCH_API.Controllers
         }
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<ArticleDataMaster>>> GetArticles([FromQuery] GridifyQuery query)
-        {
-            return Ok(_driverMethodOfComsuptionServices.GetAll(query));
-        }
+            => Ok(_driverMethodOfComsuptionServices.GetAll(query));
+        
     }
 }

@@ -47,18 +47,18 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool SetCurrentOdometerByVehicle(Maintenance maintenance)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?
                 .Items["CompanyId"]?
                 .ToString();
             branchId = _httpContextAccessor.HttpContext?
                 .Items["BranchOfficeId"]?
-                .ToString();
+                .ToString();*/
 
             var vehicleForMaintenance = _DBContext.Vehicle
-                .FirstOrDefault(x => x.Id == maintenance.VehicleId &&
+                .FirstOrDefault(x => x.Id == maintenance.VehicleId /*&&
                 x.CompanyId == int.Parse(companyId) &&
-                x.BranchOfficeId == int.Parse(branchId)) ??
+                x.BranchOfficeId == int.Parse(branchId)*/) ??
                 throw new NotFoundException("No vehicle find for this id. ");
 
             maintenance.VehicleVin = vehicleForMaintenance.VIN;
@@ -67,16 +67,16 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool SetNextMaintenanceDate(Maintenance maintenance)
         {
-            string? companyId;
+            /*string? companyId;
             companyId = _httpContextAccessor
                 .HttpContext?
                 .Items["CompanyId"]?
                 .ToString() ??
-           throw new BadRequestException("Invalid company. ");
+           throw new BadRequestException("Invalid company. ");*/
 
             var part = _DBContext.Part
-                .FirstOrDefault(x => x.Id == maintenance.PartId &&
-                x.CompanyId == int.Parse(companyId)) ??
+                .FirstOrDefault(x => x.Id == maintenance.PartId /*&&
+                x.CompanyId == int.Parse(companyId)*/) ??
                 throw new NotFoundException("La pieza no se encuentra registrada en la compañia");
 
             var dateForNextMaintenance = maintenance.CreatedAt.AddMonths(part!.MaintenanceMonthsInt);
@@ -91,14 +91,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool SetNextMaintenanceOdometer(Maintenance maintenance)
         {
-            string? companyId;
+            /*string? companyId;
             companyId = _httpContextAccessor
                 .HttpContext?.Items["CompanyId"]?.ToString() ??
-                throw new BadRequestException("Invalid company. ");
+                throw new BadRequestException("Invalid company. ");*/
 
             var part = _DBContext.Part
-                .FirstOrDefault(x => x.Id == maintenance.PartId &&
-                x.CompanyId == int.Parse(companyId)) ??
+                .FirstOrDefault(x => x.Id == maintenance.PartId/* &&
+                x.CompanyId == int.Parse(companyId)*/) ??
                 throw new NotFoundException("Piece is not registered in the company. ");
 
             maintenance.PartCode = part.Code;
@@ -107,19 +107,19 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool SetVehicleStatus(Maintenance maintenance)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?
                 .Items["CompanyId"]?
                 .ToString();
 
             branchId = _httpContextAccessor.HttpContext?
                 .Items["BranchOfficeId"]?
-                .ToString();
+                .ToString();*/
 
             var vehicle = _DBContext
                 .Vehicle
-                .FirstOrDefault(x => x.CompanyId == int.Parse(companyId) &&
-                x.BranchOfficeId == int.Parse(branchId) &&
+                .FirstOrDefault(x => /*x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchId) &&*/
                 x.Id == maintenance.VehicleId) ??
                 throw new NotFoundException("Vehiculo especificado no encontrado. ");
 
@@ -130,19 +130,19 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool SetVehicleStatusToActive(Maintenance maintenance)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?
                 .Items["CompanyId"]?
                 .ToString();
 
             branchId = _httpContextAccessor.HttpContext?
                 .Items["BranchOfficeId"]?
-                .ToString();
+                .ToString();*/
 
             var vehicle = _DBContext
                 .Vehicle
-                .FirstOrDefault(x => x.CompanyId == int.Parse(companyId) &&
-                x.BranchOfficeId == int.Parse(branchId) &&
+                .FirstOrDefault(/*x => x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchId) &&*/
                 x.Id == maintenance.VehicleId) ??
                 throw new NotFoundException("Vehiculo especificado no encontrado. ");
 

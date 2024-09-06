@@ -34,13 +34,13 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Dispenser>> GetDispenser(int id)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            bool predicate(Dispenser x) => x.Id == id &&
+            bool predicate(Dispenser x) => x.Id == id /*&&
                                                x.CompanyId == int.Parse(companyId) &&
-                                               x.BranchOfficeId == int.Parse(branchId);
+                                               x.BranchOfficeId == int.Parse(branchId)*/;
             return Ok(_dispenserServices.Get(predicate));
         }
 
@@ -52,13 +52,13 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}"), Authorize(Roles = "CanUpdateData, Administrador")]
         public ActionResult<ResultPattern<Dispenser>> UpdateDispenser(int id, [FromBody] Dispenser dispenser)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            bool predicate(Dispenser x) => x.Id == id &&
+            bool predicate(Dispenser x) => x.Id == id /*&&
                                                x.CompanyId == int.Parse(companyId) &&
-                                               x.BranchOfficeId == int.Parse(branchId);
+                                               x.BranchOfficeId == int.Parse(branchId)*/;
 
             return Ok(_dispenserServices.Update(predicate, dispenser));
         }

@@ -55,11 +55,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         // Verificar si el usuario pertenece a la sucursal.
         public bool IsUserInBranchOffice(int userId, int? branchOfficeId)
         {
-            string? companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            //string? companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
 
-            return _DBContext.UsersBranchOffices.Any(x => x.UserId == userId &&
+            return _DBContext.UsersBranchOffices.Any(x => x.UserId == userId /*&&
                        x.BranchOfficeId == branchOfficeId &&
-                       x.CompanyId == int.Parse(companyId));
+                       x.CompanyId == int.Parse(companyId)*/);
         }
     }
 }

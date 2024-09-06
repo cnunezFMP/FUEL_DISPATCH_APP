@@ -34,36 +34,36 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Booking>> GetBooking(int id)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            bool predicate(Booking x) => x.Id == id &&
+            bool predicate(Booking x) => x.Id == id/* &&
                                       x.CompanyId == int.Parse(companyId) &&
-                                      x.BranchOfficeId == int.Parse(branchId);
+                                      x.BranchOfficeId == int.Parse(branchId)*/;
 
             return Ok(_bookingServices.Get(predicate));
         }
         [HttpPost, Authorize]
         public ActionResult<ResultPattern<Booking>> PostBooking([FromBody] Booking booking)
         {
-            var validationResult = _bookingValidator.Validate(booking);
+            /*var validationResult = _bookingValidator.Validate(booking);
             if (!validationResult.IsValid)
             {
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            }
+            }*/
             return Created(string.Empty, _bookingServices.Post(booking));
         }
         [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Booking>> UpdateBooking(int id, [FromBody] Booking booking)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            bool predicate(Booking x) => x.Id == id &&
+            bool predicate(Booking x) => x.Id == id/* &&
                                       x.CompanyId == int.Parse(companyId) &&
-                                      x.BranchOfficeId == int.Parse(branchId);
+                                      x.BranchOfficeId == int.Parse(branchId)*/;
 
             return Ok(_bookingServices.Update(predicate, booking));
         }

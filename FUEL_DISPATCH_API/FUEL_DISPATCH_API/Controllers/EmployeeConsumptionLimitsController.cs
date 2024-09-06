@@ -27,13 +27,13 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpDelete("{driverId:int}, {methodId:int}"), Authorize]
         public ActionResult<ResultPattern<DriverMethodOfComsuption>> DeleteUserCompany(int driverId, int methodId)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
             bool predicate(EmployeeConsumptionLimits x) => x.DriverId == driverId &&
-                                                           x.DriverMethodOfComsuptionId == methodId &&
+                                                           x.DriverMethodOfComsuptionId == methodId/* &&
                                                            x.CompanyId == int.Parse(companyId) &&
-                                                           x.BranchOfficeId == int.Parse(branchId);
+                                                           x.BranchOfficeId == int.Parse(branchId)*/;
             return Ok(_employeeComsuptionLimitsServices.Delete(predicate));
         }
         /// <summary>
@@ -60,15 +60,15 @@ namespace FUEL_DISPATCH_API.Controllers
         public ActionResult<ResultPattern<EmployeeConsumptionLimits>> UpdateUserMethod(int driverId, int methodId, EmployeeConsumptionLimits employeeConsumptionLimit)
         {
             // DONE: Ver si necesito validar la compañia y la sucursal. Y ver como hacerlo.
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
 
-            bool predicate(EmployeeConsumptionLimits x) => x.DriverId == driverId &&
+            bool predicate(EmployeeConsumptionLimits x) => x.DriverId == driverId /*&&
                 x.DriverMethodOfComsuptionId == methodId &&
                 x.CompanyId == int.Parse(companyId) &&
-                x.BranchOfficeId == int.Parse(branchId);
+                x.BranchOfficeId == int.Parse(branchId)*/;
 
             return Ok(_employeeComsuptionLimitsServices.Update(predicate, employeeConsumptionLimit));
         }

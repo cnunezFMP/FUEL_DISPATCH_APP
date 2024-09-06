@@ -34,13 +34,13 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<WareHouseMovementRequest>> GetRequest(int id)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            bool predicate(WareHouseMovementRequest x) => x.Id == id &&
+            bool predicate(WareHouseMovementRequest x) => x.Id == id/* &&
                                            x.CompanyId == int.Parse(companyId) &&
-                                           x.BranchOfficeId == int.Parse(branchId);
+                                           x.BranchOfficeId == int.Parse(branchId)*/;
 
             return Ok(_requestServices.Get(predicate));
         }
@@ -48,24 +48,24 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize]
         public ActionResult<ResultPattern<WareHouseMovementRequest>> PostRequest([FromBody] WareHouseMovementRequest request)
         {
-            var validationResult = _validator.Validate(request, option => option.IncludeRuleSets("WareHouses"));
+            /*var validationResult = _validator.Validate(request, option => option.IncludeRuleSets("WareHouses"));
             if (!validationResult.IsValid)
             {
                 return ValidationProblem(ModelStateResult.GetModelStateDic(validationResult));
-            }
+            }*/
             return Created(string.Empty, _requestServices.Post(request));
         }
 
         [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<WareHouseMovementRequest>> UpdateRequest(int id, [FromBody] WareHouseMovementRequest request)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            bool predicate(WareHouseMovementRequest x) => x.Id == id &&
+            bool predicate(WareHouseMovementRequest x) => x.Id == id/* &&
                                            x.CompanyId == int.Parse(companyId) &&
-                                           x.BranchOfficeId == int.Parse(branchId);
+                                           x.BranchOfficeId == int.Parse(branchId)*/;
 
             return Ok(_requestServices.Update(predicate, request));
         }

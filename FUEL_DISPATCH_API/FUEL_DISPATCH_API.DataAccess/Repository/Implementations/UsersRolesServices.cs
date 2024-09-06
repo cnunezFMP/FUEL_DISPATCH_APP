@@ -63,10 +63,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         // Verificar si el usuario tiene el rol.
         public bool IsUserRol(int userId, int rolId)
         {
-            string? companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString(); 
+            //string? companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString(); 
             return _DBContext.UsersRols.Any(x => x.UserId == userId &&
-                                  x.RolId == rolId &&
-                                  x.CompanyId == int.Parse(companyId));
+                                  x.RolId == rolId /*&&
+                                  x.CompanyId == int.Parse(companyId)*/);
         }
              
     }

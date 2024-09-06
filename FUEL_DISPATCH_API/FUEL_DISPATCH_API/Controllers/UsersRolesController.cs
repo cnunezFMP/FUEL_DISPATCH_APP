@@ -15,7 +15,7 @@ namespace FUEL_DISPATCH_API.Controllers
     public class UsersRolesController : ControllerBase
     {
         private readonly IUsersRolesServices _userRolesServices;
-        private readonly IHttpContextAccessor _httpContextAccessor;    
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public UsersRolesController(IUsersRolesServices userRolesServices,
             IHttpContextAccessor httpContextAccessor)
         {
@@ -36,10 +36,8 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpDelete("{userId}/Roles/{rolId}"), Authorize]
         public ActionResult<ResultPattern<UsersRols>> DeleteUserRol(int userId, int rolId)
         {
-            string? companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            Func<UsersRols, bool> predicate = x => x.UserId == userId &&
-            x.RolId == rolId && 
-            x.CompanyId == int.Parse(companyId);
+            // string? companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            bool predicate(UsersRols x) => x.UserId == userId && x.RolId == rolId;
             return Ok(_userRolesServices.Delete(predicate));
         }
     }

@@ -54,25 +54,25 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             => !_DBContext.Measure.Any(x => x.Id == vehicle.OdometerMeasureId);
         public bool FichaMustBeUnique(Vehicle vehicleToken)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
             return _DBContext.Vehicle
-                .Any(x => x.Ficha == vehicleToken.Ficha &&
+                .Any(x => x.Ficha == vehicleToken.Ficha /*&&
                 x.CompanyId == int.Parse(companyId) &&
-                x.BranchOfficeId == int.Parse(branchId));
+                x.BranchOfficeId == int.Parse(branchId)*/);
         }
         // DONE: Implementar esto en el controlador de Vehicle
         public ResultPattern<List<WareHouseMovement>> GetVehicleDispatches(int vehicleId)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
-
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
+            // TODO: Simplificar
             var driverDispatches = (from t0 in _DBContext.WareHouseMovement
-                                    join t1 in _DBContext.BranchOffices on t0.BranchOfficeId equals int.Parse(branchId)
-                                    join t2 in _DBContext.Companies on t1.CompanyId equals int.Parse(companyId)
+                                    /*join t1 in _DBContext.BranchOffices on t0.BranchOfficeId equals int.Parse(branchId)
+                                    join t2 in _DBContext.Companies on t1.CompanyId equals int.Parse(companyId)*/
                                     where t0.VehicleId == vehicleId
                                     select t0)
                                     .ToList();

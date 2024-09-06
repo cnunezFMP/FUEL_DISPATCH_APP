@@ -40,7 +40,7 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}"), Authorize(Roles = "CanManageVehicles, Administrador")]
         public ActionResult<ResultPattern<Vehicle>> UpdateVehicle(int id, [FromBody] Vehicle vehicle)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor
                 .HttpContext?
                 .Items["CompanyId"]?
@@ -49,11 +49,11 @@ namespace FUEL_DISPATCH_API.Controllers
             branchId = _httpContextAccessor
                 .HttpContext?
                 .Items["BranchOfficeId"]?
-                .ToString();
+                .ToString();*/
 
-            bool predicate(Vehicle x) => x.Id == id &&
+            bool predicate(Vehicle x) => x.Id == id/* &&
                                       x.CompanyId == int.Parse(companyId) &&
-                                      x.BranchOfficeId == int.Parse(branchId);
+                                      x.BranchOfficeId == int.Parse(branchId)*/;
 
             return Ok(_vehicleServices.Update(predicate, vehicle));
         }

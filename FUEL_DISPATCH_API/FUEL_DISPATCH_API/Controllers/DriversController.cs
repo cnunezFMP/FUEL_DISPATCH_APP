@@ -37,13 +37,13 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Driver>> GetDriver(int id)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            bool predicate(Driver x) => x.Id == id &&
+            bool predicate(Driver x) => x.Id == id /*&&
                                                x.CompanyId == int.Parse(companyId) &&
-                                               x.BranchOfficeId == int.Parse(branchId);
+                                               x.BranchOfficeId == int.Parse(branchId)*/;
             return Ok(_driverServices.Get(predicate));
         }
 
@@ -78,13 +78,13 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<Driver>> UpdateDriver(int id, [FromBody] Driver driver)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            bool predicate(Driver x) => x.Id == id &&
+            bool predicate(Driver x) => x.Id == id /*&&
                                                x.CompanyId == int.Parse(companyId) &&
-                                               x.BranchOfficeId == int.Parse(branchId);
+                                               x.BranchOfficeId == int.Parse(branchId)*/;
             return Ok(_driverServices.Update(predicate, driver));
         }
     }

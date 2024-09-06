@@ -22,19 +22,19 @@ namespace FUEL_DISPATCH_API.Controllers
         }
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<UsersBranchOffices>>> GetUsersBranchOfficess([FromQuery] GridifyQuery query)
-        {
-            return Ok(_usersBranchOfficesServices.GetAll(query));
-        }
+            => Ok(_usersBranchOfficesServices.GetAll(query));
+        
         [HttpDelete("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize(Roles = "Administrador")]
         public ActionResult<ResultPattern<UsersBranchOffices>> DeleteUserBranchOffice(int userId)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            bool predicate(UsersBranchOffices x) => x.BranchOfficeId == int.Parse(branchId) &&
-                                                    x.UserId == userId &&
-                                                    x.CompanyId == int.Parse(companyId);
+            bool predicate(UsersBranchOffices x) => x.UserId == userId;/*
+                x.BranchOfficeId == int.Parse(branchId) &&
+                                                     &&
+                                                    x.CompanyId == int.Parse(companyId);*/
 
 
             return Ok(_usersBranchOfficesServices.Delete(predicate));
@@ -50,13 +50,13 @@ namespace FUEL_DISPATCH_API.Controllers
         public ActionResult<ResultPattern<UsersBranchOffices>> UpdateUserCompany(int userId,
             UsersBranchOffices usersBranchOffices)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            bool predicate(UsersBranchOffices x) => x.BranchOfficeId == int.Parse(branchId) &&
-                                                    x.UserId == userId &&
-                                                    x.CompanyId == int.Parse(companyId);
+            bool predicate(UsersBranchOffices x) => x.UserId == userId /*&&
+                                                    x.BranchOfficeId == int.Parse(branchId) &&
+                                                    x.CompanyId == int.Parse(companyId)*/;
 
             return Ok(_usersBranchOfficesServices.UpdateUserBranchOffice(predicate, usersBranchOffices));
         }

@@ -31,13 +31,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
         public bool ZoneCodeMustBeUnique(Zone zone)
         {
-            string? companyId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+           /* string? companyId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();*/
 
             return _DBContext
                 .Zone
-                .Any(x => x.Code == zone.Code &&
-                x.CompanyId == int.Parse(companyId));
+                .Any(x => x.Code == zone.Code /*&&
+                x.CompanyId == int.Parse(companyId)*/);
         }
     }
 }

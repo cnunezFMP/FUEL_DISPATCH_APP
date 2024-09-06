@@ -32,16 +32,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool RoadCodeMustBeUnique(Road road)
         {
-            string? companyId;
+            /*string? companyId;
             companyId = _httpContextAccessor
                 .HttpContext?
                 .Items["CompanyId"]?
-                .ToString();
+                .ToString();*/
 
             return _DBContext.Road
                 .AsNoTracking()
-                .Where(x => x.CompanyId == int.Parse(companyId))
-                .Any();
+                .Any(x => x.Code == road.Code);
         }
     }
 }

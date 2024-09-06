@@ -22,14 +22,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
         public ResultPattern<List<vw_WareHouseHistory>> GetHistoryFromSpecificWareHouse(int wareHouseId)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
             var history = _DBContext.Vw_WareHouseHistories
-                .Where(x => x.WareHouse == wareHouseId &&
+                .Where(x => x.WareHouse == wareHouseId /*&&
                        x.CompanyId == int.Parse(companyId) &&
-                       x.BranchOfficeId == int.Parse(branchId))
+                       x.BranchOfficeId == int.Parse(branchId)*/)
                 .ToList();
 
             return ResultPattern<List<vw_WareHouseHistory>>.Success(history, StatusCodes.Status200OK, "History from specific warehouse retrieved successfully."); 

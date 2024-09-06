@@ -34,14 +34,14 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<BranchOffices>> GetBranchOffice(int id)
         {
-            string? companyId;
+            /*string? companyId;
             companyId = _httpContextAccessor
                         .HttpContext?
                         .Items["CompanyId"]?
-                        .ToString();
+                        .ToString();*/
 
-            bool predicate(BranchOffices x) => x.Id == id &&
-                                               x.CompanyId == int.Parse(companyId);
+            bool predicate(BranchOffices x) => x.Id == id /*&&
+                                               x.CompanyId == int.Parse(companyId)*/;
             return Ok(_branchOfficeServices.Get(predicate));
         }
         [HttpPost, Authorize(Roles = "CanCreate, Administrador")]
@@ -52,11 +52,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}"), Authorize(Roles = "CanUpdateData, Administrador")]
         public ActionResult<ResultPattern<BranchOffices>> UpdateBranchOffice(int id, [FromBody] BranchOffices branchOffice)
         {
-            string? companyId;
+            /*string? companyId;
             companyId = _httpContextAccessor
                         .HttpContext?
                         .Items["CompanyId"]?
-                        .ToString();
+                        .ToString();*/
 
             bool predicate(BranchOffices x) => x.Id == id;
             return Ok(_branchOfficeServices.Update(predicate, branchOffice));

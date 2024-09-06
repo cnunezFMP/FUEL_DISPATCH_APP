@@ -27,13 +27,13 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<WareHouseMovement>> GetMovement(int id)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            bool predicate(WareHouseMovement x) => x.Id == id &&
+            bool predicate(WareHouseMovement x) => x.Id == id /*&&
                                            x.CompanyId == int.Parse(companyId) &&
-                                           x.BranchOfficeId == int.Parse(branchId);
+                                           x.BranchOfficeId == int.Parse(branchId)*/;
             return Ok(_wareHouseMovementServices.Get(predicate));
         }
         [HttpPost, Authorize(Roles = "CanGenerateDispatch, Administrador")]
@@ -43,7 +43,7 @@ namespace FUEL_DISPATCH_API.Controllers
         public ActionResult<ResultPattern<WareHouseMovement>> UpdateMovement(int id,
             [FromBody] WareHouseMovement wareHouseMovement)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor
                 .HttpContext?
                 .Items["CompanyId"]?
@@ -52,13 +52,11 @@ namespace FUEL_DISPATCH_API.Controllers
             branchId = _httpContextAccessor
                 .HttpContext?
                 .Items["BranchOfficeId"]?
-                .ToString();
+                .ToString();*/
 
-            bool predicate(WareHouseMovement x) => x.Id == id &&
+            bool predicate(WareHouseMovement x) => x.Id == id/* &&
                                            x.CompanyId == int.Parse(companyId) &&
-                                           x.BranchOfficeId == int.Parse(branchId);
-
-
+                                           x.BranchOfficeId == int.Parse(branchId)*/;
             return Ok(_wareHouseMovementServices
                 .Update(predicate, wareHouseMovement));
         }

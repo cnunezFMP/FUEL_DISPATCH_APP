@@ -35,11 +35,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Road>> GetRoad(int id)
         {
-            string? companyId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            /*string? companyId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();*/
 
-            bool predicate(Road x) => x.Id == id &&
-                                      x.CompanyId == int.Parse(companyId);
+            bool predicate(Road x) => x.Id == id/* &&
+                                      x.CompanyId == int.Parse(companyId)*/;
 
             return Ok(_roadServices.Get(predicate));
         }
@@ -51,11 +51,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}"), Authorize(Roles = "CanUpdateData, AdminRequired")]
         public ActionResult<ResultPattern<Road>> UpdateRoad(int id, [FromBody] Road road)
         {
-            string? companyId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            /*string? companyId;
+            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();*/
 
-            bool predicate(Road x) => x.Id == id &&
-                                      x.CompanyId == int.Parse(companyId);
+            bool predicate(Road x) => x.Id == id/* &&
+                                      x.CompanyId == int.Parse(companyId)*/;
 
             return Ok(_roadServices.Update(predicate, road));
         }

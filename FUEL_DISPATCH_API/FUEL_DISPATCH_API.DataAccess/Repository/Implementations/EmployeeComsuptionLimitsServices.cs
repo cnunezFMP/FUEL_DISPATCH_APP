@@ -76,7 +76,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
 
         public bool DriverHasTheMethod(int driverId, int methodOfComsuptionId)
-            => _DBContext.EmployeeConsumptionLimits.Any(x => x.DriverId == driverId && (int)x.DriverMethodOfComsuptionId == methodOfComsuptionId);
+            => _DBContext.EmployeeConsumptionLimits.Any(x => x.DriverId == driverId && x.DriverMethodOfComsuptionId == methodOfComsuptionId);
 
     }
 }

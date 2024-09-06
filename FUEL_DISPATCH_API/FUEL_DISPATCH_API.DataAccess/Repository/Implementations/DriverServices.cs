@@ -54,25 +54,25 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         // DONE: Chequear esta validacion. 
         public bool IsEmailUnique(Driver driver)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            return _DBContext.Driver.Any(x => x.Email == driver.Email &&
+            return _DBContext.Driver.Any(x => x.Email == driver.Email/* &&
             x.CompanyId == int.Parse(companyId) &&
-            x.BranchOfficeId == int.Parse(branchId));
+            x.BranchOfficeId == int.Parse(branchId)*/);
         }
         // DONE: Implementar esta funcion en el controlador de Driver
         public ResultPattern<List<WareHouseMovement>> GetDriverDispatches(int driverId)
         {
-            string? companyId, branchId;
+            /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
             var driverDispatches = _DBContext.WareHouseMovement
                 .AsNoTracking()
-                .Where(x => x.CompanyId == int.Parse(companyId) &&
-                x.BranchOfficeId == int.Parse(branchId) &&
+                .Where(x => /*x.CompanyId == int.Parse(companyId) &&
+                x.BranchOfficeId == int.Parse(branchId) &&*/
                 x.DriverId == driverId)
                 .ToList();
 
