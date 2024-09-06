@@ -135,7 +135,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                 .FirstOrDefault(predicate)
                 ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
 
-            var createdBy = entityToUpdate
+            /*var createdBy = entityToUpdate
                 .GetType()
                 .GetProperty("CreatedBy");
 
@@ -157,11 +157,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                 .GetType()
                 .GetProperty("CreatedBy")?
                 .SetValue(updatedEntity, createdBy);
-
+             
             updatedEntity
                 .GetType()
                 .GetProperty("CreatedAt")?
-                .SetValue(updatedEntity, dateCreatedAt);
+                .SetValue(updatedEntity, dateCreatedAt);*/
 
             _DBContext.Entry(entityToUpdate)
                 .CurrentValues

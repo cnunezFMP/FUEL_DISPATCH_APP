@@ -81,7 +81,7 @@ public class AuthManager
                 {
                     Token = tokenCreado,
                     Success = true,
-                    ExpDate = DateTime.Now + TimeSpan.FromDays(5),
+                    ExpDate = DateTime.Now + TimeSpan.FromHours(3),
                 };
                 return tokenObj;
             }

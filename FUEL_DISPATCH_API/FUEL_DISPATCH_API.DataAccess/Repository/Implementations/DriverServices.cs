@@ -13,29 +13,30 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IEmailSender _emailSender;
+        //private readonly IEmailSender _emailSender;
 
-        public DriversServices(FUEL_DISPATCH_DBContext dBContext, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
+        public DriversServices(FUEL_DISPATCH_DBContext dBContext/*, IEmailSender emailSender*/, IHttpContextAccessor httpContextAccessor)
             : base(dBContext, httpContextAccessor)
         {
             _DBContext = dBContext;
             _httpContextAccessor = httpContextAccessor;
-            _emailSender = emailSender;
+            //_emailSender = emailSender;
         }
         public override ResultPattern<Driver> Post(Driver entity)
         {
             if (CheckIfIdIsUnique(entity))
                 throw new BadRequestException("Existe un conductor con esta identificacion. ");
 
-            if (IsEmailUnique(entity))
-                throw new BadRequestException("Existe un conductor con esta direccion de correo. ");
+            if (!string.IsNullOrEmpty(entity.Email))
+                if (IsEmailUnique(entity))
+                    throw new BadRequestException("Existe un conductor con esta direccion de correo. ");
 
             _DBContext.Driver.Add(entity);
             _DBContext.SaveChanges();
-            if (entity.Email is not null)
-                _emailSender.SendEmailAsync(entity.Email,
-                    AppConstants.ACCOUNT_CREATED_MESSAGE,
-                    "Your account was created successfully. ");
+            //if (entity.Email is not null)
+            //    _emailSender.SendEmailAsync(entity.Email,
+            //        AppConstants.ACCOUNT_CREATED_MESSAGE,
+            //        "Your account was created successfully. ");
 
             return base.Post(entity);
         }
@@ -53,15 +54,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         // DONE: Chequear esta validacion. 
         public bool IsEmailUnique(Driver driver)
-        {
-            /*string? companyId, branchId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
+            => _DBContext.Driver.Any(x => x.Email == driver.Email);
 
-            return _DBContext.Driver.Any(x => x.Email == driver.Email/* &&
-            x.CompanyId == int.Parse(companyId) &&
-            x.BranchOfficeId == int.Parse(branchId)*/);
-        }
         // DONE: Implementar esta funcion en el controlador de Driver
         public ResultPattern<List<WareHouseMovement>> GetDriverDispatches(int driverId)
         {
@@ -70,21 +64,19 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
             var driverDispatches = _DBContext.WareHouseMovement
-                .AsNoTracking()
-                .Where(x => /*x.CompanyId == int.Parse(companyId) &&
-                x.BranchOfficeId == int.Parse(branchId) &&*/
-                x.DriverId == driverId)
-                .ToList();
+                                   .AsNoTracking()
+                                   .Where(x => /*x.CompanyId == int.Parse(companyId) &&
+                                   x.BranchOfficeId == int.Parse(branchId) &&*/
+                                   x.DriverId == driverId)
+                                   .ToList();
 
-            if (!driverDispatches.Any())
-                throw new BadRequestException("This driver don't has movements registered. ");
+            if (driverDispatches.Count == 0)
+                throw new BadRequestException("Este usuario no tiene movimientos registrados. ");
 
             return ResultPattern<List<WareHouseMovement>>
-                .Success
-                (
-                    driverDispatches,
+                    .Success(driverDispatches,
                     StatusCodes.Status200OK,
-                    "Driver dispatches obtained."
+                    "Despachos del conductor obtenidos. "
                 );
         }
     }

@@ -11,18 +11,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Validators
             RuleFor(x => x.Identification)
                 .NotNull()
                 .NotEmpty()
-                .MinimumLength(13)
-                .MaximumLength(13)
-                .Must((identification, _) =>
-                    driversServices.CheckIfIdIsUnique(identification))
-                .WithMessage("Ya existe un registro con esta esta identificacion. Se ingreso {PropertyValue}. ");
+                .WithMessage("Debe ingresar su cedula. ");
 
             RuleFor(x => x.Email)
-                .EmailAddress()
-                .Must((driverEmail, _) =>
-            driversServices.IsEmailUnique(driverEmail))
-                .WithMessage("El {PropertyName} ya esta registrado. Se ingreso {PropertyValue}. ")
-              .When(x => x.Email is not null);
+                .EmailAddress();
 
             RuleFor(x => x.BirthDate)
                  .Must(date => date != DateTime.Today

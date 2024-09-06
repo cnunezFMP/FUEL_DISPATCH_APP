@@ -1,7 +1,6 @@
 using FluentValidation;
 using FMP_DISPATCH_API.Services.Emails;
 using FUEL_DISPATCH_API.Auth;
-using FUEL_DISPATCH_API.Auth.AuthRepository;
 using FUEL_DISPATCH_API.DataAccess.DTOs;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
@@ -140,7 +139,7 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IValidator<WareHouseMovementRequest>, RequestValidator>()
                 .AddScoped<IValidator<Driver>, DriverValidator>()
                 .AddScoped<IValidator<WareHouseMovement>, WareHouseMovementValidator>()
-                .AddScoped<IValidator<UserRegistrationDto>, RegisterValidator>()
+                //.AddScoped<IValidator<UserRegistrationDto>, RegisterValidator>()
                 .AddScoped<IValidator<ArticleDataMaster>, ArticlesValidator>()
                 .AddScoped<IValidator<UsersRols>, UsersRolsValidator>()
                 .AddScoped<IValidator<UsersBranchOffices>, UsersBranchOfficeValidator>()
@@ -182,8 +181,8 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IUsersAuth, UsersAuth>()
                 .AddScoped<IUserServices, UsersServices>()
                 .AddScoped<ISAPService, SAPService>()
-                .AddScoped<IReportsServices, ReportsServices>()
-                .AddTransient<IEmailSender, EmailSender>();
+                .AddScoped<IReportsServices, ReportsServices>();
+                //.AddTransient<IEmailSender, EmailSender>();
 #endregion
 // Ignore cycles in the object that is actually serializing.
 builder.Services

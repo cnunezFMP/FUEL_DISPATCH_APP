@@ -14,16 +14,16 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IHttpContextAccessor _httpContextAccesor;
-        private readonly IEmailSender _emailSender;
+        // private readonly IEmailSender _emailSender;
         private readonly string? _secretKey;
         public UsersAuth(IConfiguration config, FUEL_DISPATCH_DBContext DBContext,
-            IEmailSender emailSender,
+            /*IEmailSender emailSender,*/
             IHttpContextAccessor httpContextAccessor)
             : base(DBContext, httpContextAccessor)
         {
             _DBContext = DBContext;
             _httpContextAccesor = httpContextAccessor;
-            _emailSender = emailSender;
+            // _emailSender = emailSender;
             _secretKey = config.GetSection("settings:secretkey").Value; //Obtener llave y valor
         }
         public ResultPattern<User> UserRegistration(UserRegistrationDto entity)
@@ -31,7 +31,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if (IsUserNameUnique(entity))
                 throw new BadRequestException("User with this user name exist. ");
 
-            if (entity.Email is not null)
+            if (!string.IsNullOrEmpty(entity.Email))
                 if (IsEmailUnique(entity))
                     throw new BadRequestException("User with this email exist. ");
 
@@ -56,13 +56,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 CreatedBy = entity.CreatedBy,
                 UpdatedBy = entity.UpdatedBy
             };
-
             _DBContext.User.Add(newUser);
             _DBContext.SaveChanges();
-            if (entity.Email is not null)
-                _emailSender.SendEmailAsync(entity.Email,
-                    AppConstants.ACCOUNT_CREATED_MESSAGE,
-                    $"Hola {entity.FullName} tu cuenta en la app a sido creada. {DateTime.Today}");
+            //if (entity.Email is not null)
+            //    _emailSender.SendEmailAsync(entity.Email,
+            //        AppConstants.ACCOUNT_CREATED_MESSAGE,
+            //        $"Hola {entity.FullName} tu cuenta en la app a sido creada. {DateTime.Today}");
 
             return ResultPattern<User>.Success(newUser,
                 StatusCodes.Status200OK,
@@ -78,9 +77,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool IsUserNameUnique(UserRegistrationDto user)
         {
-            string? companyId;
+            //string? companyId;
 
-            companyId = _httpContextAccesor.HttpContext?.Items["CompanyId"]?.ToString();
+            //companyId = _httpContextAccesor.HttpContext?.Items["CompanyId"]?.ToString();
 
 
             return _DBContext.User.Any(x => x.Username == user.Username /*&&
