@@ -42,15 +42,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool CheckIfIdIsUnique(Driver entity)
         {
-            string? companyId, branchId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
+            //string? companyId, branchId;
+            //companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+            //branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
 
             return _DBContext
                 .Driver
-                .Any(x => x.Identification == entity.Identification &&
+                .Any(x => x.Identification == entity.Identification /*&&
                 x.CompanyId == int.Parse(companyId) &&
-                x.BranchOfficeId == int.Parse(branchId));
+                x.BranchOfficeId == int.Parse(branchId)*/);
         }
         // DONE: Chequear esta validacion. 
         public bool IsEmailUnique(Driver driver)
