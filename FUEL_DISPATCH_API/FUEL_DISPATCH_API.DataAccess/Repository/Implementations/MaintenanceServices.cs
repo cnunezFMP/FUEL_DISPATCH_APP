@@ -141,7 +141,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             var vehicle = _DBContext
                 .Vehicle
-                .FirstOrDefault(/*x => x.CompanyId == int.Parse(companyId) &&
+                .FirstOrDefault(x => /*x.CompanyId == int.Parse(companyId) &&
                 x.BranchOfficeId == int.Parse(branchId) &&*/
                 x.Id == maintenance.VehicleId) ??
                 throw new NotFoundException("Vehiculo especificado no encontrado. ");
