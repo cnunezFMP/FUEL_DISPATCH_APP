@@ -37,10 +37,10 @@ namespace FUEL_DISPATCH_API.Controllers
                                       x.CompanyId == int.Parse(companyId);
             return Ok(_partServices.Get(predicate));
         }
-        [HttpPost, Authorize(Roles = "CanCreate, Administrador")]
+        [HttpPost, Authorize/*(Roles = "CanCreate, Administrador")*/]
         public ActionResult<ResultPattern<Part>> PostPart([FromBody] Part part)
            => Created(string.Empty, _partServices.Post(part));
-        [HttpPut("{id:int}"), Authorize(Roles = "CanUpdateData, Administrador")]
+        [HttpPut("{id:int}"), Authorize/*(Roles = "CanUpdateData, Administrador")*/]
         public ActionResult<ResultPattern<Part>> UpdatePart(int id, [FromBody] Part part)
         {
             string? companyId;

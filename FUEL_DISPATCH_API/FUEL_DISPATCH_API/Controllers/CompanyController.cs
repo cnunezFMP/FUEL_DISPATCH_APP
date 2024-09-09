@@ -42,7 +42,7 @@ namespace FUEL_DISPATCH_API.Controllers
             => Created(string.Empty, _companiesServices.Post(company));
 
 
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
+        [HttpPut("{id:int}"), Authorize/*(Roles = "Administrador")*/]
         public ActionResult<ResultPattern<Companies>> UpdateCompanie(int id, [FromBody] Companies company)
             => Ok(_companiesServices.Update(x => x.Id == id, company));
         

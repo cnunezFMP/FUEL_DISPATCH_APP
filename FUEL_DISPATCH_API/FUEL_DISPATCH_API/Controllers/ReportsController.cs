@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Web.Http.Filters;
 namespace FUEL_DISPATCH_API.Controllers
 {
-    [ApiController, Route("api/[controller]"), Authorize(Roles = "CanGenerateReport, Administrador")]
+    [ApiController, Route("api/[controller]"), Authorize/*(Roles = "CanGenerateReport, Administrador")*/]
     public class ReportsController : ControllerBase
     {
         private readonly IReportsServices _reportService;

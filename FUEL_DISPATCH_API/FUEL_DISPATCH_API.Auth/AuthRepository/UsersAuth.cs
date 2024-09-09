@@ -3,7 +3,6 @@ using FUEL_DISPATCH_API.Auth;
 using FUEL_DISPATCH_API.DataAccess.DTOs;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
-using FUEL_DISPATCH_API.Utils.Constants;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
@@ -67,6 +66,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 StatusCodes.Status200OK,
                 "Usuario registrado correctamente. ");
         }
+        public override ResultPattern<User> Update(Func<User, bool> predicate, User updatedEntity)
+        {
+            PasswordHashing(updatedEntity.Password!);
+            return base.Update(predicate, updatedEntity);
+        }
         public ResultPattern<object> Login(LoginDto loginDto)
         {
             var authManager = new AuthManager(_DBContext, _secretKey!);
@@ -88,7 +92,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
         public bool IsEmailUnique(UserRegistrationDto user)
             => _DBContext.User.Any(x => x.Email == user.Email);
-        string PasswordHashing(string password)
+        static string PasswordHashing(string password)
             => BCrypt.Net.BCrypt.HashPassword(password, 13);
         public bool DriverIdHasValue(UserRegistrationDto user)
         {

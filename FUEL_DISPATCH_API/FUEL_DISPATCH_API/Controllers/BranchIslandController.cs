@@ -45,11 +45,11 @@ namespace FUEL_DISPATCH_API.Controllers
 
             return Ok(_branchIslandServices.Get(predicate));
         }
-        [HttpPost, Authorize(Roles = "CanCreate, Administrador")]
+        [HttpPost, Authorize/*(Roles = "CanCreate, Administrador")*/]
         public ActionResult<ResultPattern<BranchIsland>> PostBranchIsland([FromBody] BranchIsland branchIsland)
             => Created(string.Empty, _branchIslandServices.Post(branchIsland));
 
-        [HttpPut("{id:int}"), Authorize(Roles = "CanUpdateData, Administrador")]
+        [HttpPut("{id:int}"), Authorize/*(Roles = "CanUpdateData, Administrador")*/]
         public ActionResult<ResultPattern<User>> UpdateBranchIsland(int id, [FromBody] BranchIsland branchIsland)
         {
             /*string? companyId, branchId;

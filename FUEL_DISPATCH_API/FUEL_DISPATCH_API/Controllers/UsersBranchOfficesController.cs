@@ -24,7 +24,7 @@ namespace FUEL_DISPATCH_API.Controllers
         public ActionResult<ResultPattern<Paging<UsersBranchOffices>>> GetUsersBranchOfficess([FromQuery] GridifyQuery query)
             => Ok(_usersBranchOfficesServices.GetAll(query));
         
-        [HttpDelete("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize(Roles = "Administrador")]
+        [HttpDelete("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize/*(Roles = "Administrador")*/]
         public ActionResult<ResultPattern<UsersBranchOffices>> DeleteUserBranchOffice(int userId)
         {
             /*string? companyId, branchId;
@@ -46,7 +46,7 @@ namespace FUEL_DISPATCH_API.Controllers
             => Created(string.Empty, _usersBranchOfficesServices.Post(usersBranchOffice));
         
         // DONE: Luego de resolver los problemas aqui, aplicarlo en los demas servicios. 
-        [HttpPut("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize(Roles = "Administrador")]
+        [HttpPut("{userId:int}/BranchOffice/{branchOfficeId:int}"), Authorize/*(Roles = "Administrador")*/]
         public ActionResult<ResultPattern<UsersBranchOffices>> UpdateUserCompany(int userId,
             UsersBranchOffices usersBranchOffices)
         {

@@ -44,12 +44,12 @@ namespace FUEL_DISPATCH_API.Controllers
                                                x.CompanyId == int.Parse(companyId)*/;
             return Ok(_branchOfficeServices.Get(predicate));
         }
-        [HttpPost, Authorize(Roles = "CanCreate, Administrador")]
+        [HttpPost, Authorize/*(Roles = "CanCreate, Administrador")*/]
         public ActionResult<ResultPattern<BranchOffices>> PostBranchOffice([FromBody] BranchOffices branchOffice)
             => Created(string.Empty, _branchOfficeServices.Post(branchOffice));
         // DONE: Fix this, currently throws exception 'InvalidOperationException: No route matches the supplied values.'
 
-        [HttpPut("{id:int}"), Authorize(Roles = "CanUpdateData, Administrador")]
+        [HttpPut("{id:int}"), Authorize/*(Roles = "CanUpdateData, Administrador")*/]
         public ActionResult<ResultPattern<BranchOffices>> UpdateBranchOffice(int id, [FromBody] BranchOffices branchOffice)
         {
             /*string? companyId;

@@ -103,7 +103,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
 
             var entities = _DBContext.Set<T>()
                 .AsNoTrackingWithIdentityResolution()
-                .ApplyFilteringAndOrdering(query);
+                .ApplyFilteringOrderingPaging(query);
 
             var responseEntities = new Paging<T>
             {

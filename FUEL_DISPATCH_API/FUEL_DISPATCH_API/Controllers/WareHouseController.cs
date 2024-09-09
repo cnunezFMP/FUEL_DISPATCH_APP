@@ -34,11 +34,11 @@ namespace FUEL_DISPATCH_API.Controllers
                                            x.BranchOfficeId == int.Parse(branchId)*/;
             return Ok(_wareHouseServices.Get(predicate));
         }
-        [HttpPost, Authorize(Roles = "CanCreate, Administrador")]
+        [HttpPost, Authorize/*(Roles = "CanCreate, Administrador")*/]
         public ActionResult<ResultPattern<WareHouse>> PostWareHouse([FromBody] WareHouse warehouse)
             => Created(string.Empty, _wareHouseServices.Post(warehouse));
         
-        [HttpPut("{id:int}"), Authorize(Roles = "Administrador")]
+        [HttpPut("{id:int}"), Authorize/*(Roles = "Administrador")*/]
         public ActionResult<ResultPattern<WareHouse>> UpdateStore(int id, [FromBody] WareHouse warehouse)
         {
             /*string? companyId, branchId;

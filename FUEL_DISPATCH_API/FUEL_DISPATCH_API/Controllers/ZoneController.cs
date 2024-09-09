@@ -37,11 +37,11 @@ namespace FUEL_DISPATCH_API.Controllers
 
             return Ok(_zoneServices.Get(predicate));
         }
-        [HttpPost, Authorize(Roles = "CanCreate, Administrador")]
+        [HttpPost, Authorize/*(Roles = "CanCreate, Administrador")*/]
         public ActionResult<ResultPattern<Zone>> PostZone([FromBody] Zone zone)
             => Created(string.Empty, _zoneServices.Post(zone));
 
-        [HttpPut("{id:int}"), Authorize(Roles = "CanUpdateData, Administrador")]
+        [HttpPut("{id:int}"), Authorize/*(Roles = "CanUpdateData, Administrador")*/]
         public ActionResult<ResultPattern<Zone>> UpdateZone(int id, [FromBody] Zone zone)
         {
             /*string? companyId;

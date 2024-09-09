@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace FUEL_DISPATCH_API.Controllers
 {
-    [ApiController, Route("api/[controller]"), Authorize(Roles = "Administrador")]
+    [ApiController, Route("api/[controller]"), Authorize/*(Roles = "Administrador")*/]
     public class EmployeeConsumptionLimitsController : ControllerBase
     {
         private readonly IEmployeeComsuptionLimitsServices _employeeComsuptionLimitsServices;
@@ -51,12 +51,12 @@ namespace FUEL_DISPATCH_API.Controllers
         /// </remarks>
         /// <param name="employeeConsumption"></param>
         /// <returns></returns>
-        [HttpPost, Authorize("Administrador, CanManageUsers")]
+        [HttpPost, Authorize/*("Administrador, CanManageUsers")*/]
         public ActionResult<ResultPattern<EmployeeConsumptionLimits>> SetEmployeLimitAndMethod([FromBody] EmployeeConsumptionLimits employeeConsumption)
             => Ok(_employeeComsuptionLimitsServices.Post(employeeConsumption));
         
 
-        [HttpPut("{driverId:int}/DriverMethodOfComsuption/{methodId:int}"), Authorize(Roles = "Administrador, CanManageUsers")]
+        [HttpPut("{driverId:int}/DriverMethodOfComsuption/{methodId:int}"), Authorize/*(Roles = "Administrador, CanManageUsers")*/]
         public ActionResult<ResultPattern<EmployeeConsumptionLimits>> UpdateUserMethod(int driverId, int methodId, EmployeeConsumptionLimits employeeConsumptionLimit)
         {
             // DONE: Ver si necesito validar la compañia y la sucursal. Y ver como hacerlo.

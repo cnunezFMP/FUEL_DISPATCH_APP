@@ -46,10 +46,10 @@ namespace FUEL_DISPATCH_API.Controllers
         /// <response code="400">Si se intenta agregar un articulo con el codigo de una ya existente. </response>
         /// <response code="400">Si se envia el numero de articulo nulo. </response>
         /// <returns></returns>
-        [HttpPost, Authorize(Roles = "CanCreate, Administrador")]
+        [HttpPost, Authorize/*(Roles = "CanCreate, Administrador")*/]
         public ActionResult<ResultPattern<ArticleDataMaster>> PostArticle([FromBody] ArticleDataMaster article)
             => Created(string.Empty, _articleServices.Post(article));
-        [HttpPut("{id:int}"), Authorize(Roles = "CanUpdateData, Administrador")]
+        [HttpPut("{id:int}"), Authorize/*(Roles = "CanUpdateData, Administrador")*/]
         public ActionResult<ResultPattern<Part>> UpdateArticle(int id, [FromBody] ArticleDataMaster article)
         {
 

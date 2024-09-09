@@ -20,7 +20,7 @@ namespace FUEL_DISPATCH_API.Controllers
             _allComsuptionServices = allComsuptionServices;
         }
 
-        [HttpGet, Authorize(Roles = "CanReadData, CanGenerateReport, Administrador")]
+        [HttpGet, Authorize/*(Roles = "CanReadData, CanGenerateReport, Administrador")*/]
         public ActionResult<ResultPattern<Paging<AllComsuption>>> GetAllComsuption([FromQuery] GridifyQuery query)
             => Ok(_allComsuptionServices.GetAll(query));
 

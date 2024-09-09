@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FUEL_DISPATCH_API.Controllers
 {
-    [Route("api/[controller]"), ApiController, Authorize("AdminRequired")]
+    [Route("api/[controller]"), ApiController, Authorize/*("AdminRequired")*/]
     public class RoleController : ControllerBase
     {
         private readonly IRoleServices _roleServices;

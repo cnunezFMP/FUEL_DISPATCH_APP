@@ -291,7 +291,9 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasForeignKey(f => f.ItemId);
 
             entity.Navigation(x => x.Vehicle).AutoInclude();
+            entity.Navigation(x => x.Driver).AutoInclude();
             entity.Navigation(x => x.Dispenser).AutoInclude();
+            entity.Navigation(x => x.ArticleDataMaster).AutoInclude();
             entity.Navigation(x => x.WareHouse).AutoInclude();
             entity.Navigation(x => x.ArticleDataMaster).AutoInclude();
         });
