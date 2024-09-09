@@ -6,7 +6,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
 {
     public partial class WareHouseMovement
     {
-        public int? Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
         public int? VehicleId { get; set; }
         public int? RoadId { get; set; }
         [Required] public string? Dispatcher { get; set; }

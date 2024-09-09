@@ -1,6 +1,7 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Models.SAP;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
+using FUEL_DISPATCH_API.Utils;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using Microsoft.AspNetCore.Http;
 using RestSharp;
@@ -104,6 +105,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
                 });
 
             var response = await _restClient!.ExecuteAsync(request);
+
+            LoggerClass.LogInfo(JsonSerializer.Serialize(response));
 
             if (!response.IsSuccessful)
             {

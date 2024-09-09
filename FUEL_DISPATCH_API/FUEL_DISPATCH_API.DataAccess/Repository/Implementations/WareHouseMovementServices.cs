@@ -58,8 +58,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if (!CheckDispenser(wareHouseMovement))
                 throw new BadRequestException("El dispensador no esta activo. ");
             // DONE: Terminar de probar esta validacion. (Simplemente no era el id del item que estaba. )
-            if (!CheckIfProductIsInTheWareHouse(wareHouseMovement))
-                throw new BadRequestException("El articulo indicado no se encuentra en el almacen. ");
+            /*if (!CheckIfProductIsInTheWareHouse(wareHouseMovement))
+                throw new BadRequestException("El articulo indicado no se encuentra en el almacen. ");*/
 
             UpdateVehicleOdometer(wareHouseMovement);
             PostSAP(wareHouseMovement)
@@ -75,7 +75,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         #region Logic
         public bool SetDriverIdByVehicle(WareHouseMovement wareHouseMovement)
         {
-            string? companyId,
+            /*string? companyId,
                     branchOfficeId;
 
             companyId = _httpContextAccessor
@@ -86,12 +86,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             branchOfficeId = _httpContextAccessor
                 .HttpContext?
                 .Items["BranchOfficeId"]?
-                .ToString();
+                .ToString();*/
 
             var vehicleDriver = _DBContext.Vehicle
-                .FirstOrDefault(x => x.Id == wareHouseMovement.VehicleId &&
+                .FirstOrDefault(x => x.Id == wareHouseMovement.VehicleId /*&&
                 x.CompanyId == int.Parse(companyId) &&
-                x.BranchOfficeId == int.Parse(branchOfficeId)) ??
+                x.BranchOfficeId == int.Parse(branchOfficeId)*/) ??
                 throw new NotFoundException("El vehiculo indicado no se a encontrado. ");
 
             if (vehicleDriver?.DriverId is not null)

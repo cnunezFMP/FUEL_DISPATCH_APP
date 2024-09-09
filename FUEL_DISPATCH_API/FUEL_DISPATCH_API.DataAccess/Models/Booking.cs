@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 namespace FUEL_DISPATCH_API.DataAccess.Models
 {
     public class Booking
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
         [Required] public int? VehicleId { get; set; }
         [Required] public int? DriverId { get; set; }
         public int? CompanyId { get; set; }
