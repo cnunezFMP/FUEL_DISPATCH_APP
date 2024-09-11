@@ -43,14 +43,8 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPut("{id:int}"), Authorize/*(Roles = "CanUpdateData, Administrador")*/]
         public ActionResult<ResultPattern<Part>> UpdatePart(int id, [FromBody] Part part)
         {
-            string? companyId;
-            companyId = _httpContextAccessor
-                .HttpContext?
-                .Items["CompanyId"]?
-                .ToString();
-
-            bool predicate(Part x) => x.Id == id &&
-                                      x.CompanyId == int.Parse(companyId);
+            bool predicate(Part x) => x.Id == id /* &&
+                                      x.CompanyId == int.Parse(companyId)*/;
 
             return Ok(_partServices.Update(predicate, part));
         }

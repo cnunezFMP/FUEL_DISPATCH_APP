@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using FUEL_DISPATCH_API.Utils.Exceptions;
-using System.ComponentModel.Design;
 namespace FUEL_DISPATCH_API.Auth;
 public class AuthManager
 {
@@ -26,8 +25,7 @@ public class AuthManager
             .SingleOrDefault(x => x.Username == username);
         if (credenciales != null && BCrypt.Net.BCrypt.Verify(password, credenciales.Password))
         {
-
-            var companyId = _dbContext.User
+            /*var companyId = _dbContext.User
                            .Where(uc => uc.Id == credenciales.Id)
                            .Select(uc => uc.CompanyId)
                            .FirstOrDefault();
@@ -35,25 +33,23 @@ public class AuthManager
             var branchId = _dbContext.UsersBranchOffices
                            .Where(uc => uc.UserId == credenciales.Id)
                            .Select(uc => uc.BranchOfficeId)
-                           .FirstOrDefault();
-
+                           .FirstOrDefault();*/
             var userFullName = credenciales.FullName;
 
             // DONE: Revisar esto. 
             var keyBytes = Encoding.UTF8.GetBytes(_secretKey);
             var claims = new ClaimsIdentity();
             claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, usuario.Username!));
-            if (companyId is not 0)
-                claims.AddClaim(new Claim("CompanyId", companyId.ToString()));
+            //if (c ompanyId is not 0)
+            //    claims.AddClaim(new Claim("CompanyId", companyId.ToString()));
 
-            if (branchId is not 0)
-                claims.AddClaim(new Claim("BranchOfficeId", branchId.ToString()));
+            //if (branchId is not 0)
+            //    claims.AddClaim(new Claim("BranchOfficeId", branchId.ToString()));
 
             claims.AddClaim(new Claim("FullName", userFullName!));
 
             if (credenciales.Email is not null)
                 claims.AddClaim(new Claim(ClaimTypes.Email, credenciales.Email));
-
 
             foreach (var role in credenciales.Rols!)
                 claims.AddClaim(new Claim(ClaimTypes.Role, role.RolName!));
@@ -76,7 +72,6 @@ public class AuthManager
                     ExpData = tokenDescriptor.Expires
                 });
                 _dbContext.SaveChanges();
-
                 var tokenObj = new
                 {
                     Token = tokenCreado,

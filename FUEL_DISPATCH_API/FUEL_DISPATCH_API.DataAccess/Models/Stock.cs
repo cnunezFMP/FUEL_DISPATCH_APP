@@ -5,7 +5,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
 {
     public class Stock
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
         [Required] public int? WareHouseId { get; set; }
         [Required] public string? ItemCode { get; set; }
         [Required] public int? ItemId { get; set; }

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 public partial class Dispenser
 {
-    public int? Id { get; set; }
+    public int Id { get; set; }
     [Required] public string? Code { get; set; }
     public ActiveInactiveStatussesEnum? Status { get; set; } = ActiveInactiveStatussesEnum.Active;
     public int? BranchIslandId { get; set; }

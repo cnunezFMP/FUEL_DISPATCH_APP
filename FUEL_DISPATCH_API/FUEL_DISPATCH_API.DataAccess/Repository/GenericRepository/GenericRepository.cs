@@ -107,7 +107,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
             var totalItems = _DBContext.Set<T>()
                 .AsNoTrackingWithIdentityResolution()
                 .ToList();
-                
+
             var responseEntities = new Paging<T>
             {
                 Data = entities,
@@ -129,7 +129,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                 AppConstants.DATA_SAVED_MESSAGE);
         }
         // UNDONE: Buscar alguna forma de que no se actualicen las propiedades que no envio en los PUT.
-        public virtual ResultPattern<T> Update(Func<T, bool> predicate, 
+        public virtual ResultPattern<T> Update(Func<T, bool> predicate,
             T updatedEntity)
         {
             // UNDONE: Buscar el objeto por compañia y sucursal. 
@@ -138,7 +138,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository
                 .AsTracking()
                 .FirstOrDefault(predicate)
                 ?? throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
-
             /*var createdBy = entityToUpdate
                 .GetType()
                 .GetProperty("CreatedBy");

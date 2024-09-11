@@ -31,8 +31,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 if (IsEmailUnique(entity))
                     throw new BadRequestException("Existe un conductor con esta direccion de correo. ");
 
-            _DBContext.Driver.Add(entity);
-            _DBContext.SaveChanges();
+            //_DBContext.Driver.Add(entity);
+            //_DBContext.SaveChanges();
             //if (entity.Email is not null)
             //    _emailSender.SendEmailAsync(entity.Email,
             //        AppConstants.ACCOUNT_CREATED_MESSAGE,

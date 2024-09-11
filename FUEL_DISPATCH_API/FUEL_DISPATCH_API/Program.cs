@@ -1,7 +1,6 @@
 using FluentValidation;
-using FMP_DISPATCH_API.Services.Emails;
+using FUEL_DISPATCH_API.Attributes;
 using FUEL_DISPATCH_API.Auth;
-using FUEL_DISPATCH_API.DataAccess.DTOs;
 using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
@@ -10,6 +9,7 @@ using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Middlewares;
 using FUEL_DISPATCH_API.Swagger;
 using FUEL_DISPATCH_API.Swagger.SwaggerExamples;
+using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +26,10 @@ const string corsName = "MyPolicy";
 builder.Services.AddExceptionHandler<GlobalExceptionHandlerMiddleware>();
 builder.Services.AddProblemDetails();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddControllers()
+builder.Services.AddControllers(config =>
+{
+    config.Filters.Add<ValidationFilterAttribute>();
+})
     .AddJsonOptions
     (opt =>
     {
@@ -37,18 +40,7 @@ builder.Services.AddSwaggerExamplesFromAssemblyOf<UserSwaggerExample>()
                 .AddSwaggerExamplesFromAssemblyOf<ArticleSwaggerExample>();
 
 
-//builder.Services.AddAuthorization((x) =>
-//{
-//    x.AddPolicy("AdminRequired", (x) => x.RequireRole("Administrador"));
-//    x.AddPolicy("Reporter", (x) => x.RequireClaim("CanGenerateReport"));
-//    x.AddPolicy("RegisterData", (x) => x.RequireClaim("CanCreate"));
-//    x.AddPolicy("Dispatcher", (x) => x.RequireClaim("CanGenerateDispatch"));
-//    x.AddPolicy("Reader", (x) => x.RequireClaim("CanReadData"));
-//    x.AddPolicy("Updater", (x) => x.RequireClaim("CanUpdateData"));
-//    x.AddPolicy("UsersManagement", (x) => x.RequireClaim("CanManageUsers"));
-//    x.AddPolicy("VehicleManagement", (x) => x.RequireClaim("CanManageVehicles"));
-//    x.AddPolicy("MaitenanceManagement", (x) => x.RequireClaim("ManageMaitenAance"));
-//});
+builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 
 builder.Services.AddSwaggerGen(
     info =>
@@ -103,18 +95,9 @@ builder.Services.AddAuthentication(config =>
         {
             OnChallenge = async context =>
             {
-                // Call this to skip the default logic and avoid using the default response
-                context.HandleResponse();
-                // Write to the response in any way you wishS
-                // DONE: Ver si puedo enviar un JSON como respuesta.
-                var unauthorizedObj = new
-                {
-                    Title = "Usuario no autenticado. ",
-                    Description = "Por favor, logeate para obtener acceso. ",
-                    Status = StatusCodes.Status401Unauthorized,
-                };
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsJsonAsync(unauthorizedObj);
+                await context.Response.WriteAsJsonAsync(ResultPattern<object>.Failure(StatusCodes.Status401Unauthorized,
+                    "Usuario no autenticado. "));
             }
         };
         config.RequireHttpsMetadata = false;
@@ -182,7 +165,7 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IUserServices, UsersServices>()
                 .AddScoped<ISAPService, SAPService>()
                 .AddScoped<IReportsServices, ReportsServices>();
-                //.AddTransient<IEmailSender, EmailSender>();
+//.AddTransient<IEmailSender, EmailSender>();
 #endregion
 // Ignore cycles in the object that is actually serializing.
 builder.Services
@@ -201,7 +184,6 @@ builder.Services.AddCors((options) =>
          .AllowAnyHeader();
     });
 });
-AppOptions.ReportsApiBaseUrl = builder.Configuration.GetSection("reportsApiBaseUrl").ToString();
 var app = builder.Build();
 app.UseExceptionHandler();
 # region AuthMiddlewareInLine

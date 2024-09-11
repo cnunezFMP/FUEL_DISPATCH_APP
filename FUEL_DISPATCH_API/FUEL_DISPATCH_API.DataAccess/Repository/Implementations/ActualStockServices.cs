@@ -25,9 +25,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             this.sAPService = sAPService;
         }
         public override ResultPattern<vw_ActualStock> Get(Func<vw_ActualStock, bool> predicate)
-        {
-            return base.Get(predicate);
-        }
+            => base.Get(predicate);
+        
 
         public override ResultPattern<Paging<vw_ActualStock>> GetAll(GridifyQuery query)
         {
@@ -64,7 +63,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                     ArticleDescription = item.Items?.ItemName,
                     StockQty = item.StockInfo?.InStock ?? 0,
                     WareHouseCode = warehouse.Code,
-                    WareHouseId = warehouse.Id!.Value,
+                    WareHouseId = warehouse.Id!,
                     WareHouseName = warehouse.Name,
                     BranchOfficeId = warehouse.BranchOfficeId ?? 0,
                     BranchOfficeName = warehouse.BranchOffice?.Name,

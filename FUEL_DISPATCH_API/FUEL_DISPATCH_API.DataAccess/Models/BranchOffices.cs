@@ -18,7 +18,7 @@ public partial class BranchOffices
     [Required] public string? Email { get; set; }
     public string? Email2 { get; set; }
     [Required] public string? FullLocation { get; set; }
-    public int? Id { get; set; }
+    public int Id { get; set; }
     [Required] public string? Name { get; set; }
     [Phone, Required] public string? Phone { get; set; }
     [Phone] public string? Phone2 { get; set; }

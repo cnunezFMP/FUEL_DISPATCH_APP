@@ -6,7 +6,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
     // DONE: Poner CompanyId
     public class ArticleDataMaster
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
         [Required] public string? ArticleNumber { get; set; } // Code
         public string? Description { get; set; }
         [Required] public decimal? UnitPrice { get; set; }
@@ -17,8 +17,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public DateTime? CreatedAt { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        [JsonIgnore] public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
-        [JsonIgnore] public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
+        [JsonIgnore] public virtual ICollection<Stock> Stocks { get; set; } = [];
+        [JsonIgnore] public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = [];
         [JsonIgnore] public virtual Companies? Company { get; set; }
     }
 }

@@ -5,7 +5,8 @@ using System.Text.Json.Serialization;
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 public partial class Driver
 {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
+    //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public string? Email { get; set; }
     [Required] public string? FullName { get; set; }

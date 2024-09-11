@@ -15,9 +15,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ISAPService sapService;
-
-        public WareHouseMovementServices(FUEL_DISPATCH_DBContext dbContext,
-            IHttpContextAccessor httpContextAccessor, ISAPService sapService)
+        public WareHouseMovementServices(
+            FUEL_DISPATCH_DBContext dbContext,
+            IHttpContextAccessor httpContextAccessor, 
+            ISAPService sapService)
             : base(dbContext, httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -91,7 +92,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             var vehicleDriver = _DBContext.Vehicle
                 .FirstOrDefault(x => x.Id == wareHouseMovement.VehicleId /*&&
                 x.CompanyId == int.Parse(companyId) &&
-                x.BranchOfficeId == int.Parse(branchOfficeId)*/) ??
+                x.BranchOfficeId == int.Parse(bran  chOfficeId)*/) ??
                 throw new NotFoundException("El vehiculo indicado no se a encontrado. ");
 
             if (vehicleDriver?.DriverId is not null)
@@ -116,7 +117,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 x.BranchOfficeId == int.Parse(branchOfficeId)*/) ??
                 throw new NotFoundException("No se encontro el vehiculo para el despacho. ");
 
-                return wareHouseMovement.Odometer > vehicleForDispatch!.Odometer;
+            return wareHouseMovement.Odometer > vehicleForDispatch!.Odometer;
         }
         // DONE: Corregir las funciones "CheckVehicle", "CheckDriver".
         public bool CheckVehicle(WareHouseMovement wareHouseMovement)
@@ -169,9 +170,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool CheckDispenser(WareHouseMovement wareHouseMovement)
         {
-           /* string? companyId, branchId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
+            /* string? companyId, branchId;
+             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
 
             var dispenser = _DBContext.Dispenser
@@ -209,12 +210,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             x.ItemId == wareHouseMovement!.ItemId);
         public bool CheckIfWareHousesHasActiveStatus(WareHouseMovement wareHouseMovement)
         {
-           /* string? companyId, branchId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
+            /* string? companyId, branchId;
+             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
             var wareHouse = _DBContext.WareHouse
                             .AsNoTrackingWithIdentityResolution()
-                            .FirstOrDefault(x=>x.Id == wareHouseMovement.WareHouseId)
+                            .FirstOrDefault(x => x.Id == wareHouseMovement.WareHouseId)
                             ?? throw new NotFoundException("No warehouse found. ");
 
 
@@ -345,9 +346,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         // DONE: Hacer un movimiento con la solicitud que agregue.
         public bool SetRequestForMovement(WareHouseMovement wareHouseMovement)
         {
-           /* string? companyId, branchOfficeId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
+            /* string? companyId, branchOfficeId;
+             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
+             branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
             // DONE: Test this:
             var requestForMovement = _DBContext
                                       .WareHouseMovementRequest

@@ -7,7 +7,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models;
 /// </summary>
 public partial class Companies
 {
-    public int? Id { get; set; }
+    public int Id { get; set; }
 
     [Required] public string? Name { get; set; }
 

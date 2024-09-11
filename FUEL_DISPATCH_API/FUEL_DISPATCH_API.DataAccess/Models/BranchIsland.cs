@@ -6,7 +6,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
 {
     public class BranchIsland
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
         [Required] public string? Code { get; set; }
         public int? BranchOfficeId { get; set; }
         public int? CompanyId { get; set; }

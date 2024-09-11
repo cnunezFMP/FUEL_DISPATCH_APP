@@ -89,7 +89,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             return _DBContext.User.Any(x => x.Username == user.Username /*&&
             x.CompanyId == int.Parse(companyId)*/);
         }
-
         public bool IsEmailUnique(UserRegistrationDto user)
             => _DBContext.User.Any(x => x.Email == user.Email);
         static string PasswordHashing(string password)

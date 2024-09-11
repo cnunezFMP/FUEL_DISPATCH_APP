@@ -4,13 +4,12 @@ using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using RestSharp.Serializers.Json;
-using System.ComponentModel.Design;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 namespace FUEL_DISPATCH_API.DataAccess.Services
 {
     public interface ISAPService
@@ -60,10 +59,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
                 return response.Data!;
             }
 
-            var errorResponse = response.ErrorMessage
+            var errorResponse = response.Content
                 ?? throw new BadRequestException("Invalid Response");
 
-            throw new BadRequestException(errorResponse ?? "Invalid Response");
+                JObject obj = JObject.Parse(errorResponse);
+
+                string value = obj["error"]?["message"]?["value"]?.ToString();
+
+
+                throw new BadRequestException(value);
         }
         public async Task PostGenExit(WareHouseMovement whsMovement)
         {
@@ -110,10 +114,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
 
             if (!response.IsSuccessful)
             {
-                var errorResponse = response.ErrorMessage
-                 ?? throw new BadRequestException("Invalid Response");
+                var errorResponse = response.Content
+                ?? throw new BadRequestException("Invalid Response");
 
-                throw new BadRequestException(errorResponse ?? "Invalid Response");
+                JObject obj = JObject.Parse(errorResponse);
+
+                string value = obj["error"]?["message"]?["value"]?.ToString();
+
+
+                throw new BadRequestException(value);
             }
         }
         public async Task<dynamic> GetWarehouseSAP(string id)
@@ -138,10 +147,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
 
             if (!response.IsSuccessful)
             {
-                var errorResponse = response.ErrorMessage
+                var errorResponse = response.Content
                 ?? throw new BadRequestException("Invalid Response");
 
-                throw new BadRequestException(errorResponse ?? "Invalid Response");
+                JObject obj = JObject.Parse(errorResponse);
+
+                string value = obj["error"]?["message"]?["value"]?.ToString();
+
+
+                throw new BadRequestException(value);
             }
 
             return response.Content;
@@ -170,10 +184,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
 
             if (!response.IsSuccessful)
             {
-                var errorResponse = response.ErrorMessage
+                var errorResponse = response.Content
                 ?? throw new BadRequestException("Invalid Response");
 
-                throw new BadRequestException(errorResponse ?? "Invalid Response");
+                JObject obj = JObject.Parse(errorResponse);
+
+                string value = obj["error"]?["message"]?["value"]?.ToString();
+
+
+                throw new BadRequestException(value);
             }
 
             return response.Content;
@@ -216,10 +235,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
 
             if (!response.IsSuccessful)
             {
-                var errorResponse = response.ErrorMessage
+                var errorResponse = response.Content
                 ?? throw new BadRequestException("Invalid Response");
 
-                throw new BadRequestException(errorResponse ?? "Invalid Response");
+                JObject obj = JObject.Parse(errorResponse);
+
+                string value = obj["error"]?["message"]?["value"]?.ToString();
+
+
+                throw new BadRequestException(value);
             }
 
             return response.Data;

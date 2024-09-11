@@ -2,7 +2,7 @@
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 public partial class OdometerMeasure
 {
-    public int? Id { get; set; }
+    public int Id { get; set; }
 
     public string? Measurename { get; set; }
 

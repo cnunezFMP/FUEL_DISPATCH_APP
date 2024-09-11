@@ -5,8 +5,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
 {
     public class UsersBranchOffices
     {
-        public int? BranchOfficeId { get; set; }
-        public int? CompanyId { get; set; }
+        public int BranchOfficeId { get; set; }
+        public int CompanyId { get; set; }
         [Required] public int UserId { get; set; }
         public DateTime? CreatedAt { get; set; }
         public string? CreatedBy { get; set; }

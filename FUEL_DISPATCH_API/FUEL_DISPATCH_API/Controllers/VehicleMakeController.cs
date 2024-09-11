@@ -4,7 +4,6 @@ using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 namespace FUEL_DISPATCH_API.Controllers
 {
     [Route("api/[controller]")]
@@ -23,8 +22,5 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize]
         public ActionResult<ResultPattern<Make>> PostMake([FromBody] Make make)
             => Created(string.Empty, _vehicleMakeServices.Post(make));
-
-        // TODO: Hacer controlador para recuperar: Las marcas, modelos, generaciones y modification engines por Id de marca. 
-
     }
 }

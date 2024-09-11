@@ -4,7 +4,6 @@ using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
-
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class DispenserServices : GenericRepository<Dispenser>, IDispenserServices

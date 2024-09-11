@@ -34,14 +34,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 throw new NotFoundException("No se encuentra el motor. ");
 
             if (FichaMustBeUnique(entity))
-                throw new BadRequestException("Existe una ficha con esta ficha asignada. ");
+                throw new BadRequestException("Existe un vehiculo con esta ficha asignada. ");
 
-            DriverIdHasValue(entity);
+            //DriverIdHasValue(entity);
 
             return base.Post(entity);
         }
-        public bool DriverIdHasValue(Vehicle entity)
-            => _DBContext.Driver.Any(x => x.Id == entity.DriverId);
+
+        /*public bool DriverIdHasValue(Vehicle entity)
+            => _DBContext.Driver.Any(x => x.Id == entity.DriverId);*/
         public bool CheckIfMakeExists(Vehicle vehicle)
            => !_DBContext.Make.Any(x => x.Id == vehicle.MakeId);
         public bool CheckIfModelExists(Vehicle vehicle)
@@ -69,24 +70,23 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
-            // TODO: Simplificar
-            var driverDispatches = (from t0 in _DBContext.WareHouseMovement
+            // DONE: Simplificar
+            var driverDispatches = _DBContext.WareHouseMovement.
                                     /*join t1 in _DBContext.BranchOffices on t0.BranchOfficeId equals int.Parse(branchId)
                                     join t2 in _DBContext.Companies on t1.CompanyId equals int.Parse(companyId)*/
-                                    where t0.VehicleId == vehicleId
-                                    select t0)
+                                    Where(t0 => t0.VehicleId == vehicleId)
                                     .ToList();
 
 
 
-            if (!driverDispatches.Any())
-                throw new BadRequestException("This vehicle has no movements or, the vehicle doesn't exist. ");
+            if (driverDispatches.Count == 0)
+                throw new BadRequestException("El vehiculo no tiene movimientos previos. ");
 
             return ResultPattern<List<WareHouseMovement>>
                 .Success(
                 driverDispatches,
                 StatusCodes.Status200OK,
-                "Vehicle obtained.");
+                "Despachos del vehiculo obtenido. ");
         }
 
     }

@@ -5,7 +5,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
 {
     public class Maintenance
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
         [Required] public int? VehicleId { get; set; }
         [Required] public int? PartId { get; set; }
         public int? CompanyId { get; set; }

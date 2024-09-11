@@ -3,7 +3,7 @@
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 public partial class Make
 {
-    public int? Id { get; set; }
+    public int Id { get; set; }
 
     public string? Name { get; set; }
 

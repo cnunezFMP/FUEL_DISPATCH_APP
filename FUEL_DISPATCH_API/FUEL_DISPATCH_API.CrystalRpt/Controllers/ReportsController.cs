@@ -1,4 +1,5 @@
-﻿using FUEL_DISPATCH_API.Reporting.Repository;
+﻿using FUEL_DISPATCH_API.CrystalRpt.Attributes;
+using FUEL_DISPATCH_API.Reporting.Repository;
 using System;
 using System.Net.Http;
 using System.Web.Http;
@@ -10,7 +11,7 @@ namespace FUEL_DISPATCH_API.Reporting.Controllers
     public class ReportsController : ApiController
     {
         [HttpGet]
-        // [ClientCacheWithEtag(60)]  //1 min client side caching
+        [ClientCacheWithEtag(60)]  //1 min client side caching
         public HttpResponseMessage DemonstrationComparativeIncomeStatement(DateTime fromDate, DateTime toDate)
         {
             HttpResponseMessage result = CrystalReport.RenderReport(fromDate, toDate);
