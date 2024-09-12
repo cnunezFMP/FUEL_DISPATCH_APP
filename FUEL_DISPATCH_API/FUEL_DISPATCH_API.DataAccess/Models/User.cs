@@ -7,10 +7,10 @@ public partial class User
     public int Id { get; set; }
 
     public string? Email { get; set; }
-    [Required] public string? FullName { get; set; } = null!;
-    [Required] public string? Username { get; set; } = null!;
+    [Required] public string FullName { get; set; } = null!;
+    [Required] public string Username { get; set; } = null!;
     [Required, JsonIgnore] public string? Password { get; set; } = null!;
-    [Required] public string? PhoneNumber { get; set; } = null!;
+    public string? PhoneNumber { get; set; } = null!;
     [Required] public DateTime? BirthDate { get; set; }
     public int? CompanyId { get; set; }
     public string? FullDirection { get; set; } = null!;

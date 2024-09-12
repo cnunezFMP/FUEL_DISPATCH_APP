@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-
 namespace FUEL_DISPATCH_API.DataAccess.Models
 {
     // DONE: Poner CompanyId

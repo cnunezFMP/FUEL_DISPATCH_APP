@@ -44,15 +44,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             return base.Post(wareHouse);
         }
         public bool WareHouseExists(WareHouse wareHouse)
-        {
-            /*string? companyId, branchId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
-
-            return !_DBContext.WareHouse.Any(x => x.Code == wareHouse.Code /*&&
-            x.CompanyId == int.Parse(companyId) &&
-            x.BranchOfficeId == int.Parse(branchId)*/);
-        }
+            => !_DBContext.WareHouse.Any(x => x.Code == wareHouse.Code);
+        
 
         /*public bool BranchOfficeExist(WareHouse wareHouse)
         {
