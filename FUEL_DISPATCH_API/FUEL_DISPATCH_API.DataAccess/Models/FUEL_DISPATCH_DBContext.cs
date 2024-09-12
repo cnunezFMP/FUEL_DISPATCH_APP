@@ -53,6 +53,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<Booking> Booking { get; set; }
     public virtual DbSet<CalculatedComsuptionReport> CalculatedComsuption { get; set; }
     public virtual DbSet<vw_ActualStock> vw_ActualStock { get; set; }
+    public virtual DbSet<VehiclesMakeModels> VehiclesMakeModels { get; set; }
     public virtual DbSet<vw_WareHouseHistory> Vw_WareHouseHistories { get; set; }
     public virtual DbSet<Companies> Companies { get; set; }
     public virtual DbSet<ComsuptionByDay> ComsuptionByDay { get; set; }
@@ -72,6 +73,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<Role> Role { get; set; }
     public virtual DbSet<Stock> Stock { get; set; }
     public virtual DbSet<WareHouse> WareHouse { get; set; }
+    public virtual DbSet<MaitenanceNotification> MaitenanceNotification { get; set; }
     public virtual DbSet<WareHouseMovement> WareHouseMovement { get; set; }
     public virtual DbSet<WareHouseMovementRequest> WareHouseMovementRequest { get; set; }
     public virtual DbSet<vw_LicenseExpDateAlert> Vw_LicenseExpDateAlertServices { get; set; }
@@ -928,6 +930,11 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
                 .HasNoKey()
                 .ToView("vw_WareHouseHistory");
         });
+        modelBuilder.Entity<VehiclesMakeModels>((entity) =>
+        {
+            entity.HasNoKey();
+            entity.ToView("VehiclesMakeModels");
+        });
         modelBuilder.Entity<Vehicle>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -986,7 +993,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(d => d.Measure).WithMany(p => p.Vehicle)
                 .HasForeignKey(d => d.OdometerMeasureId);
 
-
             entity.HasOne(d => d.ModEngine)
                 .WithMany(p => p.Vehicles)
                 .HasForeignKey(d => d.ModEngineId);
@@ -1044,6 +1050,11 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.ToTable("CompanySAPParams");
 
             entity.HasKey(x => x.CompanyId);
+        });
+        modelBuilder.Entity<MaitenanceNotification>(entity =>
+        {
+            entity.HasNoKey();
+            entity.ToView("MaitenanceNotification");
         });
         OnModelCreatingGeneratedProcedures(modelBuilder);
         OnModelCreatingGeneratedFunctions(modelBuilder);

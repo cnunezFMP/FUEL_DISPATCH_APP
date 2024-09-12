@@ -8,31 +8,29 @@ public partial class Vehicle
     public string? Ficha { get; set; }
     [Required] public int? MakeId { get; set; }
     [Required] public int? ModelId { get; set; }
-    [Required] public int? GenerationId { get; set; }
+    public int? GenerationId { get; set; }
     // DONE: Agregar propiedad VIN.
-    [Required] public string? VIN { get; set; }
-    [Required] public int? ModEngineId { get; set; }
+    [Required] public string VIN { get; set; }
+    public int? ModEngineId { get; set; }
+    [Required] public int Year { get; set; }
     public int? DriverId { get; set; }
     public VehicleStatussesEnum? Status { get; set; }
     public string? CreatedBy { get; set; }
-    public int CompanyId { get; set; }
-    public int BranchOfficeId { get; set; }
+    public int? CompanyId { get; set; }
+    public int? BranchOfficeId { get; set; }
     public DateTime? CreatedAt { get; set; }
-
     public string? UpdatedBy { get; set; }
-
     public DateTime? UpdatedAt { get; set; }
 
-    [Required] public decimal? AverageConsumption { get; set; }
+    [Required] public decimal AverageConsumption { get; set; }
 
-    [Required] public string? Color { get; set; }
+    [Required] public string Color { get; set; }
 
-    [Required] public decimal? FuelTankCapacity { get; set; }
+    [Required] public decimal FuelTankCapacity { get; set; }
     public decimal? Odometer { get; set; }
-    [Required]
-    public int? OdometerMeasureId { get; set; }
-    [Required] public string? Plate { get; set; }
-    [JsonIgnore] public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = new List<WareHouseMovement>();
+    [Required] public int OdometerMeasureId { get; set; }
+    [Required] public string Plate { get; set; }
+    [JsonIgnore] public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = [];
     public virtual Driver? Driver { get; set; }
 
     [JsonIgnore] public virtual Generation? Generation { get; set; }
@@ -49,6 +47,6 @@ public partial class Vehicle
     [JsonIgnore] public virtual BranchOffices? BranchOffice { get; set; }
     [JsonIgnore] public virtual ICollection<WareHouseMovementRequest> Requests { get; set; } = [];
 
-    [JsonIgnore] public virtual ICollection<Booking> Bookings { get; set; } = []; 
+    [JsonIgnore] public virtual ICollection<Booking> Bookings { get; set; } = [];
     [JsonIgnore] public virtual ICollection<Maintenance> Maintenances { get; set; } = [];
 }

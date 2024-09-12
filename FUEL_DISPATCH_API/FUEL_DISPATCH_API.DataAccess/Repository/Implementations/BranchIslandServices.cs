@@ -26,7 +26,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             return base.Post(entity);
 
         }
-
         public bool BranchIslandCodeMustBeUnique(BranchIsland branchIsland)
         {
             //string? companyId, branchId;

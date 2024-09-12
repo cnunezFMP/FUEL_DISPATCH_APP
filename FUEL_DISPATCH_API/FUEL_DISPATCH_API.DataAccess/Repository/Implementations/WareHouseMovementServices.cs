@@ -44,7 +44,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if (!QtyCantBeZero(wareHouseMovement))
                 throw new BadRequestException("No se puede dispensar con cero. ");
 
-            if (!CheckVehicleOdometer(wareHouseMovement))
+            if (CheckVehicleOdometer(wareHouseMovement))
                 throw new BadRequestException("El odometro es menor o igual al del vehiculo. ");
 
             if (!CheckVehicle(wareHouseMovement))
@@ -117,7 +117,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 x.BranchOfficeId == int.Parse(branchOfficeId)*/) ??
                 throw new NotFoundException("No se encontro el vehiculo para el despacho. ");
 
-            return wareHouseMovement.Odometer > vehicleForDispatch!.Odometer;
+            if(vehicleForDispatch.Odometer is not null)
+                return wareHouseMovement.Odometer > vehicleForDispatch!.Odometer;
+
+            return false;
+
         }
         // DONE: Corregir las funciones "CheckVehicle", "CheckDriver".
         public bool CheckVehicle(WareHouseMovement wareHouseMovement)

@@ -35,7 +35,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             if (FichaMustBeUnique(entity))
                 throw new BadRequestException("Existe un vehiculo con esta ficha asignada. ");
-
             //DriverIdHasValue(entity);
 
             return base.Post(entity);

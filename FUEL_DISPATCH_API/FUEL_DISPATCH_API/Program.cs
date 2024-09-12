@@ -122,7 +122,6 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IValidator<WareHouseMovementRequest>, RequestValidator>()
                 .AddScoped<IValidator<Driver>, DriverValidator>()
                 .AddScoped<IValidator<WareHouseMovement>, WareHouseMovementValidator>()
-                //.AddScoped<IValidator<UserRegistrationDto>, RegisterValidator>()
                 .AddScoped<IValidator<ArticleDataMaster>, ArticlesValidator>()
                 .AddScoped<IValidator<UsersRols>, UsersRolsValidator>()
                 .AddScoped<IValidator<UsersBranchOffices>, UsersBranchOfficeValidator>()
@@ -137,6 +136,7 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IRoleServices, RoleServices>()
                 .AddScoped<IMaintenanceServices, MaintenanceServices>()
                 .AddScoped<IPartServices, PartServices>()
+                .AddScoped<IMaintenanceNotificacionServices, MaintenanceNotificacionServices>()
                 .AddScoped<IMakeServices, MakeServices>()
                 .AddScoped<IModelServices, ModelServices>()
                 .AddScoped<IModEngineServices, ModEngineServices>()
@@ -154,6 +154,7 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IWareHouseMovementServices, WareHouseMovementServices>()
                 .AddScoped<IActualStockServices, ActualStockServices>()
                 .AddScoped<IWareHouseHistoryServices, WareHouseHistoryServices>()
+                .AddScoped<IVehicleMakeModelsServices,  VehicleMakeModelsServices>()
                 .AddScoped<IDriverMethodOfComsuptionServices, DriverMethodOfComsuptionServices>()
                 .AddScoped<IStockServices, StockServices>()
                 .AddScoped<IArticleServices, ArticleDataMasterServices>()
@@ -237,7 +238,7 @@ app.Use(async (context, next) =>
         await next();
     }
 });
-app.UseMiddleware<AuthMiddleware>();
+//app.UseMiddleware<AuthMiddleware>();
 app.UseStatusCodePages(async (x) =>
 {
     if (x.HttpContext.Response.StatusCode == 403)

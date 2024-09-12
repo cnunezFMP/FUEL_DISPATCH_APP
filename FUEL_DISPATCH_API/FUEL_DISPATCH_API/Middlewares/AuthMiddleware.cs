@@ -14,37 +14,33 @@ namespace FUEL_DISPATCH_API.Middlewares
         public async Task InvokeAsync(HttpContext context)
         {
             // DONE: Validar los tokens. 
-            var token = context.Request
-                .Headers
-                .Authorization
-                .FirstOrDefault()?
-                .Split(" ")
-                .Last() ??
-                " ";
+            var token = context.Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last() ?? " ";
 
             var user = context.User;
 
             if (user.Identity?.IsAuthenticated ??
                 false)
             {
-                string? companyId, branchId, username;
-                companyId = user.Claims
-                    .FirstOrDefault(x => x.Type == "CompanyId")?
-                    .Value ??
-                    throw new BadRequestException("User is not in branch office. ");
+                string? /*companyId, branchId,*/ username;
+                //companyId = user.Claims
+                //    .FirstOrDefault(x => x.Type == "CompanyId")?
+                //    .Value ??
+                //    throw new BadRequestException("User is not in branch office. ");
 
-                branchId = user.Claims
-                    .FirstOrDefault(x => x.Type == "BranchOfficeId")?
-                    .Value
-                    ??
-                    throw new BadRequestException("User is not in branch office. ");
+                //branchId = user.Claims
+                //    .FirstOrDefault(x => x.Type == "BranchOfficeId")?
+                //    .Value
+                //    ??
+                //    throw new BadRequestException("User is not in branch office. ");
 
-                username = user.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value
+                username = user
+                    .Claims
+                    .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value
                     ?? throw new BadRequestException("User don't has username. ");
 
                 context.Items["UserName"] = username;
-                context.Items["CompanyId"] = companyId;
-                context.Items["BranchOfficeId"] = branchId;
+                //context.Items["CompanyId"] = companyId;
+                //context.Items["BranchOfficeId"] = branchId;
 
             }
             await _next(context);
