@@ -63,8 +63,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 throw new BadRequestException("El articulo indicado no se encuentra en el almacen. ");*/
 
             UpdateVehicleOdometer(wareHouseMovement);
-            PostSAP(wareHouseMovement)
-                .Wait();
+            sapService.PostGenExit(wareHouseMovement).Wait();
             return base.Post(wareHouseMovement);
         }
 

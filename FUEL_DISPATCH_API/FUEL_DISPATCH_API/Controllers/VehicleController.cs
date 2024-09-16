@@ -1,5 +1,6 @@
 using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
+using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
@@ -11,24 +12,27 @@ namespace FUEL_DISPATCH_API.Controllers
     public class VehicleController : ControllerBase
     {
         private readonly IVehiclesServices _vehicleServices;
+        private readonly IVehicleMakeModelsServices _vehicleMakeModelsServices;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IValidator<Vehicle> _vehicleValidator;
         public VehicleController(IVehiclesServices vehicleServices,
+            IVehicleMakeModelsServices vehicleMakeModelsServices,
             IValidator<Vehicle> validator,
             IHttpContextAccessor _httpContextAccessor)
         {
+            _vehicleMakeModelsServices = vehicleMakeModelsServices;
             _vehicleServices = vehicleServices;
             _vehicleValidator = validator;
             this._httpContextAccessor = _httpContextAccessor;
         }
-        [HttpGet, Authorize]
-        public ActionResult<ResultPattern<Paging<Vehicle>>> GetVehicles([FromQuery] GridifyQuery query)
-            => Ok(_vehicleServices.GetAll(query));
+        [HttpGet]
+        public ActionResult<ResultPattern<Paging<VehiclesMakeModels>>> GetVehiclesMakeModels([FromQuery] GridifyQuery query)
+             => Ok(_vehicleMakeModelsServices.GetAll(query));
 
         [HttpGet("{vehicleId:int}/WareHouseMovement"), Authorize]
         public ActionResult<ResultPattern<Paging<Vehicle>>> GetVehicleWareHouseMovements(int vehicleId)
             => Ok(_vehicleServices.GetVehicleDispatches(vehicleId));
-        
+
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Vehicle>> GetVehicle(int id)
             => Ok(_vehicleServices.Get(x => x.Id == id));

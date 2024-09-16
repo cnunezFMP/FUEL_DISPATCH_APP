@@ -8,7 +8,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public int Id { get; set; }
         [Required] public string? ArticleNumber { get; set; } // Code
         public string? Description { get; set; }
-        [Required] public decimal? UnitPrice { get; set; }
+        [Required] public decimal UnitPrice { get; set; }
         public string? Manufacturer { get; set; }
         [Required] public string? BarCode { get; set; }
         public string? CreatedBy { get; set; }

@@ -21,11 +21,11 @@ namespace FUEL_DISPATCH_API.Middlewares
             if (user.Identity?.IsAuthenticated ??
                 false)
             {
-                string? /*companyId, branchId,*/ username;
-                //companyId = user.Claims
-                //    .FirstOrDefault(x => x.Type == "CompanyId")?
-                //    .Value ??
-                //    throw new BadRequestException("User is not in branch office. ");
+                string? companyId, branchId, username;
+                companyId = user.Claims
+                    .FirstOrDefault(x => x.Type == "CompanyId")?
+                    .Value ??
+                    throw new BadRequestException("User is not in branch office. ");
 
                 //branchId = user.Claims
                 //    .FirstOrDefault(x => x.Type == "BranchOfficeId")?
@@ -39,7 +39,7 @@ namespace FUEL_DISPATCH_API.Middlewares
                     ?? throw new BadRequestException("User don't has username. ");
 
                 context.Items["UserName"] = username;
-                //context.Items["CompanyId"] = companyId;
+                context.Items["CompanyId"] = companyId;
                 //context.Items["BranchOfficeId"] = branchId;
 
             }

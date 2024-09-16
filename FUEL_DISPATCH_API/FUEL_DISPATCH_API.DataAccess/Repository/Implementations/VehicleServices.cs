@@ -28,10 +28,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if (CheckIfModelExists(entity))
                 throw new NotFoundException("No se encuentra el modelo . ");
 
-            if (CheckIfGenerationExists(entity))
-                throw new NotFoundException("No se encuentra la generacion. ");
-            if (CheckIfModEngineExists(entity))
-                throw new NotFoundException("No se encuentra el motor. ");
+            if(entity.GenerationId is not null)
+                if (CheckIfGenerationExists(entity))
+                    throw new NotFoundException("No se encuentra la generacion. ");
+            if (entity.ModEngineId is not null)
+                if (CheckIfModEngineExists(entity))
+                    throw new NotFoundException("No se encuentra el motor. ");
 
             if (FichaMustBeUnique(entity))
                 throw new BadRequestException("Existe un vehiculo con esta ficha asignada. ");

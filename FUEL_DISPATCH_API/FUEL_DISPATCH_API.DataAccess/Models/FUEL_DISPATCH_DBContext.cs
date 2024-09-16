@@ -934,6 +934,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         {
             entity.HasNoKey();
             entity.ToView("VehiclesMakeModels");
+            entity.Property(x => x.Status).HasConversion<EnumToStringConverter<VehicleStatussesEnum>>();
         });
         modelBuilder.Entity<Vehicle>(entity =>
         {

@@ -25,23 +25,23 @@ public class AuthManager
             .SingleOrDefault(x => x.Username == username);
         if (credenciales != null && BCrypt.Net.BCrypt.Verify(password, credenciales.Password))
         {
-            /*var companyId = _dbContext.User
+            var companyId = _dbContext.User
                            .Where(uc => uc.Id == credenciales.Id)
                            .Select(uc => uc.CompanyId)
                            .FirstOrDefault();
 
-            var branchId = _dbContext.UsersBranchOffices
-                           .Where(uc => uc.UserId == credenciales.Id)
-                           .Select(uc => uc.BranchOfficeId)
-                           .FirstOrDefault();*/
+            //var branchId = _dbContext.UsersBranchOffices
+            //               .Where(uc => uc.UserId == credenciales.Id)
+            //               .Select(uc => uc.BranchOfficeId)
+            //               .FirstOrDefault();
             var userFullName = credenciales.FullName;
 
             // DONE: Revisar esto. 
             var keyBytes = Encoding.UTF8.GetBytes(_secretKey);
             var claims = new ClaimsIdentity();
             claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, usuario.Username!));
-            //if (c ompanyId is not 0)
-            //    claims.AddClaim(new Claim("CompanyId", companyId.ToString()));
+            if (companyId is not 0)
+                claims.AddClaim(new Claim("CompanyId", companyId.ToString()));
 
             //if (branchId is not 0)
             //    claims.AddClaim(new Claim("BranchOfficeId", branchId.ToString()));

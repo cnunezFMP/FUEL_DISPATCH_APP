@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using RestSharp.Serializers.Json;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -73,8 +74,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
         {
             var companyId = _httpContextAccessor
                 .HttpContext?
-                .Items["CompanyId"]?
-                .ToString()
+                .User?
+                .FindFirst(x => x.Type == "CompanyId")?
+                .Value
                 ?? throw new BadRequestException("Invalid Company");
 
             var company = _companiesService.Get(x => x.Id == int.Parse(companyId))?.Data
@@ -102,11 +104,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
                         new()
                         {
                             ItemCode = item.ArticleNumber,
+                            UnitPrice = item.UnitPrice,
                             Quantity = whsMovement.Qty,
                             WarehouseCode = whs.Code ?? ""
                         }
                     ]
                 });
+
+            LoggerClass.LogInfo(JsonSerializer.Serialize(request));
 
             var response = await _restClient!.ExecuteAsync(request);
 

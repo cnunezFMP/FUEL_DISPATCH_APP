@@ -38,9 +38,10 @@ namespace FUEL_DISPATCH_API.Controllers
         {
             /*string? companyId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-*/
+            */
             bool predicate(User x) => x.Id == id/* &&
                                       x.CompanyId == int.Parse(companyId)*/;
+
             return Ok(_usersServices.Update(predicate, user));
         }
         [HttpDelete("{id:int}"), Authorize]
