@@ -9,16 +9,18 @@ namespace FUEL_DISPATCH_API.Controllers
 {
     [ApiController, Route("api/[controller]"), Authorize/*(Roles = "ManageMateinance, Administrador")*/]
     public class MaintenanceController(IMaintenanceServices maintenanceServices,
+                                 IVw_MaintenanceServices vw_MaintenanceServices,
                                  IHttpContextAccessor httpContextAccessor,
                                  IMaintenanceDetailsServices maintenanceDetailsServices) : ControllerBase
     {
         private readonly IMaintenanceServices _maintenanceServices = maintenanceServices;
+        private readonly IVw_MaintenanceServices _vw_MaintenanceServices = vw_MaintenanceServices;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly IMaintenanceDetailsServices _maintenanceDetailsServices = maintenanceDetailsServices;
 
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Maintenance>>> GetMaintenances([FromQuery] GridifyQuery query)
-            => Ok(_maintenanceServices.GetAll(query));
+            => Ok(_vw_MaintenanceServices.GetAll(query));
         
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Maintenance>> GetMaintenance(int id)

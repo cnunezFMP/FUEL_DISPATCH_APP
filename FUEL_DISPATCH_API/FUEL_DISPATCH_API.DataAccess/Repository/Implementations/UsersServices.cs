@@ -17,6 +17,20 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             _DBContext = dbContext;
         }
+        public override ResultPattern<User> Update(Func<User, bool> predicate, User updatedEntity)
+        {
+            var currentPassword = _DBContext.User.FirstOrDefault(predicate) ??
+                throw new NotFoundException("Usuario no encontrado. ");
+
+            if (updatedEntity.Password != currentPassword.Password)
+            {
+                string newPassword = PasswordHashing(updatedEntity.Password!);
+                updatedEntity.Password = newPassword;
+            }
+            return base.Update(predicate, updatedEntity);
+        }
+        static string PasswordHashing(string password)
+            => BCrypt.Net.BCrypt.HashPassword(password, 13);
         public override ResultPattern<User> Delete(Func<User, bool> predicate)
         {
             // DONE: Verificar los DELETE.

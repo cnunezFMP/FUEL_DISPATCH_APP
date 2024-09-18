@@ -50,6 +50,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<UsersBranchOffices> UsersBranchOffices { get; set; }
     public virtual DbSet<BranchOffices> BranchOffices { get; set; }
     public virtual DbSet<BranchIsland> BranchIslands { get; set; }
+    public virtual DbSet<vw_Maintenance> Vw_Maintenance { get; set; }
     public virtual DbSet<Booking> Booking { get; set; }
     public virtual DbSet<CalculatedComsuptionReport> CalculatedComsuption { get; set; }
     public virtual DbSet<vw_ActualStock> vw_ActualStock { get; set; }
@@ -653,6 +654,13 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Property(x => x.BranchOfficeId)
             .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<BranchOfficeIdGenerator>();*/
+        });
+
+        modelBuilder.Entity<vw_Maintenance>(entity =>
+        {
+            entity.HasNoKey();
+            entity.ToView("vw_Maintenance");
+            entity.Property(x => x.Status).HasConversion<EnumToStringConverter<MaitenanceStatusEnum>>();
         });
 
         modelBuilder.Entity<MaintenanceDetails>(entity =>

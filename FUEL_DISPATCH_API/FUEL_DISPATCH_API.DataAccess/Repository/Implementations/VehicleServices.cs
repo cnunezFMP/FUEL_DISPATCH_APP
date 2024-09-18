@@ -31,6 +31,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if(entity.GenerationId is not null)
                 if (CheckIfGenerationExists(entity))
                     throw new NotFoundException("No se encuentra la generacion. ");
+
             if (entity.ModEngineId is not null)
                 if (CheckIfModEngineExists(entity))
                     throw new NotFoundException("No se encuentra el motor. ");

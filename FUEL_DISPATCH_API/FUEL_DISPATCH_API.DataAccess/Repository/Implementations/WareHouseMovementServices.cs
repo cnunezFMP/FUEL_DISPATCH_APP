@@ -32,11 +32,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public override ResultPattern<WareHouseMovement> Post(WareHouseMovement wareHouseMovement)
         {
-            if (!CheckIfWareHousesHasActiveStatus(wareHouseMovement))
-                throw new BadRequestException("Este almacen esta inactivo. ");
-
             if (wareHouseMovement.RequestId.HasValue)
                 SetRequestForMovement(wareHouseMovement);
+
+            if (!CheckIfWareHousesHasActiveStatus(wareHouseMovement))
+                throw new BadRequestException("Este almacen esta inactivo. ");
 
             if (wareHouseMovement.VehicleId.HasValue)
                 SetDriverIdByVehicle(wareHouseMovement);
@@ -112,6 +112,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 wareHouseMovement.DriverId = vehicleDriver!.DriverId;
                 return true;
             }
+
             return false;
         }
         public bool QtyCantBeZero(WareHouseMovement wareHouseMovement)
@@ -137,7 +138,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
-
             var vehicleForDispatch = _DBContext.Vehicle
                 .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefault(v => v.Id == wareHouseMovement.VehicleId /*&&
@@ -146,14 +146,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 ?? throw new NotFoundException("No vehicle found. ");
 
             return (vehicleForDispatch.Status is not VehicleStatussesEnum.Inactive
-                && vehicleForDispatch!.Status is not VehicleStatussesEnum.NotAvailable);
+                    && vehicleForDispatch!.Status is not VehicleStatussesEnum.NotAvailable);
         }
         public bool CheckDriver(WareHouseMovement wareHouseMovement)
         {
             /*string? companyId, branchOfficeId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();
-*/
+            */
             if (wareHouseMovement.Type is MovementsTypesEnum.Salida)
             {
                 var driverForDispatch = _DBContext.Driver
@@ -197,7 +197,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             return dispenser.Status is not ActiveInactiveStatussesEnum.Inactive;
 
         }
-        // DONE: Corregir la excepcion aqui
         public bool CheckWareHouseStock(WareHouseMovement wareHouseMovement)
         {
             /*string? companyId, branchOfficeId;
