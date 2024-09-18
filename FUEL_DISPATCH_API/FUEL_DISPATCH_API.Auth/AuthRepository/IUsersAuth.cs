@@ -11,6 +11,7 @@ namespace FUEL_DISPATCH_API.Auth
         ResultPattern<User> UserRegistration(UserRegistrationDto entity);
         bool IsUserNameUnique(UserRegistrationDto user);
         bool IsEmailUnique(UserRegistrationDto user);
+        bool ChangePassword(Func<User, bool> predicate, ChangeUserPasswordDto changeUserPasswordDto);
         bool DriverIdHasValue(UserRegistrationDto user);
     }
 }

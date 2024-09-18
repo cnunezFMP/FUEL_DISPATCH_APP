@@ -35,7 +35,6 @@ public class AuthManager
             //               .Select(uc => uc.BranchOfficeId)
             //               .FirstOrDefault();
             var userFullName = credenciales.FullName;
-
             // DONE: Revisar esto. 
             var keyBytes = Encoding.UTF8.GetBytes(_secretKey);
             var claims = new ClaimsIdentity();

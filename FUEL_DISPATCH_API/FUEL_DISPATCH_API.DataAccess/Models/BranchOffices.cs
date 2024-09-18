@@ -28,14 +28,14 @@ public partial class BranchOffices
     public DateTime? UpdatedAt { get; set; }
     public string? UpdatedBy { get; set; }
     [JsonIgnore] public virtual ICollection<UsersBranchOffices> UsersBranchOffices { get; set; } = [];
-    [JsonIgnore] public virtual ICollection<Dispenser> Dispensers { get; set; } = [] ;
+    [JsonIgnore] public virtual ICollection<Dispenser> Dispensers { get; set; } = [];
     [JsonIgnore] public virtual ICollection<Vehicle> Vehicles { get; set; } = [];
     [JsonIgnore] public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = [];
     [JsonIgnore] public virtual ICollection<WareHouse> WareHouses { get; set; } = [];
     [JsonIgnore] public virtual ICollection<Driver> Drivers { get; set; } = [];
     [JsonIgnore] public virtual ICollection<Booking>? Bookings { get; set; } = [];
     [JsonIgnore] public virtual ICollection<User> Users { get; set; } = [];
-    [JsonIgnore] public virtual ICollection<EmployeeConsumptionLimits> EmployeeConsumptionLimits{ get; set; } = [];
+    [JsonIgnore] public virtual ICollection<EmployeeConsumptionLimits> EmployeeConsumptionLimits { get; set; } = [];
     [JsonIgnore] public virtual ICollection<WareHouseMovementRequest> WareHouseMovementRequests { get; set; } = [];
     [JsonIgnore] public virtual ICollection<UsersRols> UserRols { get; set; } = [];
 

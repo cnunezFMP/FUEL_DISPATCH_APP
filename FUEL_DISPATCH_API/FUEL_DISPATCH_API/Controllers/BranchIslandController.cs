@@ -50,7 +50,7 @@ namespace FUEL_DISPATCH_API.Controllers
             => Created(string.Empty, _branchIslandServices.Post(branchIsland));
 
         [HttpPut("{id:int}"), Authorize/*(Roles = "CanUpdateData, Administrador")*/]
-        public ActionResult<ResultPattern<User>> UpdateBranchIsland(int id, [FromBody] BranchIsland branchIsland)
+        public ActionResult<ResultPattern<BranchIsland>> UpdateBranchIsland(int id, [FromBody] BranchIsland branchIsland)
         {
             /*string? companyId, branchId;
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();

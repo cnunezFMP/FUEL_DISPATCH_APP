@@ -43,7 +43,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             return base.Post(entity);
         }
-
         /*public bool DriverIdHasValue(Vehicle entity)
             => _DBContext.Driver.Any(x => x.Id == entity.DriverId);*/
         public bool CheckIfMakeExists(Vehicle vehicle)

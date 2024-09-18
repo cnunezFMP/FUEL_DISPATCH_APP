@@ -17,7 +17,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         private readonly ISAPService sapService;
         public WareHouseMovementServices(
             FUEL_DISPATCH_DBContext dbContext,
-            IHttpContextAccessor httpContextAccessor, 
+            IHttpContextAccessor httpContextAccessor,
             ISAPService sapService)
             : base(dbContext, httpContextAccessor)
         {
@@ -69,6 +69,19 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
         public override ResultPattern<WareHouseMovement> Update(Func<WareHouseMovement, bool> predicate, WareHouseMovement updatedEntity)
         {
+
+            if (!CheckDispenser(updatedEntity))
+                throw new BadRequestException("El dispensador no esta activo. ");
+
+            if (!CheckVehicle(updatedEntity))
+                throw new BadRequestException("El vehiculo esta inactivo, o no esta disponible. ");
+
+            if (!CheckDriver(updatedEntity))
+                throw new BadRequestException("El conductor esta inactivo, o no esta disponible. ");
+
+            if (!CheckVehicleOdometer(updatedEntity))
+                throw new BadRequestException("El odometro es menor o igual al del vehiculo. ");
+
             UpdateVehicleOdometer(updatedEntity);
             return base.Update(predicate, updatedEntity);
         }

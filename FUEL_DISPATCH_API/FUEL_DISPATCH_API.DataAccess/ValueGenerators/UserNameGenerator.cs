@@ -13,7 +13,9 @@ namespace FUEL_DISPATCH_API.DataAccess.ValueGenerators
             entry.Context
             .GetService<IHttpContextAccessor>()?
             .HttpContext?
-            .Items["UserName"]
-            as string ?? "System";
+            .User?
+            .FindFirst(ClaimTypes.NameIdentifier)?
+            .Value
+            ?? "System";
     }
 }

@@ -10,8 +10,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Interfaces
 {
     public interface IMaintenanceServices : IGenericInterface<Maintenance>
     {
-        bool SetCurrentOdometerByVehicle(Maintenance maintenance);
-        bool SetNextMaintenanceDate(Maintenance maintenance);
-        bool SetNextMaintenanceOdometer(Maintenance maintenance);
+        //bool SetCurrentOdometerByVehicle(Maintenance maintenance);
+        //bool SetNextMaintenanceDate(Maintenance maintenance);
+        //bool SetNextMaintenanceOdometer(MaintenanceDetails maintenance);
     }
 }

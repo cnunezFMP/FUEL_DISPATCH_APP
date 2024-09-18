@@ -13,10 +13,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
         private readonly IHttpContextAccessor _httpContextAccesor;
-        // private readonly IEmailSender _emailSender;
         private readonly string? _secretKey;
         public UsersAuth(IConfiguration config, FUEL_DISPATCH_DBContext DBContext,
-            /*IEmailSender emailSender,*/
             IHttpContextAccessor httpContextAccessor)
             : base(DBContext, httpContextAccessor)
         {
@@ -49,7 +47,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 FullDirection = entity.FullDirection,
                 Password = entity.Password,
                 DriverId = entity.DriverId,
-                CompanyId = entity.CompanyId,
                 CreatedAt = DateTime.Today,
                 UpdatedAt = DateTime.Today,
                 CreatedBy = entity.CreatedBy,
@@ -65,11 +62,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             return ResultPattern<User>.Success(newUser,
                 StatusCodes.Status200OK,
                 "Usuario registrado correctamente. ");
-        }
-        public override ResultPattern<User> Update(Func<User, bool> predicate, User updatedEntity)
-        {
-            PasswordHashing(updatedEntity.Password!);
-            return base.Update(predicate, updatedEntity);
         }
         public ResultPattern<object> Login(LoginDto loginDto)
         {
@@ -105,6 +97,23 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             user.BirthDate = driver?.BirthDate;
             user.FullDirection = driver?.FullDirection!;
             return false;
+        }
+        public bool ChangePassword(Func<User, bool> predicate, ChangeUserPasswordDto changeUserPasswordDto)
+        {
+            var userToChangePassword = _DBContext.User.FirstOrDefault(predicate) ??
+                throw new NotFoundException("No se encontro el usuario. ");
+
+            var newPassword = PasswordHashing(changeUserPasswordDto.Password);
+
+            userToChangePassword!.Password = newPassword;
+
+            _DBContext.Entry(userToChangePassword)
+               .CurrentValues
+               .SetValues(newPassword);
+            _DBContext.Update(userToChangePassword);
+            _DBContext.SaveChanges();
+
+            return true;
         }
     }
 }

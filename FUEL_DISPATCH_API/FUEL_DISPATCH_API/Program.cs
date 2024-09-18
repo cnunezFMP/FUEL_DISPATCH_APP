@@ -149,12 +149,14 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IAllComsuptionServices, AllComsuptionServices>()
                 .AddScoped<ICalculatedComsuptionServices, CalculatedComsuptionServices>()
                 .AddScoped<IComsuptionByDayServices, ComsuptionByDayServices>()
+                .AddScoped<ICompanySapParamsServices, CompanySapParamsServices>()
                 .AddScoped<IComsuptionByMonthServices, ComsuptionByMonthServices>()
+                .AddScoped<IMaintenanceDetailsServices, MaintenanceDetailsServices>()
                 .AddScoped<IUsersRolesServices, UsersRolesServices>()
                 .AddScoped<IWareHouseMovementServices, WareHouseMovementServices>()
                 .AddScoped<IActualStockServices, ActualStockServices>()
                 .AddScoped<IWareHouseHistoryServices, WareHouseHistoryServices>()
-                .AddScoped<IVehicleMakeModelsServices,  VehicleMakeModelsServices>()
+                .AddScoped<IVehicleMakeModelsServices, VehicleMakeModelsServices>()
                 .AddScoped<IDriverMethodOfComsuptionServices, DriverMethodOfComsuptionServices>()
                 .AddScoped<IStockServices, StockServices>()
                 .AddScoped<IArticleServices, ArticleDataMasterServices>()
@@ -226,33 +228,33 @@ app.UseReDoc(c =>
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.Use(async (context, next) =>
-{
-    if (context.Response.StatusCode == StatusCodes.Status403Forbidden)
-    {
-        context.Response.ContentType = "application/json";
-        await context.Response.WriteAsync("{\"message\": \"Acceso denegado. No tienes permisos suficientes.\"}");
-    }
-    else
-    {
-        await next();
-    }
-});
+//app.Use(async (context, next) =>
+//{
+//    if (context.Response.StatusCode == StatusCodes.Status403Forbidden)
+//    {
+//        context.Response.ContentType = "application/json";
+//        await context.Response.WriteAsync("{\"message\": \"Acceso denegado. No tienes permisos suficientes.\"}");
+//    }
+//    else
+//    {
+//        await next();
+//    }
+//});
 //app.UseMiddleware<AuthMiddleware>();
-app.UseStatusCodePages(async (x) =>
-{
-    if (x.HttpContext.Response.StatusCode == 403)
-    {
-        var noAuthorizedObj = new
-        {
-            Titulo = "Usuario no autorizado.",
-            Message = "No esta autorizado para hacer esta accion. ",
-            Status = 403
+//app.UseStatusCodePages(async (x) =>
+//{
+//    if (x.HttpContext.Response.StatusCode == 403)
+//    {
+//        var noAuthorizedObj = new
+//        {
+//            Titulo = "Usuario no autorizado.",
+//            Message = "No esta autorizado para hacer esta accion. ",
+//            Status = 403
 
-        };
+//        };
 
-        await x.HttpContext.Response.WriteAsJsonAsync(noAuthorizedObj);
-    };
-});
+//        await x.HttpContext.Response.WriteAsJsonAsync(noAuthorizedObj);
+//    };
+//});
 app.MapControllers();
 app.Run();

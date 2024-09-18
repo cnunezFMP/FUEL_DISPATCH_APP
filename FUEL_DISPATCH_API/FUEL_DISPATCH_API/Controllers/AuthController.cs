@@ -17,10 +17,10 @@ namespace FUEL_DISPATCH_API.Controllers
         private readonly IUsersAuth _usersAuth;
         public AuthController(/*IValidator<UserRegistrationDto> userValidator*/ IUsersAuth usersAuth)
         {
-           // _userValidator = userValidator;
+            // _userValidator = userValidator;
             _usersAuth = usersAuth;
         }
-        
+
         [HttpPost("Register")]
         public ActionResult<ResultPattern<User>> Register([FromBody] UserRegistrationDto user)
             => Created(string.Empty, _usersAuth.UserRegistration(user));
@@ -28,6 +28,13 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost("Login")]
         public ActionResult<ResultPattern<User>> Login([FromBody] LoginDto loginDto)
             => Ok(_usersAuth.Login(loginDto));
+
+        [HttpPut("ChangePassword/{userid}")]
+        public ActionResult<bool> ChangePassword(int userid, [FromBody] ChangeUserPasswordDto changeUserPasswordDto)
+        {
+            bool predicate(User x) => x.Id == userid;
+            return Ok(_usersAuth.ChangePassword(predicate, changeUserPasswordDto));
+        }
 
     }
 }

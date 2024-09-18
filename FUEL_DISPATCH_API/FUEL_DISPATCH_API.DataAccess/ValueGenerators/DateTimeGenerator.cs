@@ -13,6 +13,6 @@ namespace FUEL_DISPATCH_API.DataAccess.ValueGenerators
         public override bool GeneratesTemporaryValues => false;
 
         public override DateTime Next(EntityEntry entry) =>
-            DateTime.Today;
+            DateTime.Now;
     }
 }

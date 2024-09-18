@@ -17,7 +17,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Models.SAP
     public class SAPGenExitLine
     {
         public required string ItemCode { get; set; }
-        public required decimal UnitPrice { get; set; }
         public required string WarehouseCode { get; set; }
         public required decimal Quantity { get; set; }
     }

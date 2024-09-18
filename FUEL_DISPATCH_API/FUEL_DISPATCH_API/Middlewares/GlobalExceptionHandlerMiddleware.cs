@@ -74,7 +74,7 @@ namespace FUEL_DISPATCH_API.Middlewares
                 var details = new ResultPattern<ProblemDetails>
                 {
                     Message = exception.Message,
-                    StatusCode = StatusCodes.Status400BadRequest,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     IsSuccess = false
                 };
                 httpStatusCode = HttpStatusCode.InternalServerError;

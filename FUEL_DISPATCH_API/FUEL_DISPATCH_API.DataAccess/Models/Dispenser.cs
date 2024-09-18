@@ -16,6 +16,6 @@ public partial class Dispenser
     public DateTime? UpdatedAt { get; set; }
     [JsonIgnore] public virtual BranchOffices? BranchOffice { get; set; }
     [JsonIgnore] public virtual Companies? Company { get; set; }
-    [JsonIgnore] public virtual BranchIsland? BranchIsland { get; set; }
+    public virtual BranchIsland? BranchIsland { get; set; }
     [JsonIgnore] public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = [];
 }

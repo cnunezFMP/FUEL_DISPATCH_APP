@@ -12,14 +12,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
     public class UsersServices : GenericRepository<User>, IUserServices
     {
         private readonly FUEL_DISPATCH_DBContext _DBContext;
-        public UsersServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor) 
-            : base(dbContext, httpContextAccessor) 
-        { 
-            _DBContext = dbContext; 
+        public UsersServices(FUEL_DISPATCH_DBContext dbContext, IHttpContextAccessor httpContextAccessor)
+            : base(dbContext, httpContextAccessor)
+        {
+            _DBContext = dbContext;
         }
         public override ResultPattern<User> Delete(Func<User, bool> predicate)
         {
-            // TODO: Verificar los DELETE.
+            // DONE: Verificar los DELETE.
             var userToDelete = _DBContext.User.FirstOrDefault(predicate) ??
                 throw new NotFoundException(AppConstants.NOT_FOUND_MESSAGE);
             if (userToDelete.DriverId.HasValue)

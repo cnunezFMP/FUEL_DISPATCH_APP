@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
+using System.Security.Claims;
 namespace FUEL_DISPATCH_API.DataAccess.ValueGenerators
 {
     public class CompanyIdGenerator : ValueGenerator<int>
@@ -12,8 +13,9 @@ namespace FUEL_DISPATCH_API.DataAccess.ValueGenerators
         {
             var companyId = entry.Context.GetService<IHttpContextAccessor>()?
                 .HttpContext?
-                .Items["CompanyId"]
-                as string
+                .User
+                .FindFirst(x => x.Type == "CompanyId")?
+                .Value
                 ?? throw new BadHttpRequestException("Al parecer el usuario no esta en una compañia. ");
 
 

@@ -21,7 +21,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
         Task<WarehouseItemStock?> GetItemsStockSAP(string whsCode, string[]? itemCodes = null);
     }
 
-    public class SAPService : ISAPService
+    public class SAPService(IHttpContextAccessor contextAccessor,
+                      ICompaniesServices companiesServices,
+                      FUEL_DISPATCH_DBContext dbContext) : ISAPService
     {
         private static JsonSerializerOptions JsonSerializerOptions => new()
         {
@@ -31,17 +33,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
             NumberHandling = JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString
         };
         private RestClient? _restClient;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly ICompaniesServices _companiesService;
-        private readonly FUEL_DISPATCH_DBContext _dbContext;
-        public SAPService(IHttpContextAccessor contextAccessor,
-                          ICompaniesServices companiesServices,
-                          FUEL_DISPATCH_DBContext dbContext)
-        {
-            _httpContextAccessor = contextAccessor;
-            _companiesService = companiesServices;
-            _dbContext = dbContext;
-        }
+        private readonly IHttpContextAccessor _httpContextAccessor = contextAccessor;
+        private readonly ICompaniesServices _companiesService = companiesServices;
+        private readonly FUEL_DISPATCH_DBContext _dbContext = dbContext;
+
         private async Task<LoginResponse> Login(CompanySAPParams sapParams)
         {
             _restClient ??= new RestClient(sapParams.ServiceLayerURL, c => c.RemoteCertificateValidationCallback = (a, b, c, d) => true, configureSerialization: s => s.UseSystemTextJson(JsonSerializerOptions));
@@ -63,12 +58,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
             var errorResponse = response.Content
                 ?? throw new BadRequestException("Invalid Response");
 
-                JObject obj = JObject.Parse(errorResponse);
+            JObject obj = JObject.Parse(errorResponse);
 
-                string value = obj["error"]?["message"]?["value"]?.ToString();
+            string value = obj["error"]?["message"]?["value"]?.ToString();
 
 
-                throw new BadRequestException(value);
+            throw new BadRequestException(value);
         }
         public async Task PostGenExit(WareHouseMovement whsMovement)
         {
@@ -88,10 +83,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
             var loginResponse = await Login(company.CompanySAPParams);
 
             var item = _dbContext.ArticleDataMaster
-                .FirstOrDefault(x => x.Id == whsMovement.ItemId && x.CompanyId == int.Parse(companyId))
+                .FirstOrDefault(x => x.Id == whsMovement.ItemId/* && x.CompanyId == int.Parse(companyId)*/)
                 ?? throw new NotFoundException("Article not found");
 
-            var whs = _dbContext.WareHouse.FirstOrDefault(x => x.Id == whsMovement.WareHouseId && x.CompanyId == int.Parse(companyId))
+            var whs = _dbContext.WareHouse.FirstOrDefault(x => x.Id == whsMovement.WareHouseId/* && x.CompanyId == int.Parse(companyId)*/)
                 ?? throw new NotFoundException("Warehouse not found");
 
             var request = new RestRequest("/InventoryGenExits", Method.Post)
@@ -104,7 +99,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
                         new()
                         {
                             ItemCode = item.ArticleNumber,
-                            UnitPrice = item.UnitPrice,
                             Quantity = whsMovement.Qty,
                             WarehouseCode = whs.Code ?? ""
                         }
@@ -124,8 +118,10 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
 
                 JObject obj = JObject.Parse(errorResponse);
 
-                string value = obj["error"]?["message"]?["value"]?.ToString();
-
+                string? value = obj["error"]?
+                    ["message"]?
+                    ["value"]?
+                    .ToString();
 
                 throw new BadRequestException(value);
             }
@@ -171,8 +167,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
         {
             var companyId = _httpContextAccessor
                 .HttpContext?
-                .Items["CompanyId"]?
-                .ToString()
+                .User?
+                .FindFirst(x => x.Type == "CompanyId")?
+                .Value
                 ?? throw new BadRequestException("Invalid Company");
 
             var company = _companiesService.Get(x => x.Id == int.Parse(companyId))?.Data

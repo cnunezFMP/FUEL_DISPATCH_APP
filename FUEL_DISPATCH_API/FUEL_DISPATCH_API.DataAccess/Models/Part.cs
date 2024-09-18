@@ -6,7 +6,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
     public class Part
     {
         public int Id { get; set; }
-        [Required] public string? Name { get; set; }
+        [Required] public string Name { get; set; }
         public string? Description { get; set; }
         public string? Code { get; set; }
         public string? Brand { get; set; }
@@ -14,13 +14,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public string? CreatedBy { get; set; }
         public string? Manufacturer { get; set; }
         public int? CompanyId { get; set; }
-        [Required] public decimal? MaintenanceOdometerInt { get; set; }
+        [Required] public decimal MaintenanceOdometerInt { get; set; }
         [Required] public int MaintenanceMonthsInt { get; set; }
         public DateTime? CreatedAt { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        [JsonIgnore]
-        public virtual ICollection<Maintenance> Maintenances { get; set; } = new List<Maintenance>();
+        public virtual ICollection<MaintenanceDetails>? MaintenanceDetails { get; set; } = [];
+
         [JsonIgnore]
         public virtual Companies? Company { get; set; }
     }
