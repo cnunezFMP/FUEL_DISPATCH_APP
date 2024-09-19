@@ -1,12 +1,10 @@
-﻿
-using FUEL_DISPATCH_API.DataAccess.Models;
+﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Constants;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
-
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class UsersServices : GenericRepository<User>, IUserServices

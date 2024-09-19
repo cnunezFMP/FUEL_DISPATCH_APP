@@ -646,7 +646,11 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity
             .HasMany(x => x.Details)
             .WithOne()
-            .HasForeignKey(x => x.MaintenanceId);
+            .HasForeignKey(x => x.MaintenanceId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+            entity.Navigation(x => x.Details).AutoInclude();
+            entity.Navigation(x => x.Vehicle).AutoInclude();
             /*entity.Property(x => x.CompanyId)
             .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<CompanyIdGenerator>();

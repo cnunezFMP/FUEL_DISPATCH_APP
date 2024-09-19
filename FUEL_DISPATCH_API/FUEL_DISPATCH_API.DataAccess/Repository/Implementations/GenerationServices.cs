@@ -39,5 +39,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                     StatusCodes.Status200OK,
                     AppConstants.DATA_OBTAINED_MESSAGE);
         }
+
+        public override ResultPattern<Generation> Post(Generation entity)
+        {
+            var genExist = _DBContext.Generation.FirstOrDefault(x => x.Name == entity.Name);
+            if (genExist is not null)
+                throw new BadHttpRequestException("Una generacion con este nombre ya existe. ");
+
+            return base.Post(entity);
+        }
     }
 }

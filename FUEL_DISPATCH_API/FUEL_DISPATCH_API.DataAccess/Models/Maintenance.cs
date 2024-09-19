@@ -13,7 +13,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public decimal? CurrentOdometer { get; set; }
         public string? VehicleVin { get; set; }
         public MaitenanceStatusEnum? Status { get; set; } = MaitenanceStatusEnum.NotStarted;
-        [JsonIgnore] public Vehicle? Vehicle { get; set; }
+        public Vehicle? Vehicle { get; set; }
         public ICollection<MaintenanceDetails> Details { get; set; } = [];
     }
 

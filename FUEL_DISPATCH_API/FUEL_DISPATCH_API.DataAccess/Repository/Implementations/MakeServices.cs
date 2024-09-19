@@ -19,7 +19,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             if (query.Page == 0)
                 query.Page = 1;
-
             var entities = _DBContext.Make
                 .AsNoTrackingWithIdentityResolution()
                 .ApplyFilteringOrderingPaging(query);
@@ -37,6 +36,15 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             return ResultPattern<Paging<Make>>.Success(responseEntities,
                     StatusCodes.Status200OK,
                     AppConstants.DATA_OBTAINED_MESSAGE);
+        }
+
+        public override ResultPattern<Make> Post(Make entity)
+        {
+            var makeExist = _DBContext.Make.FirstOrDefault(x => x.Name == entity.Name);
+            if (makeExist is not null)
+                throw new BadHttpRequestException("Una marca con este nombre ya existe. ");
+
+            return base.Post(entity);
         }
     }
 }

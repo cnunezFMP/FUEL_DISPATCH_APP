@@ -38,5 +38,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                     AppConstants.DATA_OBTAINED_MESSAGE);
 
         }
+
+        public override ResultPattern<Model> Post(Model entity)
+        {
+            var modelExist = _DBContext.Model.FirstOrDefault(x => x.Name == entity.Name);
+            if (modelExist is not null)
+                throw new BadHttpRequestException("Un modelo con este nombre ya existe. ");
+
+            return base.Post(entity);
+        }
     }
 }

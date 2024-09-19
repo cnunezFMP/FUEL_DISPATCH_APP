@@ -38,5 +38,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                     StatusCodes.Status200OK,
                     AppConstants.DATA_OBTAINED_MESSAGE);
         }
+        public override ResultPattern<ModEngine> Post(ModEngine entity)
+        {
+            var modEngineExist = _DBContext.ModEngine.FirstOrDefault(x => x.Name == entity.Name);
+            if (modEngineExist is not null)
+                throw new BadHttpRequestException("Un motor con este nombre ya existe. ");
+
+            return base.Post(entity);
+        }
     }
 }

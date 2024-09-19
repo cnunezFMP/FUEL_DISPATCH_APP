@@ -1,11 +1,12 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Models;
 using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
-using FUEL_DISPATCH_API.Utils.Constants;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class MaintenanceServices : GenericRepository<Maintenance>, IMaintenanceServices
@@ -30,6 +31,47 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             SetVehicleStatus(entity);
 
             return base.Post(entity);
+        }
+        public override ResultPattern<Maintenance> Update(Func<Maintenance, bool> predicate, Maintenance updatedEntity)
+        {
+            //RemoveDetails(predicate, updatedEntity);
+            //AddDetails(predicate, updatedEntity);
+            var maintenanceUpdate = _DBContext
+                .Maintenance
+                .Include(x => x.Details)
+                .FirstOrDefault(predicate) ??
+                throw new NotFoundException("El mantenimiento no se encontro. ");
+
+            var lines = maintenanceUpdate.Details.ToList();
+
+            lines.ForEach(x =>
+            {
+                var line = updatedEntity.Details.SingleOrDefault(y => y.MaintenanceId == x.MaintenanceId && y.Id == x.Id);
+
+                if (line is null)
+                    _DBContext.MaintenanceDetails.Remove(x);
+                else
+                {
+                    _DBContext.MaintenanceDetails.Entry(x).CurrentValues.SetValues(line);
+                }
+            });
+
+            var newLines = updatedEntity.Details.Where(x => x.Id == 0).ToList();
+
+            newLines.ForEach(x =>
+            {
+                x.MaintenanceId = maintenanceUpdate.Id;
+                _DBContext.MaintenanceDetails.Add(x);
+            });
+
+            foreach (var details in updatedEntity.Details)
+                SetNextMaintenanceDate(details);
+
+            SetCurrentOdometerByVehicle(updatedEntity);
+            SetNextMaintenanceOdometer(updatedEntity);
+            SetVehicleStatus(updatedEntity);
+
+            return base.Update(predicate, updatedEntity);
         }
 
         public bool SetNextMaintenanceDate(MaintenanceDetails maintenanceDetails)
@@ -73,11 +115,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool SetNextMaintenanceOdometer(Maintenance maintenance)
         {
-            /*string? companyId;
-            companyId = _httpContextAccessor
-                .HttpContext?.Items["CompanyId"]?.ToString() ??
-                throw new BadRequestException("Invalid company. ");*/
-
             foreach (var detail in maintenance.Details)
             {
                 var part = _DBContext.Part
@@ -115,7 +152,45 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             if (maintenance.Status is Enums.MaitenanceStatusEnum.InProgress)
                 vehicle.Status = Enums.VehicleStatussesEnum.NotAvailable;
 
+            if (maintenance.Status is Enums.MaitenanceStatusEnum.Canceled || maintenance.Status is Enums.MaitenanceStatusEnum.Completed)
+                vehicle.Status = Enums.VehicleStatussesEnum.Active;
+
             return true;
+        }
+
+        public bool RemoveDetails(Func<Maintenance, bool> predicate, Maintenance maintenance)
+        {
+            var maintenanceUpdate = _DBContext
+                .Maintenance
+                .Include(x => x.Details)
+                .FirstOrDefault(predicate) ??
+                throw new NotFoundException("El mantenimiento no se encontro. ");
+
+            if (maintenance.Details.Count < maintenanceUpdate.Details.Count)
+                foreach (var detail in maintenanceUpdate.Details)
+                    _DBContext.MaintenanceDetails.Remove(detail);
+
+            return true;
+        }
+
+        public bool AddDetails(Func<Maintenance, bool> predicate, Maintenance maintenance)
+        {
+            var maintenanceUpdate = _DBContext
+                .Maintenance
+                .Include(x => x.Details)
+                .FirstOrDefault(predicate) ??
+                throw new NotFoundException("El mantenimiento no se encontro. ");
+
+            if (maintenance.Details.Count > maintenanceUpdate.Details.Count)
+            {
+                foreach (var detail in maintenance.Details)
+                    maintenanceUpdate.Details.Add(detail);
+
+                return true;
+            }
+
+
+            return false;
         }
     }
 }

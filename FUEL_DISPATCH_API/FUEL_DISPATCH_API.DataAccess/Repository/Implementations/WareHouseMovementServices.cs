@@ -52,10 +52,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             if (!CheckDriver(wareHouseMovement))
                 throw new BadRequestException("El conductor esta inactivo, o no esta disponible. ");
-
             /*if (!CheckBranchOffice(wareHouseMovement))
                 throw new BadRequestException("El conductor esta inactivo, o no esta disponible. ");*/
-
             if (!CheckDispenser(wareHouseMovement))
                 throw new BadRequestException("El dispensador no esta activo. ");
             // DONE: Terminar de probar esta validacion. (Simplemente no era el id del item que estaba. )

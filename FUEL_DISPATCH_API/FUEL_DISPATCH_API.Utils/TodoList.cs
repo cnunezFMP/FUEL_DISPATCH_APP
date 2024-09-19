@@ -1,6 +1,6 @@
 ﻿// DONE: Resolver los errores de compilación en los archivos de la carpeta DataAccess.
 // DONE: Buscar la forma final de como utilizare el httpcontext para buscar los datos correspondientes a companyId y branchId.
-// INPROGRESS: Terminar de implementar el middleware de autenticación en todas las validaciones.
+// UNDONE: Terminar de implementar el middleware de autenticación en todas las validaciones.
 // DONE: Añadir los demas roles a la base de datos y controladores.
 // DONE: Verificar si añadir la llave primaria compuesta en UsersBranchOffice y demas.
 // NOTE: No la añadi, pero verifico que no se pueda repetir el mismo usuario en la misma sucursal.
@@ -9,4 +9,4 @@
 // DONE: Verificar la compañia y sucursal en EmployeeConsumptionLimits. (Si no lo estoy haciendo)
 // DONE: Terminar de solucionar lo de la respuesta del Unauthorized. 
 // DONE: Poner BranchId y CompanyId en las entidades que lo requieran mediante el middleware.
-// INPROGRESS: Chequear los nulleables en las entidades.
+// DONE: Chequear los nulleables en las entidades.

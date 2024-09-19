@@ -20,7 +20,7 @@ namespace FUEL_DISPATCH_API.Controllers
 
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Maintenance>>> GetMaintenances([FromQuery] GridifyQuery query)
-            => Ok(_vw_MaintenanceServices.GetAll(query));
+            => Ok(_maintenanceServices.GetAll(query));
         
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Maintenance>> GetMaintenance(int id)
