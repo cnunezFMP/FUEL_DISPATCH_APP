@@ -22,11 +22,11 @@ namespace FUEL_DISPATCH_API.Controllers
         }
 
         [HttpPost("Register")]
-        public ActionResult<ResultPattern<User>> Register([FromBody] UserRegistrationDto user)
+        public ActionResult<ResultPattern<UserRegistrationDto>> Register([FromBody] UserRegistrationDto user)
             => Created(string.Empty, _usersAuth.UserRegistration(user));
 
         [HttpPost("Login")]
-        public ActionResult<ResultPattern<User>> Login([FromBody] LoginDto loginDto)
+        public ActionResult<ResultPattern<LoginDto>> Login([FromBody] LoginDto loginDto)
             => Ok(_usersAuth.Login(loginDto));
 
         [HttpPut("ChangePassword/{userid}")]

@@ -71,7 +71,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<DriverMethodOfComsuption> DriverMethodOfComsuption { get; set; }
     public virtual DbSet<ModEngine> ModEngine { get; set; }
     public virtual DbSet<Model> Model { get; set; }
-    public virtual DbSet<Road> Road { get; set; }
     public virtual DbSet<Role> Role { get; set; }
     public virtual DbSet<Stock> Stock { get; set; }
     public virtual DbSet<WareHouse> WareHouse { get; set; }
@@ -83,7 +82,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<UserToken> UserToken { get; set; }
     public virtual DbSet<UsersRols> UsersRols { get; set; }
     public virtual DbSet<Vehicle> Vehicle { get; set; }
-    public virtual DbSet<Zone> Zone { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AllComsuption>(entity =>
@@ -297,7 +295,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.HasOne(d => d.Driver).WithMany(p => p.WareHouseMovements).HasForeignKey(d => d.DriverId);
             entity.HasOne(e => e.BranchOffice).WithMany(e => e.WareHouseMovements).HasForeignKey(e => e.BranchOfficeId);
             entity.HasOne(d => d.Dispenser).WithMany(p => p.WareHouseMovements).HasForeignKey(d => d.DispenserId);
-            entity.HasOne(e => e.Road).WithMany(e => e.WareHouseMovements).HasForeignKey(f => f.RoadId);
 
             entity.HasOne(e => e.WareHouse)
             .WithMany(e => e.WareHouseMovements)
@@ -706,37 +703,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             //.WithMany(x => x.MaintenanceDetails)
             //.HasForeignKey(x => x.PartId);
         });
-        modelBuilder.Entity<Road>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-
-            entity.ToTable("Road");
-            entity.Property(x => x.CreatedBy)
-            .HasValueGenerator<UserNameGenerator>();
-
-            entity.Property(x => x.CreatedAt)
-            .ValueGeneratedOnAdd()
-            .HasValueGenerator<DateTimeGenerator>();
-
-            entity.Property(x => x.UpdatedBy)
-            .ValueGeneratedOnUpdate()
-            .HasValueGenerator<UserNameGenerator>();
-
-            entity.Property(x => x.UpdatedAt)
-            .ValueGeneratedOnUpdate()
-            .HasValueGenerator<DateTimeGenerator>();
-
-            /*entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAddOrUpdate()
-            .HasValueGenerator<CompanyIdGenerator>();*/
-            entity.HasOne(x => x.Company)
-            .WithMany(x => x.Roads)
-            .HasForeignKey(x => x.CompanyId);
-
-            entity.HasOne(d => d.Zone)
-            .WithMany(p => p.Road)
-            .HasForeignKey(d => d.ZoneId);
-        });
+     
         modelBuilder.Entity<WareHouseMovementRequest>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -1098,37 +1065,6 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.Navigation(x => x.Make).AutoInclude();
             entity.Navigation(x => x.ModEngine).AutoInclude();
             entity.Navigation(x => x.Model).AutoInclude();
-        });
-        modelBuilder.Entity<Zone>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Status);
-            entity.Property(x => x.CreatedBy)
-            .ValueGeneratedOnAdd()
-            .HasValueGenerator<UserNameGenerator>();
-
-            entity.Property(x => x.CreatedAt)
-            .ValueGeneratedOnAdd()
-            .HasValueGenerator<DateTimeGenerator>()
-            .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
-
-            entity.Property(x => x.UpdatedBy)
-            .ValueGeneratedOnUpdate()
-            .HasValueGenerator<UserNameGenerator>()
-            .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
-
-            entity.Property(x => x.UpdatedAt)
-            .ValueGeneratedOnUpdate()
-            .HasValueGenerator<DateTimeGenerator>()
-            .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
-
-            /*entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAddOrUpdate()
-            .HasValueGenerator<CompanyIdGenerator>();*/
-
-            entity.HasOne(x => x.Company)
-            .WithMany(x => x.Zones)
-            .HasForeignKey(x => x.CompanyId);
         });
         modelBuilder.Entity<CompanySAPParams>(entity =>
         {

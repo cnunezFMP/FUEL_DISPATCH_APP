@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using FUEL_DISPATCH_API.DataAccess.Enums;
 namespace FUEL_DISPATCH_API.DataAccess.Models
 {
     public partial class WareHouseMovement
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int? VehicleId { get; set; }
         public int? RoadId { get; set; }
@@ -33,7 +31,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         [JsonIgnore] public virtual Companies? Company { get; set; }
         public virtual Vehicle? Vehicle { get; set; }
         public virtual Driver? Driver { get; set; }
-        [JsonIgnore] public virtual Road? Road { get; set; }
         [JsonIgnore] public virtual WareHouseMovementRequest? Request { get; set; }
         public virtual Dispenser? Dispenser { get; set; }
         public virtual WareHouse? WareHouse { get; set; }

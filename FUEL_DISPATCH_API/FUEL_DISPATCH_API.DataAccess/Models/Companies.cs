@@ -33,10 +33,8 @@ public partial class Companies
     public string? CreatedBy { get; set; }
 
     public string? UpdatedBy { get; set; }
-    [JsonIgnore] public virtual ICollection<Zone>? Zones { get; set; } = [];
     [JsonIgnore] public virtual ICollection<WareHouseMovement>? WareHouseMovements { get; set; } = [];
     [JsonIgnore] public virtual ICollection<Vehicle>? Vehicles { get; set; } = [];
-    [JsonIgnore] public virtual ICollection<Road>? Roads { get; set; } = [];
     [JsonIgnore] public virtual ICollection<ArticleDataMaster>? Articles { get; set; } = [];
     [JsonIgnore] public virtual ICollection<User>? Users { get; set; } = [];
     [JsonIgnore] public virtual ICollection<WareHouse>? WareHouses { get; set; } = [];

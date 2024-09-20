@@ -18,7 +18,8 @@ namespace FUEL_DISPATCH_API.Reporting.Repository
         {
             var rd = new ReportDocument();
             string connStr = ConfigurationManager.ConnectionStrings["myConnectionString"].ConnectionString;
-            rd.Load(Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~/Reports"), "Report5.rpt"));
+            rd.Load(Path
+                .Combine(System.Web.Hosting.HostingEnvironment.MapPath("~/Reports"), "Report5.rpt"));
 
             var builder = new SqlConnectionStringBuilder(connStr);
 
@@ -31,11 +32,8 @@ namespace FUEL_DISPATCH_API.Reporting.Repository
                 Password = builder.Password,
 
             };
-
-
-
             foreach (Table table in rd.Database.Tables)
-            {   
+            {
                 TableLogOnInfo logOnInfo = table.LogOnInfo;
                 logOnInfo.ConnectionInfo = connectionInfo;
                 table.ApplyLogOnInfo(logOnInfo);

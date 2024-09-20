@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Twilio.TwiML.Voice;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class MaintenanceServices : GenericRepository<Maintenance>, IMaintenanceServices
@@ -23,6 +24,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
         public override ResultPattern<Maintenance> Post(Maintenance entity)
         {
+            if (!MaintenanceExist(entity))
+                throw new BadRequestException("Agregue los detalles al mantenimiento existente para este vehiculo. ");
+
             foreach (var details in entity.Details)
                 SetNextMaintenanceDate(details);
 
@@ -171,6 +175,14 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                     _DBContext.MaintenanceDetails.Remove(detail);
 
             return true;
+        }
+
+        public bool MaintenanceExist(Maintenance maintenance)
+        {
+            var existingMaintenance = _DBContext.Maintenance.FirstOrDefault(x => x.VehicleId == maintenance.VehicleId);
+
+
+            return (existingMaintenance!.Status is Enums.MaitenanceStatusEnum.Canceled || existingMaintenance.Status is Enums.MaitenanceStatusEnum.Completed);
         }
 
         public bool AddDetails(Func<Maintenance, bool> predicate, Maintenance maintenance)

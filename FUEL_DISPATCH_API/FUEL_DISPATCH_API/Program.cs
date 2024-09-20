@@ -82,7 +82,6 @@ builder.Services.AddSwaggerGen(
 builder.Services.AddDbContext<FUEL_DISPATCH_DBContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("cadenaSQL")));
 
-// Call to the secret key.
 var secretkey = builder.Configuration.GetSection("settings:secretkey").Value; //.GetSection("secretkey").ToString();
 var keyBytes = Encoding.UTF8.GetBytes(secretkey!);
 builder.Services.AddAuthentication(config =>
@@ -111,14 +110,12 @@ builder.Services.AddAuthentication(config =>
         };
     });
 #region ServicesContainers
-builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
-                .AddScoped<IValidator<Vehicle>, VehiclesValidator>()
+builder.Services.AddScoped<IValidator<Vehicle>, VehiclesValidator>()
                 .AddScoped<IValidator<EmployeeConsumptionLimits>, EmployeeComsuptionLimitsValidator>()
                 .AddScoped<IValidator<Booking>, BookingValidator>()
                 .AddScoped<IValidator<BranchOffices>, BranchOfficeValidator>()
                 .AddScoped<IValidator<BranchIsland>, BranchIslandValidator>()
                 .AddScoped<IValidator<Dispenser>, DispenserValidator>()
-                .AddScoped<IValidator<Road>, RoadValidator>()
                 .AddScoped<IValidator<WareHouseMovementRequest>, RequestValidator>()
                 .AddScoped<IValidator<Driver>, DriverValidator>()
                 .AddScoped<IValidator<WareHouseMovement>, WareHouseMovementValidator>()
@@ -127,7 +124,6 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IValidator<UsersBranchOffices>, UsersBranchOfficeValidator>()
                 .AddScoped<IValidator<EmployeeConsumptionLimits>, EmployeeComsuptionLimitsValidator>()
                 .AddScoped<IEmployeeComsuptionLimitsServices, EmployeeComsuptionLimitsServices>()
-                .AddScoped<IZoneServices, ZoneServices>()
                 .AddScoped<IBookingServices, BookingServices>()
                 .AddScoped<IOdometerMeasureServices, OdometerMeasureServices>()
                 .AddScoped<IBranchOfficeServices, BranchOfficeServices>()
@@ -144,7 +140,6 @@ builder.Services.AddScoped<IValidator<Zone>, ZoneValidator>()
                 .AddScoped<IEmployeeComsuptionLimitsServices, EmployeeComsuptionLimitsServices>()
                 .AddScoped<IVw_MaintenanceServices, Vw_MaintenanceServices>()
                 .AddScoped<IDispenserServices, DispenserServices>()
-                .AddScoped<IRoadServices, RoadServices>()
                 .AddScoped<ICompaniesServices, CompaniesServices>()
                 .AddScoped<ILicenseExpDateAlertServices, LicenseExpDateAlertServices>()
                 .AddScoped<IAllComsuptionServices, AllComsuptionServices>()
