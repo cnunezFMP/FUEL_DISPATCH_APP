@@ -1,6 +1,4 @@
-﻿using FUEL_DISPATCH_API.DataAccess.Enums;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FUEL_DISPATCH_API.DataAccess.Models
 {
