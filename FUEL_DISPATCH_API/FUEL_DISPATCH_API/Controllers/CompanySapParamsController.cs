@@ -3,7 +3,6 @@ using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Mvc;
-
 namespace FUEL_DISPATCH_API.Controllers
 {
     [ApiController]
@@ -11,10 +10,10 @@ namespace FUEL_DISPATCH_API.Controllers
     public class CompanySapParamsController(ICompanySapParamsServices companySapParamsServices) : ControllerBase
     {
         private readonly ICompanySapParamsServices _companySapParamsServices = companySapParamsServices;
+
         [HttpGet]
         public ActionResult<ResultPattern<CompanySAPParams>> GetParams([FromQuery] GridifyQuery query)
             => Ok(_companySapParamsServices.GetAll(query));
-
 
         [HttpPost]
         public ActionResult<ResultPattern<CompanySAPParams>> RegisterParams([FromBody] CompanySAPParams companySAPParams)

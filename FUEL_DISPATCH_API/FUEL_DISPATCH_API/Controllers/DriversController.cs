@@ -28,7 +28,7 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Driver>>> GetDrivers([FromQuery] GridifyQuery query)
             => Ok(_driverServices.GetAll(query));
-        
+
 
         [HttpGet("{driverId:int}/WareHouseMovement"), Authorize/*(Roles = "CanReadData, Administrador, CanGenerateReport")*/]
         public ActionResult<ResultPattern<Paging<Driver>>> GetDriverWareHouseMovements(int driverId)
@@ -41,9 +41,9 @@ namespace FUEL_DISPATCH_API.Controllers
             companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
             branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
 
-            bool predicate(Driver x) => x.Id == id /*&&
+            bool predicate(Driver x) => x.Id == id; /*&&
                                                x.CompanyId == int.Parse(companyId) &&
-                                               x.BranchOfficeId == int.Parse(branchId)*/;
+                                               x.BranchOfficeId == int.Parse(branchId)*/
             return Ok(_driverServices.Get(predicate));
         }
 
@@ -73,14 +73,20 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize/*(Roles = "CanCreate, Administrador")*/]
         public ActionResult<ResultPattern<Driver>> PostDriver([FromBody] Driver driver)
             => Created(string.Empty, _driverServices.Post(driver));
-        
+
 
         [HttpPut("{id:int}"), Authorize/*(Roles = "Administrador")*/]
         public ActionResult<ResultPattern<Driver>> UpdateDriver(int id, [FromBody] Driver driver)
         {
             /*string? companyId, branchId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
+            companyId = _httpContextAccessor
+            .HttpContext?
+            .Items["CompanyId"]?
+            .ToString();
+            branchId = _httpContextAccessor
+            .HttpContext?
+            .Items["BranchOfficeId"]?
+            .ToString();*/
 
             bool predicate(Driver x) => x.Id == id /*&&
                                                x.CompanyId == int.Parse(companyId) &&

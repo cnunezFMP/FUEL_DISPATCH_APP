@@ -39,20 +39,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize/*(Roles = "CanGenerateDispatch, Administrador")*/]
         public ActionResult<ResultPattern<WareHouseMovement>> PostMovement([FromBody] WareHouseMovement wareHouseMovement)
             => Created(string.Empty, _wareHouseMovementServices.Post(wareHouseMovement));
+
         [HttpPut("{id:int}"), Authorize/*(Roles = "Administrador, CanUpdateData")*/]
         public ActionResult<ResultPattern<WareHouseMovement>> UpdateMovement(int id,
             [FromBody] WareHouseMovement wareHouseMovement)
         {
-            /*string? companyId, branchId;
-            companyId = _httpContextAccessor
-                .HttpContext?
-                .Items["CompanyId"]?
-                .ToString();
-
-            branchId = _httpContextAccessor
-                .HttpContext?
-                .Items["BranchOfficeId"]?
-                .ToString();*/
 
             bool predicate(WareHouseMovement x) => x.Id == id/* &&
                                            x.CompanyId == int.Parse(companyId) &&

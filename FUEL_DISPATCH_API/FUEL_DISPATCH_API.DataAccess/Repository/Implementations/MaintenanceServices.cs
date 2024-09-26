@@ -55,9 +55,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
                 if (line is null)
                     _DBContext.MaintenanceDetails.Remove(x);
                 else
-                {
                     _DBContext.MaintenanceDetails.Entry(x).CurrentValues.SetValues(line);
-                }
+
             });
 
             var newLines = updatedEntity.Details.Where(x => x.Id == 0).ToList();
@@ -77,16 +76,8 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             return base.Update(predicate, updatedEntity);
         }
-
         public bool SetNextMaintenanceDate(MaintenanceDetails maintenanceDetails)
         {
-            /*string? companyId;
-            companyId = _httpContextAccessor
-                .HttpContext?
-                .Items["CompanyId"]?
-                .ToString() ??
-           throw new BadRequestException("Invalid company. ");*/
-
             var part = _DBContext.Part
                 .FirstOrDefault(x => x.Id == maintenanceDetails.PartId /*&&
                 x.CompanyId == int.Parse(companyId)*/) ??

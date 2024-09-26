@@ -703,7 +703,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             //.WithMany(x => x.MaintenanceDetails)
             //.HasForeignKey(x => x.PartId);
         });
-     
+
         modelBuilder.Entity<WareHouseMovementRequest>(entity =>
         {
             entity.HasKey(e => e.Id);
