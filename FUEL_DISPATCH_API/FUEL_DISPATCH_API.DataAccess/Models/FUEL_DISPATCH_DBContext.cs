@@ -46,6 +46,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
         });
     }
     public virtual DbSet<AllComsuption> AllComsuption { get; set; }
+    public virtual DbSet<Vw_Notifications> Vw_Notifications { get; set; }
     public virtual DbSet<ArticleDataMaster> ArticleDataMaster { get; set; }
     public virtual DbSet<UsersBranchOffices> UsersBranchOffices { get; set; }
     public virtual DbSet<BranchOffices> BranchOffices { get; set; }
@@ -663,6 +664,13 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             entity.ToView("vw_Maintenance");
             entity.Property(x => x.Status).HasConversion<EnumToStringConverter<MaitenanceStatusEnum>>();
         });
+
+        modelBuilder.Entity<Vw_Notifications>(entity =>
+        {
+            entity.HasNoKey();
+            entity.ToView("Vw_Notifications");
+        });
+
 
         modelBuilder.Entity<MaintenanceDetails>(entity =>
         {
