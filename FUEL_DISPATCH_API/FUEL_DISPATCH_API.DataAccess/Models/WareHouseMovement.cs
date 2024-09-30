@@ -7,7 +7,6 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
     {
         public int Id { get; set; }
         public int? VehicleId { get; set; }
-        public int? RoadId { get; set; }
         [Required] public string? Dispatcher { get; set; }
         [Required] public int? ItemId { get; set; }
         public int? CompanyId { get; set; }

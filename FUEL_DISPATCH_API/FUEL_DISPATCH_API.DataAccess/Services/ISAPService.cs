@@ -130,8 +130,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
         {
             var companyId = _httpContextAccessor
                 .HttpContext?
-                .Items["CompanyId"]?
-                .ToString()
+                .User?
+                .FindFirst(x => x.Type == "CompanyId")?
+                .Value
                 ?? throw new BadRequestException("Invalid Company");
 
             var company = _companiesService.Get(x => x.Id == int.Parse(companyId))?.Data
@@ -152,10 +153,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
                 ?? throw new BadRequestException("Invalid Response");
 
                 JObject obj = JObject.Parse(errorResponse);
-
                 string value = obj["error"]?["message"]?["value"]?.ToString();
-
-
                 throw new BadRequestException(value);
             }
 

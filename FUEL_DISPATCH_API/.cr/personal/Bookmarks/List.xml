@@ -2,7 +2,7 @@
 <Root Type="DevExpress.CodeRush.Foundation.Markers.SolutionBookmarksContainer">
   <Options Language="Neutral">
     <Items>
-      <Item Id="{8c45db0e-8d57-4936-a5b0-a7f76d689386}">
+      <Item Id="{c75e1564-f6e3-4fc1-a9a2-48fafd87092b}">
         <Id>4</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API\Controllers\ArticlesController.cs</File>
         <Line>64</Line>
@@ -11,7 +11,7 @@
         <ViewportTopMax>2551</ViewportTopMax>
         <TopLine>27</TopLine>
       </Item>
-      <Item Id="{ccfd1df8-aa02-41ac-9c8b-63b294456f4a}">
+      <Item Id="{23ff86f6-6e27-4bab-b956-57799784f2ef}">
         <Id>3</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API\Controllers\ArticlesController.cs</File>
         <Line>14</Line>
@@ -20,7 +20,7 @@
         <ViewportTopMax>1796</ViewportTopMax>
         <TopLine>15</TopLine>
       </Item>
-      <Item Id="{e59951ce-d29a-46c7-bc02-c9c8f106884a}">
+      <Item Id="{35d9f474-9e2b-4648-a2bc-afd896b3ee66}">
         <Id>1</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API\Controllers\DriversController.cs</File>
         <Line>15</Line>
@@ -29,14 +29,14 @@
         <ViewportTopMax>2230</ViewportTopMax>
         <TopLine>14</TopLine>
       </Item>
-      <Item Id="{37f4dd35-d949-40a5-98cc-f1f99a0e90fa}">
+      <Item Id="{cb1fd2fc-400c-4f0c-9e17-8e8d628bae32}">
         <Id>6</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API.Utils\TodoList.cs</File>
         <Line>2</Line>
         <Character>96</Character>
         <ViewportTopMax>556</ViewportTopMax>
       </Item>
-      <Item Id="{ffb4e58c-aa0c-4ea9-9847-5c46f0e7a117}">
+      <Item Id="{102b82f0-4be9-4d55-8643-46a4536ad06e}">
         <Id>5</Id>
         <File>FUEL_DISPATCH_API\FUEL_DISPATCH_API.DataAccess\Repository\Implementations\ArticleDataMasterServices.cs</File>
         <Line>11</Line>

@@ -10,12 +10,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public string? Description { get; set; }
         [Required] public decimal UnitPrice { get; set; }
         public string? Manufacturer { get; set; }
-        [Required] public string? BarCode { get; set; }
+        public string? BarCode { get; set; }
         public string? CreatedBy { get; set; }
         public int? CompanyId { get; set; }
         public DateTime? CreatedAt { get; set; }
         public string? UpdatedBy { get; set; }
-        public DateTime? UpdatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
         [JsonIgnore] public virtual ICollection<Stock> Stocks { get; set; } = [];
         [JsonIgnore] public virtual ICollection<WareHouseMovement> WareHouseMovements { get; set; } = [];
         [JsonIgnore] public virtual Companies? Company { get; set; }

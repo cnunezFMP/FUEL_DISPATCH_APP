@@ -5,10 +5,20 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 namespace FUEL_DISPATCH_API.Middlewares
 {
     public class GlobalExceptionHandlerMiddleware : IExceptionHandler
     {
+        // Opciones para la serializacion: 
+        private static JsonSerializerOptions JsonSerializerOptions => new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true,
+            ReferenceHandler = ReferenceHandler.IgnoreCycles,
+            NumberHandling = JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString
+        };
+
         public async ValueTask<bool> TryHandleAsync(
             HttpContext httpContext,
             Exception exception,
@@ -18,7 +28,7 @@ namespace FUEL_DISPATCH_API.Middlewares
             var exType = exception.GetType();
             HttpStatusCode httpStatusCode = HttpStatusCode.InternalServerError;
             CheckException(httpContext, exception, out problemDetails, exType, out httpStatusCode);
-            var response = JsonSerializer.Serialize(problemDetails);
+            var response = JsonSerializer.Serialize(problemDetails, JsonSerializerOptions);
             LoggerClass.LogError(response);
             httpContext.Response.ContentType = "application/json";
             httpContext.Response.StatusCode = (int)httpStatusCode;

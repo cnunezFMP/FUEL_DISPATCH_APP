@@ -27,14 +27,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         {
             try
             {
-                var getWareHouseTask = _sapService.GetWarehouseSAP(wareHouse.Code);
+                var getWareHouseTask = _sapService.GetWarehouseSAP(wareHouse.Code!);
                 getWareHouseTask.Wait();
             }
             catch (Exception ex)
             {
-                return ResultPattern<WareHouse>.Failure(
-                    StatusCodes.Status400BadRequest,
-                    "The warehouse doesn't exist in SAP");
+                throw new BadRequestException(ex.InnerException?.Message ?? ex.Message);
             }
 
             /*if (wareHouse.BranchOfficeId.HasValue)

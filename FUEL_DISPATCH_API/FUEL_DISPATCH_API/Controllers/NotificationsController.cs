@@ -14,7 +14,7 @@ namespace FUEL_DISPATCH_API.Controllers
     {
         private readonly IVw_NotificationsServices _notificationsServices = notificationsServices;
         [HttpGet, Authorize]
-        public ActionResult<ResultPattern<Paging<ArticleDataMaster>>> GetNotifications([FromQuery] GridifyQuery query)
+        public ActionResult<ResultPattern<Paging<Vw_Notifications>>> GetNotifications([FromQuery] GridifyQuery query)
             => Ok(_notificationsServices.GetAll(query));
 
     }

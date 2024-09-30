@@ -4,10 +4,7 @@ using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
-using Twilio.TwiML.Voice;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
     public class MaintenanceServices : GenericRepository<Maintenance>, IMaintenanceServices
@@ -24,8 +21,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
         public override ResultPattern<Maintenance> Post(Maintenance entity)
         {
-            if (!MaintenanceExist(entity))
-                throw new BadRequestException("Agregue los detalles al mantenimiento existente para este vehiculo. ");
+            if (!IsVehicleActive(entity))
+                throw new BadRequestException("Este vehiculo no esta activo. ");
+
 
             foreach (var details in entity.Details)
                 SetNextMaintenanceDate(details);
@@ -152,48 +150,12 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             return true;
         }
-
-        public bool RemoveDetails(Func<Maintenance, bool> predicate, Maintenance maintenance)
+        public bool IsVehicleActive(Maintenance maintenance)
         {
-            var maintenanceUpdate = _DBContext
-                .Maintenance
-                .Include(x => x.Details)
-                .FirstOrDefault(predicate) ??
-                throw new NotFoundException("El mantenimiento no se encontro. ");
+            var vehicle = _DBContext.Vehicle.Find(maintenance.VehicleId);
 
-            if (maintenance.Details.Count < maintenanceUpdate.Details.Count)
-                foreach (var detail in maintenanceUpdate.Details)
-                    _DBContext.MaintenanceDetails.Remove(detail);
-
-            return true;
-        }
-
-        public bool MaintenanceExist(Maintenance maintenance)
-        {
-            var existingMaintenance = _DBContext.Maintenance.FirstOrDefault(x => x.VehicleId == maintenance.VehicleId);
-
-
-            return (existingMaintenance!.Status is Enums.MaitenanceStatusEnum.Canceled || existingMaintenance.Status is Enums.MaitenanceStatusEnum.Completed);
-        }
-
-        public bool AddDetails(Func<Maintenance, bool> predicate, Maintenance maintenance)
-        {
-            var maintenanceUpdate = _DBContext
-                .Maintenance
-                .Include(x => x.Details)
-                .FirstOrDefault(predicate) ??
-                throw new NotFoundException("El mantenimiento no se encontro. ");
-
-            if (maintenance.Details.Count > maintenanceUpdate.Details.Count)
-            {
-                foreach (var detail in maintenance.Details)
-                    maintenanceUpdate.Details.Add(detail);
-
-                return true;
-            }
-
-
-            return false;
+            return (vehicle!.Status is not Enums.VehicleStatussesEnum.Inactive &&
+                    vehicle.Status is not Enums.VehicleStatussesEnum.NotAvailable);
         }
     }
 }

@@ -112,7 +112,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
 
             entity.Property(x => x.UpdatedAt)
-            .ValueGeneratedOnUpdate()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<DateTimeGenerator>()
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
 
@@ -285,7 +285,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
 
             entity.Property(x => x.UpdatedAt)
-            .ValueGeneratedOnUpdate()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<DateTimeGenerator>()
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
             entity.Property(x => x.Type)
@@ -329,13 +329,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
             entity.Property(x => x.Status)
             .HasConversion<EnumToStringConverter<ActiveInactiveStatussesEnum>>();
-            //entity.Property(x => x.CompanyId)
-            //.ValueGeneratedOnAddOrUpdate()
-            //.HasValueGenerator<CompanyIdGenerator>();
-
-            /*entity.Property(x => x.BranchOfficeId)
-            .ValueGeneratedOnAdd()
-            .HasValueGenerator<BranchOfficeIdGenerator>();*/
+            
             entity.Property(x => x.CreatedAt)
             .ValueGeneratedOnAdd()
             .HasValueGenerator<DateTimeGenerator>()
@@ -346,7 +340,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasValueGenerator<UserNameGenerator>()
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
             entity.Property(x => x.UpdatedAt)
-            .ValueGeneratedOnUpdate()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<DateTimeGenerator>()
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
             entity.HasOne(x => x.Company)
@@ -365,13 +359,8 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
                   .ValueGeneratedOnAdd()
                   .HasValueGenerator<UserNameGenerator>();
 
-            //entity.Property(x => x.CompanyId)
-            //      .ValueGeneratedOnAddOrUpdate()
-            //      .HasValueGenerator<CompanyIdGenerator>();
-
-            //entity.Property(x => x.BranchOfficeId)
-            //      .ValueGeneratedOnAdd()
-            //      .HasValueGenerator<BranchOfficeIdGenerator>();
+            entity.Property(x => x.Status)
+            .HasConversion<EnumToStringConverter<ActiveInactiveStatussesEnum>>();
 
             entity.Property(x => x.CreatedAt)
                   .ValueGeneratedOnAdd()
@@ -384,7 +373,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
                   .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
 
             entity.Property(x => x.UpdatedAt)
-                  .ValueGeneratedOnUpdate()
+                  .ValueGeneratedOnAddOrUpdate()
                   .HasValueGenerator<DateTimeGenerator>()
                   .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
 
@@ -419,7 +408,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
 
             entity.Property(x => x.UpdatedAt)
-            .ValueGeneratedOnUpdate()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<DateTimeGenerator>()
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
 
@@ -479,7 +468,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
             entity
             .Property(x => x.UpdatedAt)
-            .ValueGeneratedOnUpdate()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<DateTimeGenerator>();
 
             entity.HasMany(r => r.DriverMethodsOfComsuption)
@@ -523,7 +512,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .HasValueGenerator<BranchOfficeIdGenerator>();*/
 
             entity.Property(x => x.UpdatedAt)
-            .ValueGeneratedOnUpdate()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<DateTimeGenerator>();
             entity.HasOne(d => d.Driver).WithMany(p => p.EmployeeConsumptionLimits)
                 .HasForeignKey(d => d.DriverId)
@@ -606,7 +595,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
 
             entity.Property(x => x.UpdatedAt)
-            .ValueGeneratedOnUpdate()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<DateTimeGenerator>()
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
 
@@ -693,7 +682,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
 
             entity.Property(x => x.UpdatedAt)
-            .ValueGeneratedOnUpdate()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<DateTimeGenerator>()
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
 
@@ -819,7 +808,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
 
             entity.Property(x => x.UpdatedAt)
-            .ValueGeneratedOnUpdate()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<DateTimeGenerator>()
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
 
@@ -1025,7 +1014,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
 
             entity.Property(x => x.UpdatedAt)
-            .ValueGeneratedOnUpdate()
+            .ValueGeneratedOnAddOrUpdate()
             .HasValueGenerator<DateTimeGenerator>()
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
 

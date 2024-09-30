@@ -14,7 +14,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public string? VehicleVin { get; set; }
         public MaitenanceStatusEnum? Status { get; set; } = MaitenanceStatusEnum.NotStarted;
         public Vehicle? Vehicle { get; set; }
-        public ICollection<MaintenanceDetails> Details { get; set; } = [];
+        [Required, MinLength(1)] public ICollection<MaintenanceDetails> Details { get; set; } = [];
     }
 
 }

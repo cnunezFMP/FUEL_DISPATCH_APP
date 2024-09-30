@@ -1,5 +1,4 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Enums;
-using FUEL_DISPATCH_API.Utils.Constants;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;

@@ -32,9 +32,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             catch (Exception ex)
             {
                 entity.ArticleNumber = null;
-                return ResultPattern<ArticleDataMaster>.Failure(
-                    StatusCodes.Status400BadRequest,
-                    ex.Message);
+                throw new BadRequestException(ex.InnerException?.Message ?? ex.Message);
             }
             return base.Post(entity);
         }

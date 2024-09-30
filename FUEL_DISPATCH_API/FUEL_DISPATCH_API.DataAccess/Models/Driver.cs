@@ -1,6 +1,5 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 namespace FUEL_DISPATCH_API.DataAccess.Models;
 public partial class Driver
@@ -12,9 +11,9 @@ public partial class Driver
     [Required] public string? FullName { get; set; }
     public int? CompanyId { get; set; }
     public int? BranchOfficeId { get; set; }
-    [Required, Phone] public string? PhoneNumber { get; set; }
-    [Required] public DateTime? BirthDate { get; set; }
-    [Required] public string? FullDirection { get; set; }
+    [Phone] public string? PhoneNumber { get; set; }
+    public DateTime? BirthDate { get; set; }
+    public string? FullDirection { get; set; }
     [Required] public DateTime? LicenceExpDate { get; set; }
     public ActiveInactiveStatussesEnum? Status { get; set; }
     public string? CreatedBy { get; set; }
