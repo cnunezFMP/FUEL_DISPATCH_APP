@@ -1,5 +1,4 @@
-﻿using FUEL_DISPATCH_API.DataAccess.ValueGenerators;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace FUEL_DISPATCH_API.DataAccess.DTOs
 {

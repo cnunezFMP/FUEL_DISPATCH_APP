@@ -59,6 +59,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
     public virtual DbSet<vw_WareHouseHistory> Vw_WareHouseHistories { get; set; }
     public virtual DbSet<Companies> Companies { get; set; }
     public virtual DbSet<ComsuptionByDay> ComsuptionByDay { get; set; }
+    public virtual DbSet<AnexoMantenimiento> AnexosMantenimientos { get; set; }
     public virtual DbSet<ComsuptionByMonth> ComsuptionByMonth { get; set; }
     public virtual DbSet<Dispenser> Dispenser { get; set; }
     public virtual DbSet<Driver> Driver { get; set; }
@@ -210,6 +211,11 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
             entity.Property(e => e.TotalFuelConsumed).HasColumnType("decimal(38, 0)");
         });
+        modelBuilder.Entity<AnexoMantenimiento>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+            entity.ToTable("AnexoMantenimiento");
+        });
         modelBuilder.Entity<ComsuptionByMonth>(entity =>
         {
             entity
@@ -329,7 +335,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
             entity.Property(x => x.Status)
             .HasConversion<EnumToStringConverter<ActiveInactiveStatussesEnum>>();
-            
+
             entity.Property(x => x.CreatedAt)
             .ValueGeneratedOnAdd()
             .HasValueGenerator<DateTimeGenerator>()
@@ -635,6 +641,10 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
             .WithOne()
             .HasForeignKey(x => x.MaintenanceId)
             .OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasMany(x => x.Anexos)
+            .WithOne()
+            .HasForeignKey(x => x.MaintenanceId);
 
             entity.Navigation(x => x.Details).AutoInclude();
             entity.Navigation(x => x.Vehicle).AutoInclude();

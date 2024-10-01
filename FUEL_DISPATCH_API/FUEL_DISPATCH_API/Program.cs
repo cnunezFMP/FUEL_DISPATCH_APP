@@ -225,33 +225,6 @@ app.UseReDoc(c =>
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-//app.Use(async (context, next) =>
-//{
-//    if (context.Response.StatusCode == StatusCodes.Status403Forbidden)
-//    {
-//        context.Response.ContentType = "application/json";
-//        await context.Response.WriteAsync("{\"message\": \"Acceso denegado. No tienes permisos suficientes.\"}");
-//    }
-//    else
-//    {
-//        await next();
-//    }
-//});
-//app.UseMiddleware<AuthMiddleware>();
-//app.UseStatusCodePages(async (x) =>
-//{
-//    if (x.HttpContext.Response.StatusCode == 403)
-//    {
-//        var noAuthorizedObj = new
-//        {
-//            Titulo = "Usuario no autorizado.",
-//            Message = "No esta autorizado para hacer esta accion. ",
-//            Status = 403
-
-//        };
-
-//        await x.HttpContext.Response.WriteAsJsonAsync(noAuthorizedObj);
-//    };
-//});
+app.UseStaticFiles();
 app.MapControllers();
 app.Run();

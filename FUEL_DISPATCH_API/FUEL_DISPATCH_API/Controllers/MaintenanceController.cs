@@ -21,7 +21,7 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Paging<Maintenance>>> GetMaintenances([FromQuery] GridifyQuery query)
             => Ok(_maintenanceServices.GetAll(query));
-        
+
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Maintenance>> GetMaintenance(int id)
         {
@@ -38,6 +38,11 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpPost, Authorize]
         public ActionResult<ResultPattern<Maintenance>> PostMaintenance([FromBody] Maintenance maintenance)
             => Created(string.Empty, _maintenanceServices.Post(maintenance));
+
+        [HttpPost("Anexo/{maintenanceId:int}"), Authorize]
+        public ActionResult<ResultPattern<string>> UploadAnexo(IFormFile file, [FromRoute] int maintenanceId)
+            => Created(string.Empty, _maintenanceServices.UploadAnexo(file, maintenanceId));
+
 
         [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Maintenance>> UpdateMaintenance(int id, [FromBody] Maintenance maintenance)

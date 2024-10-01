@@ -1,4 +1,5 @@
 ﻿using FUEL_DISPATCH_API.DataAccess.Enums;
+using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 namespace FUEL_DISPATCH_API.DataAccess.Models
@@ -10,11 +11,13 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public string? Technician { get; set; }
         public string? Code { get; set; }
         [Required] public int VehicleId { get; set; }
+        public decimal? TotalAmount { get; set; }
         public decimal? CurrentOdometer { get; set; }
         public string? VehicleVin { get; set; }
         public MaitenanceStatusEnum? Status { get; set; } = MaitenanceStatusEnum.NotStarted;
         public Vehicle? Vehicle { get; set; }
         [Required, MinLength(1)] public ICollection<MaintenanceDetails> Details { get; set; } = [];
+        public ICollection<AnexoMantenimiento> Anexos { get; set; } = [];
     }
 
 }

@@ -3,21 +3,19 @@ using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 {
-    public class MaintenanceServices : GenericRepository<Maintenance>, IMaintenanceServices
+    public class MaintenanceServices(FUEL_DISPATCH_DBContext dbContext,
+                               IHttpContextAccessor httpContextAccessor,
+                               IWebHostEnvironment webHostEnvironment) : GenericRepository<Maintenance>(dbContext, httpContextAccessor), IMaintenanceServices
     {
-        private readonly FUEL_DISPATCH_DBContext _DBContext;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        public MaintenanceServices(FUEL_DISPATCH_DBContext dbContext,
-                                   IHttpContextAccessor httpContextAccessor)
-            : base(dbContext, httpContextAccessor)
-        {
-            _DBContext = dbContext;
-            _httpContextAccessor = httpContextAccessor;
-        }
+        private readonly FUEL_DISPATCH_DBContext _DBContext = dbContext;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
 
         public override ResultPattern<Maintenance> Post(Maintenance entity)
         {
@@ -150,6 +148,39 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             return true;
         }
+
+        public ResultPattern<string> UploadAnexo(IFormFile file, int maintenanceId)
+        {
+            var maintenance = _DBContext.Maintenance.Find(maintenanceId) ??
+                throw new NotFoundException("No se encontro el mantenimiento. ");
+
+            var directory = Path.Combine(_webHostEnvironment.WebRootPath, "anexos");
+
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+
+            string? fileName = Guid.NewGuid().ToString("N");
+
+            var ext = Path.GetExtension(file.FileName);
+
+            fileName += ext;
+
+            var filePath = Path.Combine(directory, fileName);
+
+            using var ms = new MemoryStream();
+
+            file.CopyToAsync(ms).Wait();
+
+            File.WriteAllBytes(filePath, ms.ToArray());
+
+            var relativePath = filePath.Replace(_webHostEnvironment.WebRootPath, string.Empty);
+
+            _DBContext.AnexosMantenimientos.Add(new AnexoMantenimiento { MaintenanceId = maintenance.Id, Ruta = relativePath });
+            _DBContext.SaveChanges();
+
+            return ResultPattern<string>.Success(relativePath, 201, "Anexo cargado. ");
+        }
+
         public bool IsVehicleActive(Maintenance maintenance)
         {
             var vehicle = _DBContext.Vehicle.Find(maintenance.VehicleId);

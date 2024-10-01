@@ -10,6 +10,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
         public DateTime? NextMaintenanceDate { get; set; }
         public string? PartCode { get; set; }
         public string? Notes { get; set; }
+        public decimal? Amount { get; set; }
         public decimal? OdometerUpcomingMaintenance { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public string? CreatedBy { get; set; }
