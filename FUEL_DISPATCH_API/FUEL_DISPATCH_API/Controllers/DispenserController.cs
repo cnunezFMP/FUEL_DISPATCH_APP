@@ -1,14 +1,10 @@
 ﻿using FluentValidation;
 using FUEL_DISPATCH_API.DataAccess.Models;
-using FUEL_DISPATCH_API.DataAccess.Repository.Implementations;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
-using FUEL_DISPATCH_API.DataAccess.Validators;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
 using Gridify;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-
 namespace FUEL_DISPATCH_API.Controllers
 {
     [ApiController]
@@ -34,32 +30,19 @@ namespace FUEL_DISPATCH_API.Controllers
         [HttpGet("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Dispenser>> GetDispenser(int id)
         {
-            /*string? companyId, branchId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
-
-            bool predicate(Dispenser x) => x.Id == id /*&&
-                                               x.CompanyId == int.Parse(companyId) &&
-                                               x.BranchOfficeId == int.Parse(branchId)*/;
+            bool predicate(Dispenser x) => x.Id == id;
             return Ok(_dispenserServices.Get(predicate));
         }
 
         [HttpPost, Authorize/*(Roles = "CanCreate, Administrador")*/]
         public ActionResult<ResultPattern<Dispenser>> PostDispenser([FromBody] Dispenser dispenser)
             => Created(string.Empty, _dispenserServices.Post(dispenser));
-        
+
 
         [HttpPut("{id:int}"), Authorize/*(Roles = "CanUpdateData, Administrador")*/]
         public ActionResult<ResultPattern<Dispenser>> UpdateDispenser(int id, [FromBody] Dispenser dispenser)
         {
-            /*string? companyId, branchId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
-
-            bool predicate(Dispenser x) => x.Id == id /*&&
-                                               x.CompanyId == int.Parse(companyId) &&
-                                               x.BranchOfficeId == int.Parse(branchId)*/;
-
+            bool predicate(Dispenser x) => x.Id == id;
             return Ok(_dispenserServices.Update(predicate, dispenser));
         }
     }

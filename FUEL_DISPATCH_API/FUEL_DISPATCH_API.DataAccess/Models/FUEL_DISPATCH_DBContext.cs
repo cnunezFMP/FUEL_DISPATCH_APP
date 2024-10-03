@@ -648,13 +648,7 @@ public partial class FUEL_DISPATCH_DBContext : DbContext
 
             entity.Navigation(x => x.Details).AutoInclude();
             entity.Navigation(x => x.Vehicle).AutoInclude();
-            /*entity.Property(x => x.CompanyId)
-            .ValueGeneratedOnAddOrUpdate()
-            .HasValueGenerator<CompanyIdGenerator>();
-
-            entity.Property(x => x.BranchOfficeId)
-            .ValueGeneratedOnAddOrUpdate()
-            .HasValueGenerator<BranchOfficeIdGenerator>();*/
+            entity.Navigation(x => x.Anexos).AutoInclude();
         });
 
         modelBuilder.Entity<vw_Maintenance>(entity =>

@@ -10,6 +10,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Models
     {
         public int Id { get; set; }
         public int MaintenanceId { get; set; }
+        public string? FileName { get; set; }
         public string? Ruta { get; set; }
     }
 }

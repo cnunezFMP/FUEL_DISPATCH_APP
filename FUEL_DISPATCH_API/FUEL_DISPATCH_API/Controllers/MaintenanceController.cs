@@ -40,9 +40,12 @@ namespace FUEL_DISPATCH_API.Controllers
             => Created(string.Empty, _maintenanceServices.Post(maintenance));
 
         [HttpPost("Anexo/{maintenanceId:int}"), Authorize]
-        public ActionResult<ResultPattern<string>> UploadAnexo(IFormFile file, [FromRoute] int maintenanceId)
+        public ActionResult<ResultPattern<AnexoMantenimiento>> UploadAnexo(IFormFile file, [FromRoute] int maintenanceId)
             => Created(string.Empty, _maintenanceServices.UploadAnexo(file, maintenanceId));
 
+        [HttpDelete("Anexo/{anexoId:int}"), Authorize]
+        public ActionResult<ResultPattern<string>> RemoveFile([FromRoute] int anexoId)
+            => Ok(_maintenanceServices.DeleteFile(anexoId));
 
         [HttpPut("{id:int}"), Authorize]
         public ActionResult<ResultPattern<Maintenance>> UpdateMaintenance(int id, [FromBody] Maintenance maintenance)

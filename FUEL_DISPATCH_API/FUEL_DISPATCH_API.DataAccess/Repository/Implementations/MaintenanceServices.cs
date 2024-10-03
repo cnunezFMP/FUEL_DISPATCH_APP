@@ -3,6 +3,7 @@ using FUEL_DISPATCH_API.DataAccess.Repository.GenericRepository;
 using FUEL_DISPATCH_API.DataAccess.Repository.Interfaces;
 using FUEL_DISPATCH_API.Utils.Exceptions;
 using FUEL_DISPATCH_API.Utils.ResponseObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -148,39 +149,72 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
 
             return true;
         }
-
-        public ResultPattern<string> UploadAnexo(IFormFile file, int maintenanceId)
+        public ResultPattern<AnexoMantenimiento> UploadAnexo(IFormFile file, int maintenanceId)
         {
+            // Obtener el mantenimiento. 
             var maintenance = _DBContext.Maintenance.Find(maintenanceId) ??
                 throw new NotFoundException("No se encontro el mantenimiento. ");
 
+            // Directorio para los archivos. 
             var directory = Path.Combine(_webHostEnvironment.WebRootPath, "anexos");
 
+            // Crearlo si no existe. 
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
+            // Crear el nombre con un Guid. 
             string? fileName = Guid.NewGuid().ToString("N");
 
+            // Obtener la extension del archivo. 
             var ext = Path.GetExtension(file.FileName);
-
+            // Poner el nombre con la extension. 
             fileName += ext;
-
+            // Definir la ruta del archivo. 
             var filePath = Path.Combine(directory, fileName);
 
             using var ms = new MemoryStream();
 
+            // Copiar el archivo al MemoryStream
             file.CopyToAsync(ms).Wait();
 
+            // Guardar el archivo en la ruta especificada. 
             File.WriteAllBytes(filePath, ms.ToArray());
 
+            // Reemplazar la ruta a la ruta de wwwroot. 
             var relativePath = filePath.Replace(_webHostEnvironment.WebRootPath, string.Empty);
 
-            _DBContext.AnexosMantenimientos.Add(new AnexoMantenimiento { MaintenanceId = maintenance.Id, Ruta = relativePath });
+            var anexoObj = new AnexoMantenimiento 
+            { 
+                MaintenanceId = maintenance.Id, 
+                Ruta = relativePath, 
+                FileName = file.FileName 
+            };
+
+            _DBContext.AnexosMantenimientos.Add(anexoObj);
             _DBContext.SaveChanges();
 
-            return ResultPattern<string>.Success(relativePath, 201, "Anexo cargado. ");
+            return ResultPattern<AnexoMantenimiento>.Success(anexoObj, 201, "Anexo cargado. ");
         }
+        public ResultPattern<string> DeleteFile(int anexoId)
+        {
+            var anexo = _DBContext.AnexosMantenimientos.Find(anexoId) ??
+                throw new NotFoundException("Anexo no encontrado para este mantenimiento. ");
 
+            string? directory = Path.Combine(_webHostEnvironment.WebRootPath, "anexos");
+
+            string? fileName = Path.GetFileName(anexo.Ruta);
+
+            var filePath = Path.Combine(directory, fileName!);
+
+            if (filePath is not null)
+                File.Delete(filePath!);
+
+            _DBContext.AnexosMantenimientos.Remove(anexo!);
+
+            _DBContext.SaveChanges();
+
+            return ResultPattern<string>.Success(filePath!, StatusCodes.Status200OK, "Anexo eliminado. ");
+        }
         public bool IsVehicleActive(Maintenance maintenance)
         {
             var vehicle = _DBContext.Vehicle.Find(maintenance.VehicleId);

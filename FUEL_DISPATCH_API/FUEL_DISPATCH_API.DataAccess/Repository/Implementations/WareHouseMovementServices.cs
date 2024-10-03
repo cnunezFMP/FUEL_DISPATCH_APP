@@ -197,10 +197,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool CheckWareHouseStock(WareHouseMovement wareHouseMovement)
         {
-            /*string? companyId, branchOfficeId;
-            companyId = _httpContextAccessor.HttpContext?.Items["CompanyId"]?.ToString();
-            branchOfficeId = _httpContextAccessor.HttpContext?.Items["BranchOfficeId"]?.ToString();*/
-
+            
             var wareHouseStock = _DBContext.vw_ActualStock
                 .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefault(x => x.WareHouseId == wareHouseMovement.WareHouseId &&
