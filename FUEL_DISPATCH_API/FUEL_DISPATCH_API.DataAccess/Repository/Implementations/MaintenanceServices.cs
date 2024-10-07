@@ -183,11 +183,11 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
             // Reemplazar la ruta a la ruta de wwwroot. 
             var relativePath = filePath.Replace(_webHostEnvironment.WebRootPath, string.Empty);
 
-            var anexoObj = new AnexoMantenimiento 
-            { 
-                MaintenanceId = maintenance.Id, 
-                Ruta = relativePath, 
-                FileName = file.FileName 
+            var anexoObj = new AnexoMantenimiento
+            {
+                MaintenanceId = maintenance.Id,
+                Ruta = relativePath,
+                FileName = file.FileName
             };
 
             _DBContext.AnexosMantenimientos.Add(anexoObj);

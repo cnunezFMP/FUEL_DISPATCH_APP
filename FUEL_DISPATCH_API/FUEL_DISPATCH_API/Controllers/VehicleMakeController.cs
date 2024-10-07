@@ -17,10 +17,12 @@ namespace FUEL_DISPATCH_API.Controllers
         }
         [HttpGet, Authorize]
         public ActionResult<ResultPattern<Make>> GetMakes([FromQuery] GridifyQuery query)
-            => Ok(_vehicleMakeServices.GetAll(query));
+            => Ok(_vehicleMakeServices
+                .GetAll(query));
 
         [HttpPost, Authorize]
         public ActionResult<ResultPattern<Make>> PostMake([FromBody] Make make)
-            => Created(string.Empty, _vehicleMakeServices.Post(make));
+            => Created(string.Empty,
+                _vehicleMakeServices.Post(make));
     }
 }

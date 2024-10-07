@@ -3,21 +3,27 @@ using FUEL_DISPATCH_API.Reporting.Repository;
 using System;
 using System.Net.Http;
 using System.Web.Http;
-
+using System.Web.Http;
 namespace FUEL_DISPATCH_API.Reporting.Controllers
 {
     [RoutePrefix("api/Reports")]
-
     public class ReportsController : ApiController
     {
         [HttpGet]
         [ClientCacheWithEtag(60)]  //1 min client side caching
-        public HttpResponseMessage DemonstrationComparativeIncomeStatement(DateTime fromDate, DateTime toDate)
+        public HttpResponseMessage ExitRpt(DateTime fromDate, DateTime toDate)
         {
             HttpResponseMessage result = CrystalReport.RenderReport(fromDate, toDate);
             return result;
         }
 
+        [HttpGet, Route("MaintenanceRpt")]
+        [ClientCacheWithEtag(60)]
+        public HttpResponseMessage MaintenanceRpt(int maintenanceId)
+        {
+            HttpResponseMessage result = CrystalReport.GetMaintenanceReport(maintenanceId);
+            return result;
+        }
         //[AllowAnonymous]
         //[Route("Financial/VarianceAnalysisReport")]
         //[HttpGet]

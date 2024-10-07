@@ -13,17 +13,25 @@ namespace FUEL_DISPATCH_API.Controllers
             _reportService = reportsServics;
         }
         [HttpGet, Authorize]
-        public async Task<ActionResult> Get
-            (
-                DateTime fromDate,
-                DateTime toDate,
-                string? exportFileName
-            )
+        public async Task<ActionResult> Get(DateTime fromDate, DateTime toDate, string? exportFileName)
         {
             try
             {
                 byte[] report = await _reportService.GetReportAsync(fromDate, toDate, exportFileName);
-                return File(report, "application/pdf", exportFileName ?? "Report.pdf");
+                return File(report, "application/pdf", exportFileName ?? "SalidaRpt.pdf");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("MaintenanceRpt"), Authorize]
+        public async Task<ActionResult> GetMaintenanceRpt(int maitenanceId, string? exportFileName)
+        {
+            try
+            {
+                byte[] report = await _reportService.GetMaintenanceRptAsync(maitenanceId, exportFileName);
+                return File(report, "application/pdf", exportFileName ?? "MaitenanceRpt.pdf");
             }
             catch (Exception ex)
             {
