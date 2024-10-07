@@ -197,7 +197,7 @@ namespace FUEL_DISPATCH_API.DataAccess.Repository.Implementations
         }
         public bool CheckWareHouseStock(WareHouseMovement wareHouseMovement)
         {
-            
+
             var wareHouseStock = _DBContext.vw_ActualStock
                 .AsNoTrackingWithIdentityResolution()
                 .FirstOrDefault(x => x.WareHouseId == wareHouseMovement.WareHouseId &&

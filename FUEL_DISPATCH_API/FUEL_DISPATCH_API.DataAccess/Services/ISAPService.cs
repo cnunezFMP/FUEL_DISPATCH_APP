@@ -86,7 +86,9 @@ namespace FUEL_DISPATCH_API.DataAccess.Services
                 .FirstOrDefault(x => x.Id == whsMovement.ItemId/* && x.CompanyId == int.Parse(companyId)*/)
                 ?? throw new NotFoundException("Article not found");
 
-            var whs = _dbContext.WareHouse.FirstOrDefault(x => x.Id == whsMovement.WareHouseId/* && x.CompanyId == int.Parse(companyId)*/)
+            var whs = _dbContext
+                .WareHouse
+                .FirstOrDefault(x => x.Id == whsMovement.WareHouseId/* && x.CompanyId == int.Parse(companyId)*/)
                 ?? throw new NotFoundException("Warehouse not found");
 
             var request = new RestRequest("/InventoryGenExits", Method.Post)
